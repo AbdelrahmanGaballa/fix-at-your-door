@@ -1,20 +1,40 @@
 import { useState } from "react";
 import "./App.css";
 import logo3 from "./assets/logo3.png";
+import { SCREEN_PRICES } from "./pricing";
 
 const PHONE_DATA = [
   {
     brand: "Apple",
-    models: ["iPhone 11", "iPhone 12", "iPhone 13", "iPhone 14", "iPhone 15"],
+    models: [
+      "iPhone 8",
+      "iPhone 8 Plus",
+      "iPhone X",
+      "iPhone XR",
+      "iPhone XS",
+      "iPhone XS Max",
+      "iPhone 11",
+      "iPhone 11 Pro",
+      "iPhone 11 Pro Max",
+      "iPhone 12",
+      "iPhone 12 Pro",
+      "iPhone 12 Pro Max",
+      "iPhone 13",
+      "iPhone 13 Pro",
+      "iPhone 13 Pro Max",
+      "iPhone 14",
+      "iPhone 14 Plus",
+      "iPhone 14 Pro Max",
+      "iPhone 15",
+      "iPhone 15 Plus",
+      "iPhone 15 Pro Max",
+      "iPhone 16",
+      "iPhone 16 Plus",
+      "iPhone 16 Pro",
+      "iPhone 16 Pro Max",
+    ],
   },
-  {
-    brand: "Samsung",
-    models: ["Galaxy S21", "Galaxy S22", "Galaxy S23", "Galaxy A54"],
-  },
-  {
-    brand: "Google",
-    models: ["Pixel 6", "Pixel 7", "Pixel 8"],
-  },
+  // Later you can add Samsung / Google here
 ];
 
 const ISSUES = ["Screen Replacement", "Battery Replacement", "Not sure / Other"];
@@ -27,6 +47,7 @@ function App() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [issue, setIssue] = useState("");
+  const [screenQuality, setScreenQuality] = useState(""); // NEW
 
   const [customer, setCustomer] = useState({
     fullName: "",
@@ -55,6 +76,18 @@ function App() {
       alert("Please select an issue.");
       return;
     }
+
+    // If it's a screen replacement and we know this phone has pricing, force quality selection
+    if (
+      issue === "Screen Replacement" &&
+      selectedModel &&
+      SCREEN_PRICES[selectedModel] &&
+      !screenQuality
+    ) {
+      alert("Please choose a screen quality (Aftermarket or Premium).");
+      return;
+    }
+
     setStep(3);
   }
 
@@ -79,11 +112,17 @@ function App() {
       return;
     }
 
-    // 👉 Later: send this data to your backend / email service
+    const selectedPriceEntry =
+      selectedModel && screenQuality && SCREEN_PRICES[selectedModel]
+        ? SCREEN_PRICES[selectedModel][screenQuality]
+        : null;
+
     console.log("New booking:", {
       selectedBrand,
       selectedModel,
       issue,
+      screenQuality,
+      price: selectedPriceEntry?.retail ?? null,
       customer,
     });
 
@@ -93,6 +132,11 @@ function App() {
 
   const modelsForBrand =
     PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || [];
+
+  const selectedPriceEntry =
+    selectedModel && screenQuality && SCREEN_PRICES[selectedModel]
+      ? SCREEN_PRICES[selectedModel][screenQuality]
+      : null;
 
   return (
     <div className="app">
@@ -176,6 +220,7 @@ function App() {
                   onChange={(e) => {
                     setSelectedBrand(e.target.value);
                     setSelectedModel("");
+                    setScreenQuality("");
                   }}
                 >
                   <option value="">Choose brand</option>
@@ -191,7 +236,10 @@ function App() {
                 <label>Model</label>
                 <select
                   value={selectedModel}
-                  onChange={(e) => setSelectedModel(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedModel(e.target.value);
+                    setScreenQuality("");
+                  }}
                   disabled={!selectedBrand}
                 >
                   <option value="">
@@ -213,7 +261,7 @@ function App() {
             </section>
           )}
 
-          {/* STEP 2 – Issue */}
+          {/* STEP 2 – Issue + Screen Quality */}
           {step === 2 && (
             <section>
               <h2>Select the issue</h2>
@@ -223,7 +271,11 @@ function App() {
                 <label>Problem</label>
                 <select
                   value={issue}
-                  onChange={(e) => setIssue(e.target.value)}
+                  onChange={(e) => {
+                    setIssue(e.target.value);
+                    // If they change from screen replacement to something else,
+                    // we can keep or reset quality — up to you. I'll keep it.
+                  }}
                 >
                   <option value="">Choose issue</option>
                   {ISSUES.map((i) => (
@@ -233,6 +285,43 @@ function App() {
                   ))}
                 </select>
               </div>
+
+              {/* Screen quality shown only when Screen Replacement + we have pricing for this model */}
+              {issue === "Screen Replacement" &&
+                selectedModel &&
+                SCREEN_PRICES[selectedModel] && (
+                  <div className="field">
+                    <label>Screen quality & price</label>
+                    <div className="quality-box">
+                      <label>
+                        <input
+                          type="radio"
+                          name="screenQuality"
+                          value="aftermarket"
+                          checked={screenQuality === "aftermarket"}
+                          onChange={(e) => setScreenQuality(e.target.value)}
+                        />
+                        Aftermarket – $
+                        {SCREEN_PRICES[selectedModel].aftermarket.retail}
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="screenQuality"
+                          value="premium"
+                          checked={screenQuality === "premium"}
+                          onChange={(e) => setScreenQuality(e.target.value)}
+                        />
+                        Premium – $
+                        {SCREEN_PRICES[selectedModel].premium.retail}
+                      </label>
+                    </div>
+                    <p style={{ fontSize: "0.8rem", color: "#9ca3af" }}>
+                      All prices include parts, labor and your doorstep service.
+                    </p>
+                  </div>
+                )}
 
               <div className="buttons">
                 <button className="btn secondary" onClick={() => setStep(1)}>
@@ -382,6 +471,17 @@ function App() {
                 </strong>
                 .
               </p>
+
+              {screenQuality && selectedPriceEntry && (
+                <p>
+                  Screen quality:{" "}
+                  <strong>
+                    {screenQuality === "aftermarket" ? "Aftermarket" : "Premium"}
+                  </strong>{" "}
+                  – <strong>${selectedPriceEntry.retail}</strong>
+                </p>
+              )}
+
               <p>
                 Appointment:{" "}
                 <strong>
