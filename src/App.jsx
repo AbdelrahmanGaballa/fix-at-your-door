@@ -126,12 +126,10 @@ function App() {
         alert("Please type your phone brand and model.");
         return;
       }
-      // For other brand, we don't need selectedModel from dropdown
       setStep(2);
       return;
     }
 
-    // Normal brands
     if (!selectedModel) {
       alert("Please select a model.");
       return;
@@ -158,59 +156,58 @@ function App() {
     setCustomer((prev) => ({ ...prev, [name]: value }));
   }
 
- async function handleSubmit(e) {
-  e.preventDefault();
+  // 🔥 Send to Google Sheets here
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-  if (
-    !customer.fullName ||
-    !customer.phone ||
-    !customer.address ||
-    !customer.city ||
-    !customer.zip ||
-    !customer.date ||
-    !customer.time
-  ) {
-    alert("Please fill all required fields.");
-    return;
-  }
+    if (
+      !customer.fullName ||
+      !customer.phone ||
+      !customer.address ||
+      !customer.city ||
+      !customer.zip ||
+      !customer.date ||
+      !customer.time
+    ) {
+      alert("Please fill all required fields.");
+      return;
+    }
 
-  const payload = {
-    device: {
-      brand: isOtherBrand ? "Other brand" : selectedBrand,
-      model: isOtherBrand || isOtherModel ? "Other" : selectedModel,
-      customBrandText: isOtherBrand ? otherBrandText.trim() : null,
-      customModelText:
-        isOtherBrand || isOtherModel ? otherModelText.trim() : null,
-    },
-    issue,
-    screenQuality,
-    estimatedPrice: priceForSelection,
-    customer,
-  };
-
-  console.log("New booking:", payload);
-
-  // ✅ Your real Google Apps Script Web App URL
-  const WEB_APP_URL =
-    "https://script.google.com/macros/s/AKfycbzm5UtDdgjliYtiwIdi-dwjc7hiDtExkS-gcMxM50nMie4az3UhWZpA4DZ3ZPP8FJCf2A/exec";
-
-  try {
-    await fetch(WEB_APP_URL, {
-      method: "POST",
-      mode: "no-cors", // send without CORS errors
-      headers: {
-        "Content-Type": "application/json",
+    const payload = {
+      device: {
+        brand: isOtherBrand ? "Other brand" : selectedBrand,
+        model: isOtherBrand || isOtherModel ? "Other" : selectedModel,
+        customBrandText: isOtherBrand ? otherBrandText.trim() : null,
+        customModelText:
+          isOtherBrand || isOtherModel ? otherModelText.trim() : null,
       },
-      body: JSON.stringify(payload),
-    });
-  } catch (err) {
-    console.error("Error sending data to Google Sheets:", err);
+      issue,
+      screenQuality,
+      estimatedPrice: priceForSelection,
+      customer,
+    };
+
+    console.log("New booking:", payload);
+
+    const WEB_APP_URL =
+      "https://script.google.com/macros/s/AKfycbzm5UtDdgjliYtiwIdi-dwjc7hiDtExkS-gcMxM50nMie4az3UhWZpA4DZ3ZPP8FJCf2A/exec";
+
+    try {
+      await fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+    } catch (err) {
+      console.error("Error sending data to Google Sheets:", err);
+    }
+
+    setSubmitted(true);
+    setStep(4);
   }
-
-  setSubmitted(true);
-  setStep(4);
-}
-
 
   const displayBrand = isOtherBrand
     ? otherBrandText || "Custom brand"
