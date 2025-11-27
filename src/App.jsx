@@ -1,8 +1,9 @@
 import { useState } from "react";
-import "./App.css";
 import logo3 from "./assets/logo3.png";
-import { SCREEN_PRICES } from "./pricing";
+import "./App.css";
+import { SCREEN_PRICING } from "./pricing";
 
+// Brand / model list for dropdown
 const PHONE_DATA = [
   {
     brand: "Apple",
@@ -34,12 +35,39 @@ const PHONE_DATA = [
       "iPhone 16 Pro Max",
     ],
   },
-  // Later you can add Samsung / Google here
+  {
+    brand: "Samsung",
+    models: ["Galaxy S21", "Galaxy S22", "Galaxy S23", "Galaxy A54"],
+  },
+  {
+    brand: "Google",
+    models: ["Pixel 6", "Pixel 7", "Pixel 8"],
+  },
 ];
 
 const ISSUES = ["Screen Replacement", "Battery Replacement", "Not sure / Other"];
-
 const PAYMENT_METHODS = ["Zelle", "Cash"];
+
+const QUALITY_OPTIONS = [
+  {
+    key: "q7",
+    label: "Q7 Soft",
+    short: "Great value",
+    description: "High quality aftermarket – best balance of price & quality.",
+  },
+  {
+    key: "q8",
+    label: "Q8 Soft",
+    short: "Premium aftermarket",
+    description: "Brighter & smoother feel vs Q7. Great for heavy users.",
+  },
+  {
+    key: "premium",
+    label: "Premium OEM",
+    short: "Closest to original",
+    description: "Best color & brightness. Closest to factory quality.",
+  },
+];
 
 function App() {
   const [step, setStep] = useState(1);
@@ -47,7 +75,11 @@ function App() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [issue, setIssue] = useState("");
-  const [screenQuality, setScreenQuality] = useState(""); // NEW
+  const [screenQuality, setScreenQuality] = useState("q7");
+
+  // For custom brand / model text
+  const [otherBrandText, setOtherBrandText] = useState("");
+  const [otherModelText, setOtherModelText] = useState("");
 
   const [customer, setCustomer] = useState({
     fullName: "",
@@ -63,11 +95,53 @@ function App() {
 
   const [submitted, setSubmitted] = useState(false);
 
+  const isOtherBrand = selectedBrand === "__otherBrand";
+  const isOtherModel = selectedModel === "__other";
+
+  const modelsForBrand = !isOtherBrand
+    ? PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || []
+    : [];
+
+  // Only show price when brand & model are known (not "other")
+  const priceForSelection =
+    !isOtherBrand &&
+    !isOtherModel &&
+    selectedBrand &&
+    selectedModel &&
+    SCREEN_PRICING[selectedBrand] &&
+    SCREEN_PRICING[selectedBrand][selectedModel]
+      ? SCREEN_PRICING[selectedBrand][selectedModel][screenQuality] ?? null
+      : null;
+
+  /* ---------- step handlers ---------- */
+
   function handleNextFromStep1() {
-    if (!selectedBrand || !selectedModel) {
-      alert("Please select brand and model.");
+    if (!selectedBrand) {
+      alert("Please select a brand.");
       return;
     }
+
+    if (isOtherBrand) {
+      if (!otherBrandText.trim() || !otherModelText.trim()) {
+        alert("Please type your phone brand and model.");
+        return;
+      }
+      // For other brand, we don't need selectedModel from dropdown
+      setStep(2);
+      return;
+    }
+
+    // Normal brands
+    if (!selectedModel) {
+      alert("Please select a model.");
+      return;
+    }
+
+    if (isOtherModel && !otherModelText.trim()) {
+      alert("Please type your phone model.");
+      return;
+    }
+
     setStep(2);
   }
 
@@ -76,18 +150,6 @@ function App() {
       alert("Please select an issue.");
       return;
     }
-
-    // If it's a screen replacement and we know this phone has pricing, force quality selection
-    if (
-      issue === "Screen Replacement" &&
-      selectedModel &&
-      SCREEN_PRICES[selectedModel] &&
-      !screenQuality
-    ) {
-      alert("Please choose a screen quality (Aftermarket or Premium).");
-      return;
-    }
-
     setStep(3);
   }
 
@@ -96,68 +158,87 @@ function App() {
     setCustomer((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+ async function handleSubmit(e) {
+  e.preventDefault();
 
-    if (
-      !customer.fullName ||
-      !customer.phone ||
-      !customer.address ||
-      !customer.city ||
-      !customer.zip ||
-      !customer.date ||
-      !customer.time
-    ) {
-      alert("Please fill all required fields.");
-      return;
-    }
-
-    const selectedPriceEntry =
-      selectedModel && screenQuality && SCREEN_PRICES[selectedModel]
-        ? SCREEN_PRICES[selectedModel][screenQuality]
-        : null;
-
-    console.log("New booking:", {
-      selectedBrand,
-      selectedModel,
-      issue,
-      screenQuality,
-      price: selectedPriceEntry?.retail ?? null,
-      customer,
-    });
-
-    setSubmitted(true);
-    setStep(4);
+  if (
+    !customer.fullName ||
+    !customer.phone ||
+    !customer.address ||
+    !customer.city ||
+    !customer.zip ||
+    !customer.date ||
+    !customer.time
+  ) {
+    alert("Please fill all required fields.");
+    return;
   }
 
-  const modelsForBrand =
-    PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || [];
+  const payload = {
+    device: {
+      brand: isOtherBrand ? "Other brand" : selectedBrand,
+      model: isOtherBrand || isOtherModel ? "Other" : selectedModel,
+      customBrandText: isOtherBrand ? otherBrandText.trim() : null,
+      customModelText:
+        isOtherBrand || isOtherModel ? otherModelText.trim() : null,
+    },
+    issue,
+    screenQuality,
+    estimatedPrice: priceForSelection,
+    customer,
+  };
 
-  const selectedPriceEntry =
-    selectedModel && screenQuality && SCREEN_PRICES[selectedModel]
-      ? SCREEN_PRICES[selectedModel][screenQuality]
-      : null;
+  console.log("New booking:", payload);
+
+  // ✅ Your real Google Apps Script Web App URL
+  const WEB_APP_URL =
+    "https://script.google.com/macros/s/AKfycbzm5UtDdgjliYtiwIdi-dwjc7hiDtExkS-gcMxM50nMie4az3UhWZpA4DZ3ZPP8FJCf2A/exec";
+
+  try {
+    await fetch(WEB_APP_URL, {
+      method: "POST",
+      mode: "no-cors", // send without CORS errors
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error("Error sending data to Google Sheets:", err);
+  }
+
+  setSubmitted(true);
+  setStep(4);
+}
+
+
+  const displayBrand = isOtherBrand
+    ? otherBrandText || "Custom brand"
+    : selectedBrand;
+  const displayModel =
+    isOtherBrand || isOtherModel
+      ? otherModelText || "Custom model"
+      : selectedModel;
+
+  /* ---------- JSX ---------- */
 
   return (
     <div className="app">
       <div className="shell">
-        {/* LEFT SIDE – HERO */}
+        {/* LEFT – HERO */}
         <header className="header">
           <div className="header-inner">
             <div className="logo-row">
-              <img
-                src={logo3}
-                alt="Fix@YourDoor logo"
-                className="logo-image"
-              />
+              <img src={logo3} alt="Fix@YourDoor logo" className="logo-image" />
               <div className="logo-text-group">
-                <span className="logo-title">Fix@YourDoor</span>
-                <span className="logo-subtitle">Doorstep Phone Repair</span>
+                <div className="logo-title">FIX@YOURDOOR</div>
+                <div className="logo-subtitle">Doorstep Phone Repair</div>
               </div>
             </div>
 
             <h1>
-              We fix your <span>phone</span> <br />
+              We fix your <span>phone</span>
+              <br />
               right at your doorstep.
             </h1>
 
@@ -185,9 +266,9 @@ function App() {
           </div>
         </header>
 
-        {/* RIGHT SIDE – FORM CARD */}
+        {/* RIGHT – FORM CARD */}
         <main className="card">
-          {/* Step indicator */}
+          {/* Stepper */}
           <div className="steps">
             <span className={step >= 1 ? "step active" : "step"}>
               <span className="step-dot">1</span>
@@ -195,7 +276,7 @@ function App() {
             </span>
             <span className={step >= 2 ? "step active" : "step"}>
               <span className="step-dot">2</span>
-              <span className="step-label">Issue</span>
+              <span className="step-label">Issue &amp; screen</span>
             </span>
             <span className={step >= 3 ? "step active" : "step"}>
               <span className="step-dot">3</span>
@@ -213,6 +294,7 @@ function App() {
               <h2>Select your phone</h2>
               <p>Tell us what you’re using so we bring the right parts.</p>
 
+              {/* BRAND */}
               <div className="field">
                 <label>Brand</label>
                 <select
@@ -220,7 +302,8 @@ function App() {
                   onChange={(e) => {
                     setSelectedBrand(e.target.value);
                     setSelectedModel("");
-                    setScreenQuality("");
+                    setOtherBrandText("");
+                    setOtherModelText("");
                   }}
                 >
                   <option value="">Choose brand</option>
@@ -229,29 +312,123 @@ function App() {
                       {p.brand}
                     </option>
                   ))}
+                  <option value="__otherBrand">Other brand (not listed)</option>
                 </select>
               </div>
 
+              {/* MODEL */}
               <div className="field">
                 <label>Model</label>
                 <select
                   value={selectedModel}
-                  onChange={(e) => {
-                    setSelectedModel(e.target.value);
-                    setScreenQuality("");
-                  }}
-                  disabled={!selectedBrand}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  disabled={!selectedBrand || isOtherBrand}
                 >
                   <option value="">
-                    {selectedBrand ? "Choose model" : "Select brand first"}
+                    {selectedBrand
+                      ? isOtherBrand
+                        ? "Model handled below"
+                        : "Choose model"
+                      : "Select brand first"}
                   </option>
                   {modelsForBrand.map((m) => (
                     <option key={m} value={m}>
                       {m}
                     </option>
                   ))}
+                  {!isOtherBrand && selectedBrand && (
+                    <option value="__other">Other (not listed)</option>
+                  )}
                 </select>
               </div>
+
+              {/* FIELDS WHEN OTHER BRAND */}
+              {isOtherBrand && (
+                <>
+                  <div className="field">
+                    <label>Phone brand *</label>
+                    <input
+                      type="text"
+                      value={otherBrandText}
+                      onChange={(e) => setOtherBrandText(e.target.value)}
+                      placeholder="Example: Huawei, OnePlus, Xiaomi, Motorola..."
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label>Phone model *</label>
+                    <input
+                      type="text"
+                      value={otherModelText}
+                      onChange={(e) => setOtherModelText(e.target.value)}
+                      placeholder="Example: P40 Pro, OnePlus 11R, Redmi Note 13..."
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label>Preferred screen quality</label>
+                    <select
+                      value={screenQuality}
+                      onChange={(e) => setScreenQuality(e.target.value)}
+                    >
+                      {QUALITY_OPTIONS.map((q) => (
+                        <option key={q.key} value={q.key}>
+                          {q.label} – {q.short}
+                        </option>
+                      ))}
+                    </select>
+                    <p
+                      style={{
+                        fontSize: "0.78rem",
+                        marginTop: "4px",
+                        color: "#9ca3af",
+                      }}
+                    >
+                      We&apos;ll check availability for your exact phone and text
+                      you back with price before confirming.
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* FIELDS WHEN BRAND IS NORMAL BUT MODEL = OTHER */}
+              {!isOtherBrand && isOtherModel && (
+                <>
+                  <div className="field">
+                    <label>Phone model *</label>
+                    <input
+                      type="text"
+                      value={otherModelText}
+                      onChange={(e) => setOtherModelText(e.target.value)}
+                      placeholder="Type your exact model (e.g. iPhone SE 2022)"
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label>Preferred screen quality</label>
+                    <select
+                      value={screenQuality}
+                      onChange={(e) => setScreenQuality(e.target.value)}
+                    >
+                      {QUALITY_OPTIONS.map((q) => (
+                        <option key={q.key} value={q.key}>
+                          {q.label} – {q.short}
+                        </option>
+                      ))}
+                    </select>
+                    <p
+                      style={{
+                        fontSize: "0.78rem",
+                        marginTop: "4px",
+                        color: "#9ca3af",
+                      }}
+                    >
+                      We&apos;ll confirm availability for this exact model and
+                      send you the final price before confirming.
+                    </p>
+                  </div>
+                </>
+              )}
 
               <div className="buttons">
                 <button className="btn primary" onClick={handleNextFromStep1}>
@@ -261,21 +438,17 @@ function App() {
             </section>
           )}
 
-          {/* STEP 2 – Issue + Screen Quality */}
+          {/* STEP 2 – Issue + Screen quality */}
           {step === 2 && (
             <section>
-              <h2>Select the issue</h2>
-              <p>What’s wrong with the phone you want us to fix?</p>
+              <h2>Issue &amp; screen quality</h2>
+              <p>Tell us what’s wrong and how you’d like the screen.</p>
 
               <div className="field">
                 <label>Problem</label>
                 <select
                   value={issue}
-                  onChange={(e) => {
-                    setIssue(e.target.value);
-                    // If they change from screen replacement to something else,
-                    // we can keep or reset quality — up to you. I'll keep it.
-                  }}
+                  onChange={(e) => setIssue(e.target.value)}
                 >
                   <option value="">Choose issue</option>
                   {ISSUES.map((i) => (
@@ -286,42 +459,68 @@ function App() {
                 </select>
               </div>
 
-              {/* Screen quality shown only when Screen Replacement + we have pricing for this model */}
-              {issue === "Screen Replacement" &&
-                selectedModel &&
-                SCREEN_PRICES[selectedModel] && (
-                  <div className="field">
-                    <label>Screen quality & price</label>
-                    <div className="quality-box">
-                      <label>
-                        <input
-                          type="radio"
-                          name="screenQuality"
-                          value="aftermarket"
-                          checked={screenQuality === "aftermarket"}
-                          onChange={(e) => setScreenQuality(e.target.value)}
-                        />
-                        Aftermarket – $
-                        {SCREEN_PRICES[selectedModel].aftermarket.retail}
-                      </label>
+              <div className="field">
+                <label>Screen quality preference</label>
+                <div className="quality-box">
+                  {QUALITY_OPTIONS.map((q) => {
+                    const perQualityPrice =
+                      !isOtherBrand &&
+                      !isOtherModel &&
+                      selectedBrand &&
+                      selectedModel &&
+                      SCREEN_PRICING[selectedBrand] &&
+                      SCREEN_PRICING[selectedBrand][selectedModel]
+                        ? SCREEN_PRICING[selectedBrand][selectedModel][q.key]
+                        : null;
 
-                      <label>
+                    return (
+                      <label key={q.key}>
                         <input
                           type="radio"
                           name="screenQuality"
-                          value="premium"
-                          checked={screenQuality === "premium"}
+                          value={q.key}
+                          checked={screenQuality === q.key}
                           onChange={(e) => setScreenQuality(e.target.value)}
                         />
-                        Premium – $
-                        {SCREEN_PRICES[selectedModel].premium.retail}
+                        <span>
+                          <strong>
+                            {q.label} – {q.short}
+                          </strong>
+                          <br />
+                          <span style={{ fontSize: "0.8rem" }}>
+                            {q.description}{" "}
+                            {perQualityPrice != null && (
+                              <>
+                                ·{" "}
+                                <span style={{ color: "#a5b4fc" }}>
+                                  Est. ${perQualityPrice.toFixed(2)}
+                                </span>
+                              </>
+                            )}
+                          </span>
+                        </span>
                       </label>
-                    </div>
-                    <p style={{ fontSize: "0.8rem", color: "#9ca3af" }}>
-                      All prices include parts, labor and your doorstep service.
-                    </p>
-                  </div>
+                    );
+                  })}
+                </div>
+
+                {(isOtherBrand || isOtherModel) && (
+                  <p
+                    style={{
+                      fontSize: "0.78rem",
+                      marginTop: "6px",
+                      color: "#9ca3af",
+                    }}
+                  >
+                    Because your phone is custom or not on our list,{" "}
+                    <strong>
+                      we&apos;ll check parts availability and text you your
+                      price
+                    </strong>{" "}
+                    for this screen quality before confirming the job.
+                  </p>
                 )}
+              </div>
 
               <div className="buttons">
                 <button className="btn secondary" onClick={() => setStep(1)}>
@@ -467,20 +666,11 @@ function App() {
               <p>
                 We received your request for{" "}
                 <strong>
-                  {selectedBrand} {selectedModel} – {issue}
+                  {displayBrand} {displayModel} –{" "}
+                  {issue || "Issue to be diagnosed"}
                 </strong>
                 .
               </p>
-
-              {screenQuality && selectedPriceEntry && (
-                <p>
-                  Screen quality:{" "}
-                  <strong>
-                    {screenQuality === "aftermarket" ? "Aftermarket" : "Premium"}
-                  </strong>{" "}
-                  – <strong>${selectedPriceEntry.retail}</strong>
-                </p>
-              )}
 
               <p>
                 Appointment:{" "}
@@ -498,12 +688,38 @@ function App() {
                 Payment method: <strong>{customer.paymentMethod}</strong>
               </p>
 
+              <p>
+                Screen quality chosen:{" "}
+                <strong>
+                  {
+                    QUALITY_OPTIONS.find((q) => q.key === screenQuality)?.label
+                  }
+                </strong>
+              </p>
+
+              {priceForSelection != null ? (
+                <p>
+                  Estimated total for your screen replacement:{" "}
+                  <strong>${priceForSelection.toFixed(2)}</strong> (parts +
+                  labor).
+                </p>
+              ) : (
+                <p>
+                  Because your phone is custom or not on our list,{" "}
+                  <strong>
+                    we&apos;ll text you back with price &amp; parts availability
+                  </strong>{" "}
+                  for your chosen screen quality before confirming the job.
+                </p>
+              )}
+
               {customer.paymentMethod === "Zelle" && (
                 <div className="info-box">
                   <p>
                     You can pay via Zelle to:{" "}
                     <strong>your-zelle-email@example.com</strong> or{" "}
-                    <strong>+1-234-567-8901</strong>.
+                    <strong>+1-234-567-8901</strong> after the repair is
+                    complete.
                   </p>
                 </div>
               )}
@@ -526,10 +742,45 @@ function App() {
         </main>
       </div>
 
+      {/* Info strip under cards */}
+      <section className="info-grid">
+        <article className="info-card">
+          <h3>How Fix@YourDoor works</h3>
+          <ol>
+            <li>Choose your phone, issue &amp; preferred screen quality.</li>
+            <li>Pick a time and enter your address.</li>
+            <li>Our tech comes to your door and fixes it on-site.</li>
+          </ol>
+          <p className="info-small">
+            You only pay after the job is done and you&apos;re happy.
+          </p>
+        </article>
+
+        <article className="info-card">
+          <h3>What we fix</h3>
+          <ul>
+            <li>✅ Cracked or broken screens</li>
+            <li>✅ Weak or dead batteries</li>
+            <li>✅ Charging issues &amp; basic diagnostics</li>
+          </ul>
+          <p className="info-small">
+            Not sure what&apos;s wrong? Choose <strong>“Not sure / Other”</strong>{" "}
+            and we&apos;ll help you figure it out.
+          </p>
+        </article>
+
+        <article className="info-card">
+          <h3>Why people love Fix@YourDoor</h3>
+          <ul>
+            <li>No waiting in repair shops</li>
+            <li>Upfront pricing with parts + labor included</li>
+            <li>Pay with Zelle or cash after the job is done</li>
+          </ul>
+        </article>
+      </section>
+
       <footer className="footer">
-        <p>
-          © {new Date().getFullYear()} Fix@YourDoor. All rights reserved.
-        </p>
+        <p>© {new Date().getFullYear()} Fix@YourDoor. All rights reserved.</p>
       </footer>
     </div>
   );
