@@ -158,42 +158,15 @@ function App() {
 
   /* ---------- submit & send to Google Sheets ---------- */
 
-  async function handleSubmit(e) {
+    async function handleSubmit(e) {
     e.preventDefault();
     console.log("✅ handleSubmit fired");
 
-    // Extra validation
-    if (!selectedBrand) {
-      alert("Please select a brand in step 1.");
-      setStep(1);
-      return;
-    }
-
-    if (!isOtherBrand && !selectedModel) {
-      alert("Please select a model in step 1.");
-      setStep(1);
-      return;
-    }
-
-    if (isOtherBrand) {
-      if (!otherBrandText.trim() || !otherModelText.trim()) {
-        alert("Please fill brand & model in step 1.");
-        setStep(1);
-        return;
-      }
-    } else if (isOtherModel && !otherModelText.trim()) {
-      alert("Please type your phone model in step 1.");
-      setStep(1);
-      return;
-    }
-
-    if (!issue) {
-      alert("Please select an issue in step 2.");
-      setStep(2);
-      return;
-    }
-
+    // Validation
     if (
+      !selectedBrand ||
+      (!isOtherBrand && !selectedModel) ||
+      !issue ||
       !customer.fullName ||
       !customer.phone ||
       !customer.address ||
@@ -206,22 +179,28 @@ function App() {
       return;
     }
 
-    // Values for sheet
-    const effectiveBrand = isOtherBrand ? "Other" : selectedBrand;
-    const effectiveModel =
-      isOtherBrand || isOtherModel ? "Other" : selectedModel;
-    const customBrand = isOtherBrand ? otherBrandText : "";
-    const customModel =
-      isOtherBrand || isOtherModel ? otherModelText : "";
-    const estPrice =
-      priceForSelection != null ? priceForSelection : "";
+    const effectiveBrand = isOtherBrand
+      ? (otherBrandText.trim() || "Other brand")
+      : selectedBrand;
 
-    // Build payload matching sheet headers
+    const effectiveModel =
+      isOtherBrand || isOtherModel
+        ? (otherModelText.trim() || "Other model")
+        : selectedModel;
+
+    const estPrice =
+      !isOtherBrand && !isOtherModel && priceForSelection != null
+        ? priceForSelection
+        : "";
+
+    // ⬇⬇ payload المفاتيح هنا نفس أسماء الأعمدة في الشيت / السكريبت ⬇⬇
     const payload = {
       Brand: effectiveBrand,
       Model: effectiveModel,
-      CustomBrand: customBrand,
-      CustomModel: customModel,
+      CustomBrand: isOtherBrand ? (otherBrandText.trim() || "") : "",
+      CustomModel: (isOtherBrand || isOtherModel)
+        ? (otherModelText.trim() || "")
+        : "",
       Issue: issue,
       ScreenQuality: screenQuality || "",
       EstPrice: estPrice,
@@ -233,28 +212,29 @@ function App() {
       ZIP: customer.zip,
       Date: customer.date,
       Time: customer.time,
+      PaymentMethod: customer.paymentMethod,
     };
 
     console.log("📦 Booking payload:", payload);
 
     const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbzuaBizp2AvBP1OnB67qYQFwBEXWlqSIYOi7iJuRtCRyL9mf0qFeA8y0FAGjeklPzOvOw/exec";
+      "https://script.google.com/macros/s/AKfycbxvRvER_ouDa2Jg3cK-0ui2CCTlkuSFAk5a55Ahk3aN6w66n8QaLkWYzQkhZV3edvEjFw/exec";
 
     try {
       await fetch(WEB_APP_URL, {
         method: "POST",
-        mode: "no-cors", // required for Apps Script web apps
+        mode: "no-cors", // مهم مع Apps Script
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
 
-      console.log("✅ Booking sent to Google Sheets");
+      console.log("✅ Sent to Google Sheets");
     } catch (err) {
-      console.error("❌ Error sending data to Google Sheets:", err);
+      console.error("❌ Error sending to Google Sheets:", err);
       alert(
-        "Your booking was submitted on the site, but we had an issue logging it to our sheet. We'll double-check on our side."
+        "We submitted your booking on the site, but had an issue logging it to our sheet. We'll double-check on our side."
       );
     }
 
@@ -262,6 +242,7 @@ function App() {
     setStep(4);
     alert("Booking submitted! Check your Google Sheet for a new row.");
   }
+
 
   const displayBrand = isOtherBrand
     ? otherBrandText || "Custom brand"
