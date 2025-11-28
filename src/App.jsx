@@ -302,6 +302,7 @@ function App() {
         <main className="card">
           {/* Stepper */}
           <div className="steps">
+
             <span className={step >= 1 ? "step active" : "step"}>
               <span className="step-dot">1</span>
               <span className="step-label">Device</span>
@@ -470,100 +471,105 @@ function App() {
             </section>
           )}
 
-          {/* STEP 2 – Issue + Screen quality */}
-          {step === 2 && (
-            <section>
-              <h2>Issue &amp; screen quality</h2>
-              <p>Tell us what’s wrong and how you’d like the screen.</p>
+        {/* STEP 2 – Issue + Screen quality */}
+{step === 2 && (
+  <section>
+    <h2>Issue &amp; screen</h2>
+    <p>Tell us what’s wrong. If it’s a screen repair we’ll show you the screen options.</p>
 
-              <div className="field">
-                <label>Problem</label>
-                <select
-                  value={issue}
-                  onChange={(e) => setIssue(e.target.value)}
-                >
-                  <option value="">Choose issue</option>
-                  {ISSUES.map((i) => (
-                    <option key={i} value={i}>
-                      {i}
-                    </option>
-                  ))}
-                </select>
-              </div>
+    {/* اختيار المشكلة */}
+    <div className="field">
+      <label>Problem</label>
+      <select
+        value={issue}
+        onChange={(e) => setIssue(e.target.value)}
+      >
+        <option value="">Choose issue</option>
+        {ISSUES.map((i) => (
+          <option key={i} value={i}>
+            {i}
+          </option>
+        ))}
+      </select>
+    </div>
 
-              <div className="field">
-                <label>Screen quality preference</label>
-                <div className="quality-box">
-                  {QUALITY_OPTIONS.map((q) => {
-                    const perQualityPrice =
-                      !isOtherBrand &&
-                      !isOtherModel &&
-                      selectedBrand &&
-                      selectedModel &&
-                      SCREEN_PRICING[selectedBrand] &&
-                      SCREEN_PRICING[selectedBrand][selectedModel]
-                        ? SCREEN_PRICING[selectedBrand][selectedModel][q.key]
-                        : null;
+    {/* ❗ إظهار جودة الشاشة فقط عند Screen Replacement */}
+    {issue === "Screen Replacement" && (
+      <div className="field">
+        <label>Screen quality preference</label>
+        <div className="quality-box">
+          {QUALITY_OPTIONS.map((q) => {
+            const perQualityPrice =
+              !isOtherBrand &&
+              !isOtherModel &&
+              selectedBrand &&
+              selectedModel &&
+              SCREEN_PRICING[selectedBrand] &&
+              SCREEN_PRICING[selectedBrand][selectedModel]
+                ? SCREEN_PRICING[selectedBrand][selectedModel][q.key]
+                : null;
 
-                    return (
-                      <label key={q.key}>
-                        <input
-                          type="radio"
-                          name="screenQuality"
-                          value={q.key}
-                          checked={screenQuality === q.key}
-                          onChange={(e) => setScreenQuality(e.target.value)}
-                        />
-                        <span>
-                          <strong>
-                            {q.label} – {q.short}
-                          </strong>
-                          <br />
-                          <span style={{ fontSize: "0.8rem" }}>
-                            {q.description}{" "}
-                            {perQualityPrice != null && (
-                              <>
-                                ·{" "}
-                                <span style={{ color: "#a5b4fc" }}>
-                                  Est. ${perQualityPrice.toFixed(2)}
-                                </span>
-                              </>
-                            )}
-                          </span>
+            return (
+              <label key={q.key}>
+                <input
+                  type="radio"
+                  name="screenQuality"
+                  value={q.key}
+                  checked={screenQuality === q.key}
+                  onChange={(e) => setScreenQuality(e.target.value)}
+                />
+                <span>
+                  <strong>
+                    {q.label} – {q.short}
+                  </strong>
+                  <br />
+                  <span style={{ fontSize: "0.8rem" }}>
+                    {q.description}{" "}
+                    {perQualityPrice != null && (
+                      <>
+                        ·{" "}
+                        <span style={{ color: "#a5b4fc" }}>
+                          Est. ${perQualityPrice.toFixed(2)}
                         </span>
-                      </label>
-                    );
-                  })}
-                </div>
+                      </>
+                    )}
+                  </span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
 
-                {(isOtherBrand || isOtherModel) && (
-                  <p
-                    style={{
-                      fontSize: "0.78rem",
-                      marginTop: "6px",
-                      color: "#9ca3af",
-                    }}
-                  >
-                    Because your phone is custom or not on our list,{" "}
-                    <strong>
-                      we&apos;ll check parts availability and text you your
-                      price
-                    </strong>{" "}
-                    for this screen quality before confirming the job.
-                  </p>
-                )}
-              </div>
+        {(isOtherBrand || isOtherModel) && (
+          <p
+            style={{
+              fontSize: "0.78rem",
+              marginTop: "6px",
+              color: "#9ca3af",
+            }}
+          >
+            Because your phone is custom or not on our list,{" "}
+            <strong>
+              we&apos;ll check parts availability and text you your price
+            </strong>{" "}
+            for this screen quality before confirming the job.
+          </p>
+        )}
+      </div>
+    )}
 
-              <div className="buttons">
-                <button className="btn secondary" onClick={() => setStep(1)}>
-                  Back
-                </button>
-                <button className="btn primary" onClick={handleNextFromStep2}>
-                  Next: Your details
-                </button>
-              </div>
-            </section>
-          )}
+    <div className="buttons">
+      <button className="btn secondary" onClick={() => setStep(1)}>
+        Back
+      </button>
+      <button className="btn primary" onClick={handleNextFromStep2}>
+        Next: Your details
+      </button>
+    </div>
+  </section>
+)}
+
+         
 
           {/* STEP 3 – Customer details */}
           {step === 3 && (
