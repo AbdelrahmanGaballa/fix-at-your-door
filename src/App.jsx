@@ -156,80 +156,112 @@ function App() {
     setCustomer((prev) => ({ ...prev, [name]: value }));
   }
 
-  // 🔥 Send to Google Sheets here
-async function handleSubmit(e) {
-  e.preventDefault();
+  /* ---------- submit & send to Google Sheets ---------- */
 
-  // Basic validation (same as before)
-  if (
-    !selectedBrand ||
-    !selectedModel ||
-    !issue ||
-    !customer.fullName ||
-    !customer.phone ||
-    !customer.address ||
-    !customer.city ||
-    !customer.zip ||
-    !customer.date ||
-    !customer.time
-  ) {
-    alert("Please fill in all required fields (marked with *).");
-    return;
+  async function handleSubmit(e) {
+    e.preventDefault();
+    console.log("✅ handleSubmit fired");
+
+    // Extra validation
+    if (!selectedBrand) {
+      alert("Please select a brand in step 1.");
+      setStep(1);
+      return;
+    }
+
+    if (!isOtherBrand && !selectedModel) {
+      alert("Please select a model in step 1.");
+      setStep(1);
+      return;
+    }
+
+    if (isOtherBrand) {
+      if (!otherBrandText.trim() || !otherModelText.trim()) {
+        alert("Please fill brand & model in step 1.");
+        setStep(1);
+        return;
+      }
+    } else if (isOtherModel && !otherModelText.trim()) {
+      alert("Please type your phone model in step 1.");
+      setStep(1);
+      return;
+    }
+
+    if (!issue) {
+      alert("Please select an issue in step 2.");
+      setStep(2);
+      return;
+    }
+
+    if (
+      !customer.fullName ||
+      !customer.phone ||
+      !customer.address ||
+      !customer.city ||
+      !customer.zip ||
+      !customer.date ||
+      !customer.time
+    ) {
+      alert("Please fill in all required fields (marked with *).");
+      return;
+    }
+
+    // Values for sheet
+    const effectiveBrand = isOtherBrand ? "Other" : selectedBrand;
+    const effectiveModel =
+      isOtherBrand || isOtherModel ? "Other" : selectedModel;
+    const customBrand = isOtherBrand ? otherBrandText : "";
+    const customModel =
+      isOtherBrand || isOtherModel ? otherModelText : "";
+    const estPrice =
+      priceForSelection != null ? priceForSelection : "";
+
+    // Build payload matching sheet headers
+    const payload = {
+      Brand: effectiveBrand,
+      Model: effectiveModel,
+      CustomBrand: customBrand,
+      CustomModel: customModel,
+      Issue: issue,
+      ScreenQuality: screenQuality || "",
+      EstPrice: estPrice,
+      FullName: customer.fullName,
+      Phone: customer.phone,
+      Email: customer.email,
+      Address: customer.address,
+      City: customer.city,
+      ZIP: customer.zip,
+      Date: customer.date,
+      Time: customer.time,
+    };
+
+    console.log("📦 Booking payload:", payload);
+
+    const WEB_APP_URL =
+      "https://script.google.com/macros/s/AKfycbzuaBizp2AvBP1OnB67qYQFwBEXWlqSIYOi7iJuRtCRyL9mf0qFeA8y0FAGjeklPzOvOw/exec";
+
+    try {
+      await fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors", // required for Apps Script web apps
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      console.log("✅ Booking sent to Google Sheets");
+    } catch (err) {
+      console.error("❌ Error sending data to Google Sheets:", err);
+      alert(
+        "Your booking was submitted on the site, but we had an issue logging it to our sheet. We'll double-check on our side."
+      );
+    }
+
+    setSubmitted(true);
+    setStep(4);
+    alert("Booking submitted! Check your Google Sheet for a new row.");
   }
-
-  // Build the payload we send to Google Apps Script
-  const payload = {
-    device: {
-      brand: selectedBrand,
-      model: selectedModel,
-      customBrandText:
-        selectedBrand === "Other" ? customBrandText || "" : "",
-      customModelText:
-        selectedModel === "Other" ? customModelText || "" : "",
-    },
-    issue,
-    screenQuality,
-    estimatedPrice, // can be a number or null / "TBD"
-    customer: {
-      fullName: customer.fullName,
-      phone: customer.phone,
-      email: customer.email,
-      address: customer.address,
-      city: customer.city,
-      zip: customer.zip,
-      date: customer.date,
-      time: customer.time,
-      paymentMethod: customer.paymentMethod,
-    },
-  };
-
-  // Your new Web App URL
-  const WEB_APP_URL =
-    "https://script.google.com/macros/s/AKfycbzuaBizp2AvBP1OnB67qYQFwBEXWlqSIYOi7iJuRtCRyL9mf0qFeA8y0FAGjeklPzOvOw/exec";
-
-  try {
-    // Fire-and-forget request (no-cors, so we don't wait for response body)
-    await fetch(WEB_APP_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    console.log("Booking sent to Google Sheets:", payload);
-  } catch (err) {
-    console.error("Error sending data to Google Sheets:", err);
-    // Optional: show a soft warning but still show confirmation
-    // alert("We submitted your booking, but there was an issue logging it. We'll double-check on our side.");
-  }
-
-  // Show confirmation step on the website
-  setSubmitted(true);
-  setStep(4);
-}
-
 
   const displayBrand = isOtherBrand
     ? otherBrandText || "Custom brand"
