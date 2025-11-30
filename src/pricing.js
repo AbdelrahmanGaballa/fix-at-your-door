@@ -40,3 +40,37 @@ export const SCREEN_PRICING = {
     // "Pixel 7": { aftermarket: 115, premium: 175 },
   },
 };
+// src/pricing.js
+
+// ... your existing SCREEN_PRICING stays exactly as it is
+
+export const BATTERY_PRICING = {
+  Apple: {
+    "iPhone 8": 70,
+    "iPhone 8 Plus": 71,
+    "iPhone X": 73,
+    "iPhone XR": 73,
+    "iPhone XS": 75,
+    "iPhone XS Max": 75,
+    "iPhone 11": 78,
+    "iPhone 11 Pro": 79,
+    "iPhone 11 Pro Max": 79,
+    "iPhone 12": 78,
+    "iPhone 12 Pro": 78,
+    "iPhone 12 Pro Max": 80,
+    "iPhone 13": 78,
+    "iPhone 13 Pro": 78,
+    "iPhone 13 Pro Max": 82,
+    "iPhone 14": 80,
+    "iPhone 14 Pro": 80,
+    "iPhone 14 Pro Max": 84,
+    "iPhone 15": 80,
+    "iPhone 15 Pro": 80,
+    "iPhone 15 Plus": 80,
+    "iPhone 15 Pro Max": 84,
+    "iPhone 16": 85,
+    "iPhone 16 Pro": 85,
+    "iPhone 16 Plus": 85,
+    "iPhone 16 Pro Max": 90,
+  },
+};

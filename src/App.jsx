@@ -1,9 +1,9 @@
 // src/App.jsx
-import { useState, useRef, useEffect } from "react";
+import { useRef, useState } from "react";
 import logo3 from "./assets/logo3.png";
-import "./App.css";
-import { SCREEN_PRICING } from "./pricing";
 import tapSound from "./assets/audio/ui-tap.mp3";
+import "./App.css";
+import { SCREEN_PRICING, BATTERY_PRICING } from "./pricing";
 
 // Brand / model list for dropdown
 const PHONE_DATA = [
@@ -27,9 +27,11 @@ const PHONE_DATA = [
       "iPhone 13 Pro Max",
       "iPhone 14",
       "iPhone 14 Plus",
+      "iPhone 14 Pro",
       "iPhone 14 Pro Max",
       "iPhone 15",
       "iPhone 15 Plus",
+      "iPhone 15 Pro",
       "iPhone 15 Pro Max",
       "iPhone 16",
       "iPhone 16 Plus",
@@ -50,7 +52,7 @@ const PHONE_DATA = [
 const ISSUES = ["Screen Replacement", "Battery Replacement", "Not sure / Other"];
 const PAYMENT_METHODS = ["Zelle", "Cash"];
 
-// ✅ Only 2 qualities now
+// Only 2 screen qualities now
 const QUALITY_OPTIONS = [
   {
     key: "aftermarket",
@@ -74,7 +76,6 @@ function App() {
   const [issue, setIssue] = useState("");
   const [screenQuality, setScreenQuality] = useState("aftermarket");
 
-  // For custom brand / model text
   const [otherBrandText, setOtherBrandText] = useState("");
   const [otherModelText, setOtherModelText] = useState("");
 
@@ -92,6 +93,35 @@ function App() {
 
   const [submitted, setSubmitted] = useState(false);
 
+  // smooth scroll to booking + audio tap
+  const bookingRef = useRef(null);
+
+  // audio element ref for tap sound
+  const audioRef = useRef(null);
+
+  const playTap = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    try {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleHeroBook = () => {
+    playTap();
+    setSubmitted(false);
+    setStep(1);
+    if (bookingRef.current) {
+      bookingRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   const isOtherBrand = selectedBrand === "__otherBrand";
   const isOtherModel = selectedModel === "__other";
 
@@ -99,52 +129,41 @@ function App() {
     ? PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || []
     : [];
 
-  // ---------- pricing helpers ----------
+  // ---------- pricing helpers (screens + battery) ----------
+
   const hasKnownDevice =
     !isOtherBrand &&
     !isOtherModel &&
     selectedBrand &&
     selectedModel &&
-    SCREEN_PRICING[selectedBrand] &&
-    SCREEN_PRICING[selectedBrand][selectedModel];
+    ((SCREEN_PRICING[selectedBrand] &&
+      SCREEN_PRICING[selectedBrand][selectedModel]) ||
+      (BATTERY_PRICING[selectedBrand] &&
+        BATTERY_PRICING[selectedBrand][selectedModel]));
 
-  const rawPrice =
-    hasKnownDevice && issue === "Screen Replacement"
-      ? SCREEN_PRICING[selectedBrand][selectedModel][screenQuality] ?? null
-      : null;
+  let rawPrice = null;
+
+  if (hasKnownDevice) {
+    if (issue === "Screen Replacement") {
+      const screenPricing = SCREEN_PRICING[selectedBrand]?.[selectedModel];
+      if (screenPricing) {
+        rawPrice = screenPricing[screenQuality] ?? null;
+      }
+    } else if (issue === "Battery Replacement") {
+      const batteryPricing = BATTERY_PRICING[selectedBrand]?.[selectedModel];
+      if (batteryPricing != null) {
+        rawPrice = batteryPricing;
+      }
+    }
+  }
 
   const priceForSelection = rawPrice;
-
-  // ---------- smooth scroll to booking ----------
-  const bookingRef = useRef(null);
-
-  const scrollToBooking = () => {
-    if (!bookingRef.current) return;
-    bookingRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
-
-  // ---------- tap sound on CTA ----------
-  const tapAudioRef = useRef(null);
-
-  useEffect(() => {
-    tapAudioRef.current = new Audio(tapSound);
-    tapAudioRef.current.volume = 0.6;
-  }, []);
-
-  const playTap = () => {
-    if (!tapAudioRef.current) return;
-    tapAudioRef.current.currentTime = 0;
-    tapAudioRef.current.play().catch(() => {
-      // ignore autoplay errors
-    });
-  };
 
   // ---------- step handlers ----------
 
   function handleNextFromStep1() {
+    playTap();
+
     if (!selectedBrand) {
       alert("Please select a brand.");
       return;
@@ -173,6 +192,7 @@ function App() {
   }
 
   function handleNextFromStep2() {
+    playTap();
     if (!issue) {
       alert("Please select an issue.");
       return;
@@ -189,6 +209,7 @@ function App() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    playTap();
     console.log("✅ handleSubmit fired");
 
     if (
@@ -219,10 +240,14 @@ function App() {
     const effectiveScreenQuality =
       issue === "Screen Replacement" ? screenQuality : "";
 
-    const estPrice =
-      issue === "Screen Replacement" && priceForSelection != null
-        ? priceForSelection
-        : "";
+    // use same computed price for both screen & battery when known
+    let estPrice = "";
+    if (
+      priceForSelection != null &&
+      (issue === "Screen Replacement" || issue === "Battery Replacement")
+    ) {
+      estPrice = priceForSelection;
+    }
 
     const payload = {
       Brand: effectiveBrand,
@@ -284,6 +309,9 @@ function App() {
 
   return (
     <div className="app">
+      {/* hidden audio element used for UI tap sound */}
+      <audio ref={audioRef} src={tapSound} preload="auto" />
+
       <div className="shell">
         {/* LEFT – HERO */}
         <header className="header">
@@ -312,15 +340,7 @@ function App() {
             </div>
 
             <div className="hero-btn-row">
-              <button
-                className="btn primary"
-                onClick={() => {
-                  playTap();
-                  setSubmitted(false);
-                  setStep(1);
-                  scrollToBooking();
-                }}
-              >
+              <button className="btn primary" onClick={handleHeroBook}>
                 Book a repair
               </button>
               <span className="hero-note">No upfront payment required.</span>
@@ -500,7 +520,7 @@ function App() {
             </section>
           )}
 
-          {/* STEP 2 – Issue + Screen quality */}
+          {/* STEP 2 – Issue + Screen/Battery info */}
           {step === 2 && (
             <section>
               <h2>Issue &amp; screen</h2>
@@ -533,7 +553,7 @@ function App() {
                     {QUALITY_OPTIONS.map((q) => {
                       const perQualityPrice =
                         hasKnownDevice &&
-                        SCREEN_PRICING[selectedBrand][selectedModel][q.key];
+                        SCREEN_PRICING[selectedBrand]?.[selectedModel]?.[q.key];
 
                       return (
                         <label key={q.key}>
@@ -585,8 +605,38 @@ function App() {
                 </div>
               )}
 
+              {/* Battery price hint */}
+              {issue === "Battery Replacement" && (
+                <div className="info-box">
+                  {priceForSelection != null ? (
+                    <p>
+                      Estimated total for{" "}
+                      <strong>battery replacement</strong> on your{" "}
+                      <strong>
+                        {displayBrand} {displayModel}
+                      </strong>
+                      :{" "}
+                      <strong>${priceForSelection.toFixed(2)}</strong> (parts +
+                      labor).
+                    </p>
+                  ) : (
+                    <p>
+                      Once we check the exact battery for your model,{" "}
+                      <strong>we&apos;ll text you the final price</strong>{" "}
+                      before confirming anything.
+                    </p>
+                  )}
+                </div>
+              )}
+
               <div className="buttons">
-                <button className="btn secondary" onClick={() => setStep(1)}>
+                <button
+                  className="btn secondary"
+                  onClick={() => {
+                    playTap();
+                    setStep(1);
+                  }}
+                >
                   Back
                 </button>
                 <button className="btn primary" onClick={handleNextFromStep2}>
@@ -710,7 +760,10 @@ function App() {
                   <button
                     type="button"
                     className="btn secondary"
-                    onClick={() => setStep(2)}
+                    onClick={() => {
+                      playTap();
+                      setStep(2);
+                    }}
                   >
                     Back
                   </button>
@@ -751,6 +804,7 @@ function App() {
                 Payment method: <strong>{customer.paymentMethod}</strong>
               </p>
 
+              {/* Screen price summary */}
               {issue === "Screen Replacement" && (
                 <>
                   <p>
@@ -782,6 +836,24 @@ function App() {
                 </>
               )}
 
+              {/* Battery price summary */}
+              {issue === "Battery Replacement" && (
+                <>
+                  {priceForSelection != null ? (
+                    <p>
+                      Estimated total for your battery replacement:{" "}
+                      <strong>${priceForSelection.toFixed(2)}</strong> (parts +
+                      labor).
+                    </p>
+                  ) : (
+                    <p>
+                      We&apos;ll confirm the exact battery price for your model
+                      and text you before starting any work.
+                    </p>
+                  )}
+                </>
+              )}
+
               {customer.paymentMethod === "Zelle" && (
                 <div className="info-box">
                   <p>
@@ -799,9 +871,9 @@ function App() {
                 <button
                   className="btn secondary"
                   onClick={() => {
+                    playTap();
                     setSubmitted(false);
                     setStep(1);
-                    scrollToBooking();
                   }}
                 >
                   Book another repair
@@ -812,46 +884,123 @@ function App() {
         </main>
       </div>
 
-      {/* Info strip under cards */}
+      {/* ====== Info cards row ====== */}
       <section className="info-grid">
-        <article className="info-card">
+        <div className="info-card">
           <h3>How Fix@YourDoor works</h3>
           <ol>
-            <li>Choose your phone, issue &amp; preferred screen quality.</li>
+            <li>
+              Choose your phone, issue & preferred screen or battery option.
+            </li>
             <li>Pick a time and enter your address.</li>
             <li>Our tech comes to your door and fixes it on-site.</li>
           </ol>
           <p className="info-small">
-            You only pay after the job is done and you&apos;re happy.
+            You only pay after the job is done and you're happy.
           </p>
-        </article>
+        </div>
 
-        <article className="info-card">
+        <div className="info-card">
           <h3>What we fix</h3>
           <ul>
             <li>✅ Cracked or broken screens</li>
             <li>✅ Weak or dead batteries</li>
-            <li>✅ Charging issues &amp; basic diagnostics</li>
+            <li>✅ Charging issues & basic diagnostics</li>
           </ul>
           <p className="info-small">
-            Not sure what&apos;s wrong? Choose{" "}
-            <strong>“Not sure / Other”</strong> and we&apos;ll help you figure
-            it out.
+            Not sure what's wrong? Choose <strong>“Not sure / Other”</strong>{" "}
+            and we'll help you figure it out.
           </p>
-        </article>
+        </div>
 
-        <article className="info-card">
+        <div className="info-card">
           <h3>Why people love Fix@YourDoor</h3>
           <ul>
-            <li>No waiting in repair shops</li>
-            <li>Upfront pricing with parts + labor included</li>
-            <li>Pay with Zelle or cash after the job is done</li>
+            <li>🚗 No driving, no waiting rooms – we come to you.</li>
+            <li>💸 Upfront pricing with parts + labor included.</li>
+            <li>💳 Pay with Zelle or cash after the job is done.</li>
           </ul>
-        </article>
+        </div>
+      </section>
+
+      {/* ====== Comparison: shop vs Fix@YourDoor ====== */}
+      <section className="compare-section" id="compare">
+        <div className="compare-card">
+          <h2>Typical repair shop vs Fix@YourDoor</h2>
+          <p className="compare-intro">
+            Same goal – a working phone. But the experience is very different.
+          </p>
+
+          <div className="compare-table">
+            <div className="compare-header">What it's like</div>
+            <div className="compare-header">Typical repair shop</div>
+            <div className="compare-header">Fix@YourDoor</div>
+
+            <div className="compare-label">Getting there</div>
+            <div className="compare-cell bad">
+              🚗 Drive across town & wait in line
+            </div>
+            <div className="compare-cell good">
+              🏠 We come to your home or office
+            </div>
+
+            <div className="compare-label">Time without your phone</div>
+            <div className="compare-cell bad">
+              ⏳ Leave your phone for hours or days
+            </div>
+            <div className="compare-cell good">
+              ⚡ Most repairs done in under 1 hour
+            </div>
+
+            <div className="compare-label">Pricing clarity</div>
+            <div className="compare-cell bad">
+              💸 Pricing often not clear up-front
+            </div>
+            <div className="compare-cell good">
+              ✅ Upfront price includes parts + labor
+            </div>
+
+            <div className="compare-label">Scheduling</div>
+            <div className="compare-cell bad">
+              📅 You work around their schedule
+            </div>
+            <div className="compare-cell good">
+              🕒 You choose the time that works for you
+            </div>
+
+            <div className="compare-label">When you pay</div>
+            <div className="compare-cell bad">
+              💳 Pay before you know if you're happy
+            </div>
+            <div className="compare-cell good">
+              🤝 Pay only after the job is done & you're happy
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ====== Compact feature strip ====== */}
+      <section className="extra-features">
+        <div className="feature-pill">
+          <h4>We come to you</h4>
+          <p>No driving, no waiting rooms. We fix it at your door.</p>
+        </div>
+        <div className="feature-pill">
+          <h4>Same-day slots</h4>
+          <p>Many repairs done in under an hour once we arrive.</p>
+        </div>
+        <div className="feature-pill">
+          <h4>Simple communication</h4>
+          <p>We text you before arriving & after we finish the job.</p>
+        </div>
+        <div className="feature-pill">
+          <h4>Parts + labor included</h4>
+          <p>Transparent prices – no surprise fees at the door.</p>
+        </div>
       </section>
 
       <footer className="footer">
-        <p>© {new Date().getFullYear()} Fix@YourDoor. All rights reserved.</p>
+        © 2025 Fix@YourDoor. All rights reserved.
       </footer>
     </div>
   );
