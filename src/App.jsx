@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import logo3 from "./assets/logo3.png";
 import "./App.css";
 import { SCREEN_PRICING } from "./pricing";
@@ -48,34 +48,30 @@ const PHONE_DATA = [
 const ISSUES = ["Screen Replacement", "Battery Replacement", "Not sure / Other"];
 const PAYMENT_METHODS = ["Zelle", "Cash"];
 
+// Only 2 qualities now
 const QUALITY_OPTIONS = [
   {
-    key: "q7",
-    label: "Q7 Soft",
-    short: "Great value",
-    description: "High quality aftermarket – best balance of price & quality.",
-  },
-  {
-    key: "q8",
-    label: "Q8 Soft",
-    short: "Premium aftermarket",
-    description: "Brighter & smoother feel vs Q7. Great for heavy users.",
+    key: "aftermarket",
+    label: "Aftermarket",
+    short: "Budget-friendly",
+    description: "Good quality replacement screen – best value for money.",
   },
   {
     key: "premium",
-    label: "Premium OEM",
+    label: "Premium",
     short: "Closest to original",
-    description: "Best color & brightness. Closest to factory quality.",
+    description: "Best color & brightness. Closest to factory screen.",
   },
 ];
 
 function App() {
+  const formRef = useRef(null);
   const [step, setStep] = useState(1);
 
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [issue, setIssue] = useState("");
-  const [screenQuality, setScreenQuality] = useState("q7");
+  const [screenQuality, setScreenQuality] = useState("aftermarket");
 
   // For custom brand / model text
   const [otherBrandText, setOtherBrandText] = useState("");
@@ -102,18 +98,23 @@ function App() {
     ? PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || []
     : [];
 
-  // Only show price when brand & model are known (not "other")
-  const priceForSelection =
+  // ---------- pricing helpers ----------
+  const hasKnownDevice =
     !isOtherBrand &&
     !isOtherModel &&
     selectedBrand &&
     selectedModel &&
     SCREEN_PRICING[selectedBrand] &&
-    SCREEN_PRICING[selectedBrand][selectedModel]
+    SCREEN_PRICING[selectedBrand][selectedModel];
+
+  const rawPrice =
+    hasKnownDevice && issue === "Screen Replacement"
       ? SCREEN_PRICING[selectedBrand][selectedModel][screenQuality] ?? null
       : null;
 
-  /* ---------- step handlers ---------- */
+  const priceForSelection = rawPrice;
+
+  // ---------- step handlers ----------
 
   function handleNextFromStep1() {
     if (!selectedBrand) {
@@ -156,13 +157,12 @@ function App() {
     setCustomer((prev) => ({ ...prev, [name]: value }));
   }
 
-  /* ---------- submit & send to Google Sheets ---------- */
+  // ---------- submit & send to Google Sheets ----------
 
-    async function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     console.log("✅ handleSubmit fired");
 
-    // Validation
     if (
       !selectedBrand ||
       (!isOtherBrand && !selectedModel) ||
@@ -180,29 +180,30 @@ function App() {
     }
 
     const effectiveBrand = isOtherBrand
-      ? (otherBrandText.trim() || "Other brand")
+      ? otherBrandText.trim() || "Other brand"
       : selectedBrand;
 
     const effectiveModel =
       isOtherBrand || isOtherModel
-        ? (otherModelText.trim() || "Other model")
+        ? otherModelText.trim() || "Other model"
         : selectedModel;
 
+    const effectiveScreenQuality =
+      issue === "Screen Replacement" ? screenQuality : "";
+
     const estPrice =
-      !isOtherBrand && !isOtherModel && priceForSelection != null
+      issue === "Screen Replacement" && priceForSelection != null
         ? priceForSelection
         : "";
 
-    // ⬇⬇ payload المفاتيح هنا نفس أسماء الأعمدة في الشيت / السكريبت ⬇⬇
     const payload = {
       Brand: effectiveBrand,
       Model: effectiveModel,
-      CustomBrand: isOtherBrand ? (otherBrandText.trim() || "") : "",
-      CustomModel: (isOtherBrand || isOtherModel)
-        ? (otherModelText.trim() || "")
-        : "",
+      CustomBrand: isOtherBrand ? otherBrandText.trim() || "" : "",
+      CustomModel:
+        isOtherBrand || isOtherModel ? otherModelText.trim() || "" : "",
       Issue: issue,
-      ScreenQuality: screenQuality || "",
+      ScreenQuality: effectiveScreenQuality,
       EstPrice: estPrice,
       FullName: customer.fullName,
       Phone: customer.phone,
@@ -223,7 +224,7 @@ function App() {
     try {
       await fetch(WEB_APP_URL, {
         method: "POST",
-        mode: "no-cors", // مهم مع Apps Script
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },
@@ -234,15 +235,14 @@ function App() {
     } catch (err) {
       console.error("❌ Error sending to Google Sheets:", err);
       alert(
-        "We submitted your booking on the site, but had an issue logging it to our sheet. We'll double-check on our side."
+        "We submitted your booking on the site, but had an issue logging it to our sheet."
       );
     }
 
     setSubmitted(true);
     setStep(4);
-    alert("Booking submitted! Check your Google Sheet for a new row.");
+   
   }
-
 
   const displayBrand = isOtherBrand
     ? otherBrandText || "Custom brand"
@@ -252,7 +252,7 @@ function App() {
       ? otherModelText || "Custom model"
       : selectedModel;
 
-  /* ---------- JSX ---------- */
+  // ---------- JSX ----------
 
   return (
     <div className="app">
@@ -284,25 +284,41 @@ function App() {
             </div>
 
             <div className="hero-btn-row">
-              <button
-                className="btn primary"
-                onClick={() => {
-                  setSubmitted(false);
-                  setStep(1);
-                }}
-              >
-                Book a repair
-              </button>
+            <button
+  className="btn primary"
+  onClick={() => {
+    // reset
+    setSubmitted(false);
+    setStep(1);
+
+    if (formRef.current) {
+      // smooth scroll to the booking card
+      formRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      // add a temporary glow effect
+      formRef.current.classList.add("card-highlight");
+      setTimeout(() => {
+        formRef.current?.classList.remove("card-highlight");
+      }, 900); // duration matches CSS animation
+    }
+  }}
+>
+  Book a repair
+</button>
+
               <span className="hero-note">No upfront payment required.</span>
             </div>
           </div>
         </header>
 
         {/* RIGHT – FORM CARD */}
-        <main className="card">
+       <main className="card" ref={formRef}>
+
           {/* Stepper */}
           <div className="steps">
-
             <span className={step >= 1 ? "step active" : "step"}>
               <span className="step-dot">1</span>
               <span className="step-label">Device</span>
@@ -424,7 +440,7 @@ function App() {
                 </>
               )}
 
-              {/* FIELDS WHEN BRAND IS NORMAL BUT MODEL = OTHER */}
+              {/* FIELDS WHEN BRAND NORMAL BUT MODEL = OTHER */}
               {!isOtherBrand && isOtherModel && (
                 <>
                   <div className="field">
@@ -471,105 +487,101 @@ function App() {
             </section>
           )}
 
-        {/* STEP 2 – Issue + Screen quality */}
-{step === 2 && (
-  <section>
-    <h2>Issue &amp; screen</h2>
-    <p>Tell us what’s wrong. If it’s a screen repair we’ll show you the screen options.</p>
+          {/* STEP 2 – Issue + Screen quality */}
+          {step === 2 && (
+            <section>
+              <h2>Issue &amp; screen</h2>
+              <p>
+                Tell us what’s wrong. If it’s a screen repair we’ll show you the
+                screen options.
+              </p>
 
-    {/* اختيار المشكلة */}
-    <div className="field">
-      <label>Problem</label>
-      <select
-        value={issue}
-        onChange={(e) => setIssue(e.target.value)}
-      >
-        <option value="">Choose issue</option>
-        {ISSUES.map((i) => (
-          <option key={i} value={i}>
-            {i}
-          </option>
-        ))}
-      </select>
-    </div>
+              {/* ISSUE */}
+              <div className="field">
+                <label>Problem</label>
+                <select
+                  value={issue}
+                  onChange={(e) => setIssue(e.target.value)}
+                >
+                  <option value="">Choose issue</option>
+                  {ISSUES.map((i) => (
+                    <option key={i} value={i}>
+                      {i}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-    {/* ❗ إظهار جودة الشاشة فقط عند Screen Replacement */}
-    {issue === "Screen Replacement" && (
-      <div className="field">
-        <label>Screen quality preference</label>
-        <div className="quality-box">
-          {QUALITY_OPTIONS.map((q) => {
-            const perQualityPrice =
-              !isOtherBrand &&
-              !isOtherModel &&
-              selectedBrand &&
-              selectedModel &&
-              SCREEN_PRICING[selectedBrand] &&
-              SCREEN_PRICING[selectedBrand][selectedModel]
-                ? SCREEN_PRICING[selectedBrand][selectedModel][q.key]
-                : null;
+              {/* Screen quality only for Screen Replacement */}
+              {issue === "Screen Replacement" && (
+                <div className="field">
+                  <label>Screen quality preference</label>
+                  <div className="quality-box">
+                    {QUALITY_OPTIONS.map((q) => {
+                      const perQualityPrice =
+                        hasKnownDevice &&
+                        SCREEN_PRICING[selectedBrand][selectedModel][q.key];
 
-            return (
-              <label key={q.key}>
-                <input
-                  type="radio"
-                  name="screenQuality"
-                  value={q.key}
-                  checked={screenQuality === q.key}
-                  onChange={(e) => setScreenQuality(e.target.value)}
-                />
-                <span>
-                  <strong>
-                    {q.label} – {q.short}
-                  </strong>
-                  <br />
-                  <span style={{ fontSize: "0.8rem" }}>
-                    {q.description}{" "}
-                    {perQualityPrice != null && (
-                      <>
-                        ·{" "}
-                        <span style={{ color: "#a5b4fc" }}>
-                          Est. ${perQualityPrice.toFixed(2)}
-                        </span>
-                      </>
-                    )}
-                  </span>
-                </span>
-              </label>
-            );
-          })}
-        </div>
+                      return (
+                        <label key={q.key}>
+                          <input
+                            type="radio"
+                            name="screenQuality"
+                            value={q.key}
+                            checked={screenQuality === q.key}
+                            onChange={(e) => setScreenQuality(e.target.value)}
+                          />
+                          <span>
+                            <strong>
+                              {q.label} – {q.short}
+                            </strong>
+                            <br />
+                            <span style={{ fontSize: "0.8rem" }}>
+                              {q.description}{" "}
+                              {perQualityPrice != null && (
+                                <>
+                                  ·{" "}
+                                  <span style={{ color: "#a5b4fc" }}>
+                                    Est. ${perQualityPrice.toFixed(2)}
+                                  </span>
+                                </>
+                              )}
+                            </span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
 
-        {(isOtherBrand || isOtherModel) && (
-          <p
-            style={{
-              fontSize: "0.78rem",
-              marginTop: "6px",
-              color: "#9ca3af",
-            }}
-          >
-            Because your phone is custom or not on our list,{" "}
-            <strong>
-              we&apos;ll check parts availability and text you your price
-            </strong>{" "}
-            for this screen quality before confirming the job.
-          </p>
-        )}
-      </div>
-    )}
+                  {(isOtherBrand || isOtherModel) && (
+                    <p
+                      style={{
+                        fontSize: "0.78rem",
+                        marginTop: "6px",
+                        color: "#9ca3af",
+                      }}
+                    >
+                      Because your phone is custom or not on our list,{" "}
+                      <strong>
+                        we&apos;ll check parts availability and text you your
+                        price
+                      </strong>{" "}
+                      for this screen quality before confirming the job.
+                    </p>
+                  )}
+                </div>
+              )}
 
-    <div className="buttons">
-      <button className="btn secondary" onClick={() => setStep(1)}>
-        Back
-      </button>
-      <button className="btn primary" onClick={handleNextFromStep2}>
-        Next: Your details
-      </button>
-    </div>
-  </section>
-)}
-
-         
+              <div className="buttons">
+                <button className="btn secondary" onClick={() => setStep(1)}>
+                  Back
+                </button>
+                <button className="btn primary" onClick={handleNextFromStep2}>
+                  Next: Your details
+                </button>
+              </div>
+            </section>
+          )}
 
           {/* STEP 3 – Customer details */}
           {step === 3 && (
@@ -726,29 +738,35 @@ function App() {
                 Payment method: <strong>{customer.paymentMethod}</strong>
               </p>
 
-              <p>
-                Screen quality chosen:{" "}
-                <strong>
-                  {
-                    QUALITY_OPTIONS.find((q) => q.key === screenQuality)?.label
-                  }
-                </strong>
-              </p>
+              {issue === "Screen Replacement" && (
+                <>
+                  <p>
+                    Screen quality chosen:{" "}
+                    <strong>
+                      {
+                        QUALITY_OPTIONS.find((q) => q.key === screenQuality)
+                          ?.label
+                      }
+                    </strong>
+                  </p>
 
-              {priceForSelection != null ? (
-                <p>
-                  Estimated total for your screen replacement:{" "}
-                  <strong>${priceForSelection.toFixed(2)}</strong> (parts +
-                  labor).
-                </p>
-              ) : (
-                <p>
-                  Because your phone is custom or not on our list,{" "}
-                  <strong>
-                    we&apos;ll text you back with price &amp; parts availability
-                  </strong>{" "}
-                  for your chosen screen quality before confirming the job.
-                </p>
+                  {priceForSelection != null ? (
+                    <p>
+                      Estimated total for your screen replacement:{" "}
+                      <strong>${priceForSelection.toFixed(2)}</strong> (parts +
+                      labor).
+                    </p>
+                  ) : (
+                    <p>
+                      Because your phone is custom or not on our list,{" "}
+                      <strong>
+                        we&apos;ll text you back with price &amp; parts
+                        availability
+                      </strong>{" "}
+                      for your chosen screen quality before confirming the job.
+                    </p>
+                  )}
+                </>
               )}
 
               {customer.paymentMethod === "Zelle" && (
@@ -802,8 +820,9 @@ function App() {
             <li>✅ Charging issues &amp; basic diagnostics</li>
           </ul>
           <p className="info-small">
-            Not sure what&apos;s wrong? Choose <strong>“Not sure / Other”</strong>{" "}
-            and we&apos;ll help you figure it out.
+            Not sure what&apos;s wrong? Choose{" "}
+            <strong>“Not sure / Other”</strong> and we&apos;ll help you figure
+            it out.
           </p>
         </article>
 
