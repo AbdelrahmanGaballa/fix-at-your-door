@@ -1,10 +1,11 @@
 // src/App.jsx
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import logo3 from "./assets/logo3.png";
 import "./App.css";
 import { SCREEN_PRICING } from "./pricing";
 import tapSound from "./assets/audio/ui-tap.mp3";
 
+// Brand / model list for dropdown
 const PHONE_DATA = [
   {
     brand: "Apple",
@@ -47,9 +48,9 @@ const PHONE_DATA = [
 ];
 
 const ISSUES = ["Screen Replacement", "Battery Replacement", "Not sure / Other"];
-
 const PAYMENT_METHODS = ["Zelle", "Cash"];
 
+// ✅ Only 2 qualities now
 const QUALITY_OPTIONS = [
   {
     key: "aftermarket",
@@ -73,6 +74,7 @@ function App() {
   const [issue, setIssue] = useState("");
   const [screenQuality, setScreenQuality] = useState("aftermarket");
 
+  // For custom brand / model text
   const [otherBrandText, setOtherBrandText] = useState("");
   const [otherModelText, setOtherModelText] = useState("");
 
@@ -90,18 +92,6 @@ function App() {
 
   const [submitted, setSubmitted] = useState(false);
 
-  // 🔊 tiny step “tap” sound (place ui-tap.mp3 in /public)
-  const [tapSound] = useState(() => {
-    try {
-      return new Audio("/ui-tap.mp3");
-    } catch (e) {
-      return null;
-    }
-  });
-
-  // 💸 animated “calculating price” state
-  const [isCalculatingPrice, setIsCalculatingPrice] = useState(false);
-
   const isOtherBrand = selectedBrand === "__otherBrand";
   const isOtherModel = selectedModel === "__other";
 
@@ -109,6 +99,7 @@ function App() {
     ? PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || []
     : [];
 
+  // ---------- pricing helpers ----------
   const hasKnownDevice =
     !isOtherBrand &&
     !isOtherModel &&
@@ -124,32 +115,34 @@ function App() {
 
   const priceForSelection = rawPrice;
 
-  // 🔊 play soft click whenever step changes
-  useEffect(() => {
-    if (!tapSound) return;
-    try {
-      tapSound.currentTime = 0;
-      tapSound.volume = 0.25;
-      tapSound.play().catch(() => {});
-    } catch {
-      /* ignore */
-    }
-  }, [step, tapSound]);
+  // ---------- smooth scroll to booking ----------
+  const bookingRef = useRef(null);
 
-  // 💸 fake "calculating…" delay when we have a known device & screen issue
+  const scrollToBooking = () => {
+    if (!bookingRef.current) return;
+    bookingRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  // ---------- tap sound on CTA ----------
+  const tapAudioRef = useRef(null);
+
   useEffect(() => {
-    if (
-      issue === "Screen Replacement" &&
-      hasKnownDevice &&
-      selectedBrand &&
-      selectedModel
-    ) {
-      setIsCalculatingPrice(true);
-      const id = setTimeout(() => setIsCalculatingPrice(false), 500);
-      return () => clearTimeout(id);
-    }
-    setIsCalculatingPrice(false);
-  }, [issue, hasKnownDevice, selectedBrand, selectedModel, screenQuality]);
+    tapAudioRef.current = new Audio(tapSound);
+    tapAudioRef.current.volume = 0.6;
+  }, []);
+
+  const playTap = () => {
+    if (!tapAudioRef.current) return;
+    tapAudioRef.current.currentTime = 0;
+    tapAudioRef.current.play().catch(() => {
+      // ignore autoplay errors
+    });
+  };
+
+  // ---------- step handlers ----------
 
   function handleNextFromStep1() {
     if (!selectedBrand) {
@@ -192,8 +185,11 @@ function App() {
     setCustomer((prev) => ({ ...prev, [name]: value }));
   }
 
+  // ---------- submit & send to Google Sheets ----------
+
   async function handleSubmit(e) {
     e.preventDefault();
+    console.log("✅ handleSubmit fired");
 
     if (
       !selectedBrand ||
@@ -248,6 +244,8 @@ function App() {
       PaymentMethod: customer.paymentMethod,
     };
 
+    console.log("📦 Booking payload:", payload);
+
     const WEB_APP_URL =
       "https://script.google.com/macros/s/AKfycbxvRvER_ouDa2Jg3cK-0ui2CCTlkuSFAk5a55Ahk3aN6w66n8QaLkWYzQkhZV3edvEjFw/exec";
 
@@ -260,8 +258,10 @@ function App() {
         },
         body: JSON.stringify(payload),
       });
+
+      console.log("✅ Sent to Google Sheets");
     } catch (err) {
-      console.error("Error sending to Google Sheets:", err);
+      console.error("❌ Error sending to Google Sheets:", err);
       alert(
         "We submitted your booking on the site, but had an issue logging it to our sheet."
       );
@@ -280,11 +280,13 @@ function App() {
       ? otherModelText || "Custom model"
       : selectedModel;
 
+  // ---------- JSX ----------
+
   return (
     <div className="app">
       <div className="shell">
         {/* LEFT – HERO */}
-        <header className="header hero-animated">
+        <header className="header">
           <div className="header-inner">
             <div className="logo-row">
               <img src={logo3} alt="Fix@YourDoor logo" className="logo-image" />
@@ -304,21 +306,19 @@ function App() {
             <p className="service-area">Now serving: Your City, State</p>
 
             <div className="hero-tags">
-              <span className="hero-tag hero-tag-pulse">🚗 Mobile technician</span>
-              <span className="hero-tag hero-tag-pulse">⚡ Same-day slots</span>
-              <span className="hero-tag hero-tag-pulse">💳 Zelle or Cash</span>
+              <span className="hero-tag">🚗 Mobile technician</span>
+              <span className="hero-tag">⚡ Same-day slots</span>
+              <span className="hero-tag">💳 Zelle or Cash</span>
             </div>
 
             <div className="hero-btn-row">
               <button
-                className="btn primary btn-glow"
+                className="btn primary"
                 onClick={() => {
+                  playTap();
                   setSubmitted(false);
                   setStep(1);
-                  const card = document.querySelector(".card");
-                  if (card) {
-                    card.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }
+                  scrollToBooking();
                 }}
               >
                 Book a repair
@@ -329,7 +329,8 @@ function App() {
         </header>
 
         {/* RIGHT – FORM CARD */}
-        <main className="card">
+        <main className="card" ref={bookingRef}>
+          {/* Stepper */}
           <div className="steps">
             <span className={step >= 1 ? "step active" : "step"}>
               <span className="step-dot">1</span>
@@ -349,12 +350,13 @@ function App() {
             </span>
           </div>
 
-          {/* STEP 1 – DEVICE */}
+          {/* STEP 1 – Device */}
           {step === 1 && (
-            <section className="fade-in-up">
+            <section>
               <h2>Select your phone</h2>
               <p>Tell us what you’re using so we bring the right parts.</p>
 
+              {/* BRAND */}
               <div className="field">
                 <label>Brand</label>
                 <select
@@ -376,6 +378,7 @@ function App() {
                 </select>
               </div>
 
+              {/* MODEL */}
               <div className="field">
                 <label>Model</label>
                 <select
@@ -401,6 +404,7 @@ function App() {
                 </select>
               </div>
 
+              {/* FIELDS WHEN OTHER BRAND */}
               {isOtherBrand && (
                 <>
                   <div className="field">
@@ -435,7 +439,13 @@ function App() {
                         </option>
                       ))}
                     </select>
-                    <p className="field-hint">
+                    <p
+                      style={{
+                        fontSize: "0.78rem",
+                        marginTop: "4px",
+                        color: "#9ca3af",
+                      }}
+                    >
                       We&apos;ll check availability for your exact phone and text
                       you back with price before confirming.
                     </p>
@@ -443,6 +453,7 @@ function App() {
                 </>
               )}
 
+              {/* FIELDS WHEN BRAND NORMAL BUT MODEL = OTHER */}
               {!isOtherBrand && isOtherModel && (
                 <>
                   <div className="field">
@@ -467,31 +478,38 @@ function App() {
                         </option>
                       ))}
                     </select>
-                    <p className="field-hint">
-                      We&apos;ll confirm availability for this exact model and send
-                      you the final price before confirming.
+                    <p
+                      style={{
+                        fontSize: "0.78rem",
+                        marginTop: "4px",
+                        color: "#9ca3af",
+                      }}
+                    >
+                      We&apos;ll confirm availability for this exact model and
+                      send you the final price before confirming.
                     </p>
                   </div>
                 </>
               )}
 
               <div className="buttons">
-                <button className="btn primary btn-glow" onClick={handleNextFromStep1}>
+                <button className="btn primary" onClick={handleNextFromStep1}>
                   Next: Choose issue
                 </button>
               </div>
             </section>
           )}
 
-          {/* STEP 2 – ISSUE & SCREEN */}
+          {/* STEP 2 – Issue + Screen quality */}
           {step === 2 && (
-            <section className="fade-in-up">
+            <section>
               <h2>Issue &amp; screen</h2>
               <p>
                 Tell us what’s wrong. If it’s a screen repair we’ll show you the
                 screen options.
               </p>
 
+              {/* ISSUE */}
               <div className="field">
                 <label>Problem</label>
                 <select
@@ -507,6 +525,7 @@ function App() {
                 </select>
               </div>
 
+              {/* Screen quality only for Screen Replacement */}
               {issue === "Screen Replacement" && (
                 <div className="field">
                   <label>Screen quality preference</label>
@@ -530,26 +549,13 @@ function App() {
                               {q.label} – {q.short}
                             </strong>
                             <br />
-                            <span className="quality-description">
+                            <span style={{ fontSize: "0.8rem" }}>
                               {q.description}{" "}
-                              {perQualityPrice != null && !isCalculatingPrice && (
+                              {perQualityPrice != null && (
                                 <>
                                   ·{" "}
-                                  <span className="quality-price">
+                                  <span style={{ color: "#a5b4fc" }}>
                                     Est. ${perQualityPrice.toFixed(2)}
-                                  </span>
-                                </>
-                              )}
-                              {perQualityPrice != null && isCalculatingPrice && (
-                                <>
-                                  ·{" "}
-                                  <span className="quality-calculating">
-                                    Calculating
-                                    <span className="dots-loading">
-                                      <span>.</span>
-                                      <span>.</span>
-                                      <span>.</span>
-                                    </span>
                                   </span>
                                 </>
                               )}
@@ -561,10 +567,17 @@ function App() {
                   </div>
 
                   {(isOtherBrand || isOtherModel) && (
-                    <p className="field-hint">
+                    <p
+                      style={{
+                        fontSize: "0.78rem",
+                        marginTop: "6px",
+                        color: "#9ca3af",
+                      }}
+                    >
                       Because your phone is custom or not on our list,{" "}
                       <strong>
-                        we&apos;ll check parts availability and text you your price
+                        we&apos;ll check parts availability and text you your
+                        price
                       </strong>{" "}
                       for this screen quality before confirming the job.
                     </p>
@@ -573,25 +586,19 @@ function App() {
               )}
 
               <div className="buttons">
-                <button
-                  className="btn secondary"
-                  onClick={() => setStep(1)}
-                >
+                <button className="btn secondary" onClick={() => setStep(1)}>
                   Back
                 </button>
-                <button
-                  className="btn primary btn-glow"
-                  onClick={handleNextFromStep2}
-                >
+                <button className="btn primary" onClick={handleNextFromStep2}>
                   Next: Your details
                 </button>
               </div>
             </section>
           )}
 
-          {/* STEP 3 – DETAILS */}
+          {/* STEP 3 – Customer details */}
           {step === 3 && (
-            <section className="fade-in-up">
+            <section>
               <h2>Your details &amp; appointment</h2>
               <p>We’ll come to you at your chosen time.</p>
 
@@ -707,7 +714,7 @@ function App() {
                   >
                     Back
                   </button>
-                  <button type="submit" className="btn primary btn-glow">
+                  <button type="submit" className="btn primary">
                     Submit booking
                   </button>
                 </div>
@@ -715,9 +722,9 @@ function App() {
             </section>
           )}
 
-          {/* STEP 4 – CONFIRMATION */}
+          {/* STEP 4 – Confirmation */}
           {step === 4 && submitted && (
-            <section className="fade-in-up">
+            <section>
               <h2>Thank you! 🎉</h2>
               <p>
                 We received your request for{" "}
@@ -794,6 +801,7 @@ function App() {
                   onClick={() => {
                     setSubmitted(false);
                     setStep(1);
+                    scrollToBooking();
                   }}
                 >
                   Book another repair
@@ -804,9 +812,9 @@ function App() {
         </main>
       </div>
 
-      {/* Info strip */}
+      {/* Info strip under cards */}
       <section className="info-grid">
-        <article className="info-card fade-in-up">
+        <article className="info-card">
           <h3>How Fix@YourDoor works</h3>
           <ol>
             <li>Choose your phone, issue &amp; preferred screen quality.</li>
@@ -818,7 +826,7 @@ function App() {
           </p>
         </article>
 
-        <article className="info-card fade-in-up">
+        <article className="info-card">
           <h3>What we fix</h3>
           <ul>
             <li>✅ Cracked or broken screens</li>
@@ -827,12 +835,12 @@ function App() {
           </ul>
           <p className="info-small">
             Not sure what&apos;s wrong? Choose{" "}
-            <strong>“Not sure / Other”</strong> and we&apos;ll help you figure it
-            out.
+            <strong>“Not sure / Other”</strong> and we&apos;ll help you figure
+            it out.
           </p>
         </article>
 
-        <article className="info-card fade-in-up">
+        <article className="info-card">
           <h3>Why people love Fix@YourDoor</h3>
           <ul>
             <li>No waiting in repair shops</li>
@@ -840,34 +848,6 @@ function App() {
             <li>Pay with Zelle or cash after the job is done</li>
           </ul>
         </article>
-      </section>
-
-      {/* ⭐ Comparison section */}
-      <section className="comparison-section fade-in-up">
-        <h3>Why choose Fix@YourDoor vs. a repair shop?</h3>
-        <div className="comparison-grid">
-          <div className="comparison-column">
-            <h4>Typical repair shop</h4>
-            <ul>
-              <li>❌ Drive across town and wait in line</li>
-              <li>❌ Drop your phone off for hours</li>
-              <li>❌ No clear price until you&apos;re there</li>
-              <li>❌ Your data sits on a back-room bench</li>
-            </ul>
-          </div>
-          <div className="comparison-column comparison-column--highlight">
-            <h4>Fix@YourDoor</h4>
-            <ul>
-              <li>✅ Technician comes to your home or office</li>
-              <li>✅ Most repairs done in under 30 minutes</li>
-              <li>✅ Upfront pricing with parts + labor included</li>
-              <li>✅ You keep your phone with you the whole time</li>
-            </ul>
-            <p className="comparison-cta">
-              Doorstep repair that feels like magic ✨
-            </p>
-          </div>
-        </div>
       </section>
 
       <footer className="footer">
