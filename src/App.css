@@ -1,7 +1,4 @@
 /* ====== Global ====== */
-html {
-  scroll-behavior: smooth;
-}
 
 :root {
   --bg-main: #020617; /* dark navy */
@@ -46,10 +43,10 @@ body {
 
 .shell {
   width: 100%;
-  max-width: 1500px; /* wider container so it uses more of the page */
-  margin: 0 auto;    /* perfectly centered */
+  max-width: 1500px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr); /* wider form card */
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
   gap: 28px;
   align-items: stretch;
 }
@@ -78,8 +75,6 @@ body {
   position: relative;
   z-index: 1;
 }
-
-/* Top brand row */
 
 .logo-row {
   display: flex;
@@ -114,8 +109,6 @@ body {
   font-size: 0.82rem;
   color: rgba(226, 232, 240, 0.8);
 }
-
-/* Hero copy */
 
 .header h1 {
   margin: 0 0 10px;
@@ -162,22 +155,6 @@ body {
   color: #e5e7eb;
 }
 
-.hero-tag::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: #22c55e;
-}
-
-.hero-tag:nth-child(2)::before {
-  background: #facc15;
-}
-
-.hero-tag:nth-child(3)::before {
-  background: #38bdf8;
-}
-
 .hero-btn-row {
   margin-top: 6px;
   display: flex;
@@ -203,8 +180,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
-    background 0.12s ease-out, opacity 0.12s;
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out,
+    background 0.15s ease-out,
+    opacity 0.12s;
   white-space: nowrap;
 }
 
@@ -227,6 +207,26 @@ body {
 
 .btn.secondary:hover {
   background: rgba(15, 23, 42, 1);
+}
+
+/* glowing effect on main CTAs */
+.btn-glow {
+  position: relative;
+}
+
+.btn-glow::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 0, rgba(129, 140, 248, 0.45), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  z-index: -1;
+}
+
+.btn-glow:hover::after {
+  opacity: 1;
 }
 
 /* ====== Right – Card / Form ====== */
@@ -256,6 +256,7 @@ body {
   align-items: center;
   gap: 6px;
   opacity: 0.5;
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
 }
 
 .step-dot {
@@ -276,6 +277,7 @@ body {
 .step.active {
   opacity: 1;
   color: #e5e7eb;
+  transform: translateY(-1px);
 }
 
 .step.active .step-dot {
@@ -324,6 +326,12 @@ main p {
   margin-bottom: 4px;
 }
 
+.field-hint {
+  font-size: 0.78rem;
+  margin-top: 4px;
+  color: #9ca3af;
+}
+
 input,
 select {
   background: rgba(15, 23, 42, 0.9);
@@ -333,8 +341,11 @@ select {
   color: var(--text-main);
   font-size: 0.9rem;
   outline: none;
-  transition: border 0.12s ease-out, box-shadow 0.12s ease-out,
-    background 0.12s ease-out;
+  transition:
+    border 0.12s ease-out,
+    box-shadow 0.12s ease-out,
+    background 0.12s ease-out,
+    transform 0.12s ease-out;
 }
 
 input::placeholder {
@@ -346,6 +357,7 @@ select:focus {
   border-color: rgba(59, 130, 246, 0.9);
   box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.7);
   background: rgba(15, 23, 42, 1);
+  transform: translateY(-0.5px);
 }
 
 /* Buttons row */
@@ -381,6 +393,39 @@ select:focus {
   width: 16px;
   height: 16px;
   accent-color: #3b82f6;
+}
+
+.quality-description {
+  font-size: 0.8rem;
+}
+
+.quality-price {
+  color: #a5b4fc;
+  font-weight: 600;
+}
+
+.quality-calculating {
+  color: #e5e7eb;
+  font-weight: 500;
+}
+
+/* animated ... for "calculating" */
+.dots-loading {
+  display: inline-flex;
+  margin-left: 2px;
+}
+
+.dots-loading span {
+  animation: dotPulse 1s infinite;
+  opacity: 0.2;
+}
+
+.dots-loading span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.dots-loading span:nth-child(3) {
+  animation-delay: 0.3s;
 }
 
 /* Info box */
@@ -436,6 +481,76 @@ select:focus {
   color: #6b7280;
 }
 
+/* ====== Comparison section ====== */
+
+.comparison-section {
+  width: 100%;
+  max-width: 1500px;
+  margin: 28px auto 0;
+  padding: 18px 18px 20px;
+  border-radius: 20px;
+  background: radial-gradient(circle at top left, #1f2937 0, #020617 55%);
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.8);
+}
+
+.comparison-section h3 {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.comparison-column {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 16px;
+  padding: 12px 14px 14px;
+  border: 1px solid rgba(55, 65, 81, 0.9);
+}
+
+.comparison-column h4 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.comparison-column ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.comparison-column li {
+  font-size: 0.85rem;
+  color: #d1d5db;
+  margin-bottom: 4px;
+}
+
+.comparison-column--highlight {
+  border-color: rgba(59, 130, 246, 0.9);
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), #020617);
+  position: relative;
+  overflow: hidden;
+}
+
+.comparison-column--highlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 120% -10%, rgba(56, 189, 248, 0.35), transparent 50%);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.comparison-cta {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: #e5e7eb;
+  font-weight: 500;
+}
+
 /* ====== Footer ====== */
 
 .footer {
@@ -445,6 +560,67 @@ select:focus {
   font-size: 0.78rem;
   color: var(--text-soft);
   text-align: left;
+}
+
+/* ====== Micro animations ====== */
+
+/* subtle float on hero */
+.hero-animated {
+  animation: heroFloat 16s ease-in-out infinite;
+}
+
+.hero-tag-pulse {
+  animation: tagPulse 6s ease-in-out infinite;
+}
+
+/* fade-in utility for sections/cards */
+.fade-in-up {
+  animation: fadeInUp 0.45s ease-out;
+}
+
+/* ====== Keyframes ====== */
+
+@keyframes heroFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes tagPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.0);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(56, 189, 248, 0.12);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
 }
 
 /* ====== Responsive ====== */
@@ -457,14 +633,13 @@ select:focus {
   }
 
   .info-grid,
-  .footer {
+  .footer,
+  .comparison-section {
     max-width: 1200px;
   }
 }
 
-/* Medium laptops / tablets in landscape
-   -> Hero on top, form below (single column)
-*/
+/* Medium laptops / tablets in landscape */
 @media (max-width: 1100px) {
   .app {
     padding: 24px 20px 32px;
@@ -496,6 +671,10 @@ select:focus {
   .info-grid {
     max-width: 900px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .comparison-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .footer {
@@ -535,7 +714,7 @@ select:focus {
   }
 
   .field-row {
-    grid-template-columns: minmax(0, 1fr); /* date/time & city/zip stack */
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .buttons {
@@ -550,6 +729,10 @@ select:focus {
 
   .info-card {
     padding: 12px 12px 14px;
+  }
+
+  .comparison-section {
+    padding: 16px 14px 18px;
   }
 }
 
@@ -598,28 +781,5 @@ select:focus {
 
   .footer {
     font-size: 0.72rem;
-  }
-}
-/* ====== Card highlight when scrolled into view ====== */
-
-.card-highlight {
-  animation: cardGlow 0.9s ease-out;
-}
-
-@keyframes cardGlow {
-  0% {
-    box-shadow: 0 0 0 rgba(59, 130, 246, 0.0);
-    border-color: rgba(59, 130, 246, 0.6);
-    transform: translateY(0);
-  }
-  30% {
-    box-shadow: 0 0 35px rgba(59, 130, 246, 0.6);
-    border-color: rgba(96, 165, 250, 1);
-    transform: translateY(-2px);
-  }
-  100% {
-    box-shadow: 0 22px 45px rgba(15, 23, 42, 0.8); /* back to normal */
-    border-color: rgba(51, 65, 85, 0.9);
-    transform: translateY(0);
   }
 }
