@@ -1,5 +1,5 @@
 // src/App.jsx
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import logo3 from "./assets/logo3.png";
 import tapSound from "./assets/audio/ui-tap.mp3";
 import "./App.css";
@@ -68,6 +68,38 @@ const QUALITY_OPTIONS = [
   },
 ];
 
+// Animated repair timeline steps
+const TIMELINE_STEPS = [
+  {
+    id: 1,
+    label: "You book",
+    title: "Send us your phone & issue",
+    desc: "You choose your phone, issue, and a time that works for you. No payment upfront.",
+    icon: "📲",
+  },
+  {
+    id: 2,
+    label: "We confirm",
+    title: "We text you to lock in the slot",
+    desc: "We double-check parts availability and confirm your appointment by text.",
+    icon: "✅",
+  },
+  {
+    id: 3,
+    label: "Tech on the way",
+    title: "Your technician drives to you",
+    desc: "On the day, your tech heads to your home or office – no driving or waiting rooms for you.",
+    icon: "🚗",
+  },
+  {
+    id: 4,
+    label: "We repair on-site",
+    title: "Fix done, you test, then you pay",
+    desc: "Most repairs are done in under an hour. You pay only after you're happy with the result.",
+    icon: "🔧",
+  },
+];
+
 function App() {
   const [step, setStep] = useState(1);
 
@@ -95,19 +127,17 @@ function App() {
 
   // smooth scroll to booking + audio tap
   const bookingRef = useRef(null);
-
-  // audio element ref for tap sound
   const audioRef = useRef(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio(tapSound);
+  }, []);
 
   const playTap = () => {
     const audio = audioRef.current;
     if (!audio) return;
-    try {
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-    } catch {
-      // ignore
-    }
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
   };
 
   const handleHeroBook = () => {
@@ -309,9 +339,6 @@ function App() {
 
   return (
     <div className="app">
-      {/* hidden audio element used for UI tap sound */}
-      <audio ref={audioRef} src={tapSound} preload="auto" />
-
       <div className="shell">
         {/* LEFT – HERO */}
         <header className="header">
@@ -884,19 +911,82 @@ function App() {
         </main>
       </div>
 
+      {/* ====== Animated repair timeline ====== */}
+      <section className="timeline-section">
+        <div className="timeline-card">
+          <h2>What happens after you book?</h2>
+          <p className="timeline-intro">
+            A simple, door-to-door repair flow designed so you don&apos;t lose your day.
+          </p>
+
+          <div className="timeline">
+            {TIMELINE_STEPS.map((stepItem, idx) => (
+              <div
+                key={stepItem.id}
+                className="timeline-step"
+                style={{ "--i": idx }}
+              >
+                <div className="timeline-dot" />
+                <div className="timeline-line" />
+                <div className="timeline-icon">{stepItem.icon}</div>
+                <div className="timeline-content">
+                  <div className="timeline-label">{stepItem.label}</div>
+                  <div className="timeline-title">{stepItem.title}</div>
+                  <div className="timeline-desc">{stepItem.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ====== Animated “We come to you” map section ====== */}
+      <section className="map-section">
+        <div className="map-card">
+          <div className="map-text">
+            <h2>We come to you in your city</h2>
+            <p>
+              Instead of driving across town and waiting in a crowded shop,
+              your technician drives to <strong>you</strong>.
+            </p>
+            <ul className="map-list">
+              <li>🏠 Homes & apartments</li>
+              <li>🏢 Offices & co-working spaces</li>
+              <li>☕ Coffee shops & public spots</li>
+            </ul>
+            <p className="map-note">
+              You pick the location. We bring the tools, parts & experience.
+            </p>
+          </div>
+
+          <div className="map-visual">
+            <div className="map-glow" />
+            <div className="map-circle">
+              <div className="map-ring ring-1" />
+              <div className="map-ring ring-2" />
+              <div className="map-ring ring-3" />
+
+              <div className="map-pin map-pin-main">🚗</div>
+              <div className="map-pin map-pin-1" />
+              <div className="map-pin map-pin-2" />
+              <div className="map-pin map-pin-3" />
+              <div className="map-pin map-pin-4" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ====== Info cards row ====== */}
       <section className="info-grid">
         <div className="info-card">
           <h3>How Fix@YourDoor works</h3>
           <ol>
-            <li>
-              Choose your phone, issue & preferred screen or battery option.
-            </li>
+            <li>Choose your phone, issue & preferred screen or battery option.</li>
             <li>Pick a time and enter your address.</li>
             <li>Our tech comes to your door and fixes it on-site.</li>
           </ol>
           <p className="info-small">
-            You only pay after the job is done and you're happy.
+            You only pay after the job is done and you&apos;re happy.
           </p>
         </div>
 
@@ -905,11 +995,11 @@ function App() {
           <ul>
             <li>✅ Cracked or broken screens</li>
             <li>✅ Weak or dead batteries</li>
-            <li>✅ Charging issues & basic diagnostics</li>
+            <li>✅ Charging issues &amp; basic diagnostics</li>
           </ul>
           <p className="info-small">
-            Not sure what's wrong? Choose <strong>“Not sure / Other”</strong>{" "}
-            and we'll help you figure it out.
+            Not sure what&apos;s wrong? Choose <strong>“Not sure / Other”</strong> and we&apos;ll help you
+            figure it out.
           </p>
         </div>
 
@@ -932,13 +1022,13 @@ function App() {
           </p>
 
           <div className="compare-table">
-            <div className="compare-header">What it's like</div>
+            <div className="compare-header">What it&apos;s like</div>
             <div className="compare-header">Typical repair shop</div>
             <div className="compare-header">Fix@YourDoor</div>
 
             <div className="compare-label">Getting there</div>
             <div className="compare-cell bad">
-              🚗 Drive across town & wait in line
+              🚗 Drive across town &amp; wait in line
             </div>
             <div className="compare-cell good">
               🏠 We come to your home or office
@@ -970,34 +1060,17 @@ function App() {
 
             <div className="compare-label">When you pay</div>
             <div className="compare-cell bad">
-              💳 Pay before you know if you're happy
+              💳 Pay before you know if you&apos;re happy
             </div>
             <div className="compare-cell good">
-              🤝 Pay only after the job is done & you're happy
+              🤝 Pay only after the job is done &amp; you&apos;re happy
             </div>
           </div>
         </div>
       </section>
 
       {/* ====== Compact feature strip ====== */}
-      <section className="extra-features">
-        <div className="feature-pill">
-          <h4>We come to you</h4>
-          <p>No driving, no waiting rooms. We fix it at your door.</p>
-        </div>
-        <div className="feature-pill">
-          <h4>Same-day slots</h4>
-          <p>Many repairs done in under an hour once we arrive.</p>
-        </div>
-        <div className="feature-pill">
-          <h4>Simple communication</h4>
-          <p>We text you before arriving & after we finish the job.</p>
-        </div>
-        <div className="feature-pill">
-          <h4>Parts + labor included</h4>
-          <p>Transparent prices – no surprise fees at the door.</p>
-        </div>
-      </section>
+    
 
       <footer className="footer">
         © 2025 Fix@YourDoor. All rights reserved.

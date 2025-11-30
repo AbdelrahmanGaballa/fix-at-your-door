@@ -802,3 +802,372 @@ select:focus {
     font-size: 0.72rem;
   }
 }
+/* ====== Animated repair timeline ====== */
+
+.timeline-section {
+  width: 100%;
+  max-width: 1500px;
+  margin: 28px auto 0;
+}
+
+.timeline-card {
+  background: radial-gradient(circle at top left, #020617, #020617 55%, #020617);
+  border-radius: 20px;
+  border: 1px solid rgba(37, 99, 235, 0.5);
+  padding: 18px 18px 20px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.8);
+}
+
+.timeline-card h2 {
+  margin: 0 0 4px;
+  font-size: 1.3rem;
+}
+
+.timeline-intro {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Each step */
+
+.timeline-step {
+  position: relative;
+  padding-left: 44px;
+  padding-right: 8px;
+  padding-bottom: 10px;
+  animation: timeline-slide-up 0.45s ease-out both;
+  animation-delay: calc(var(--i) * 0.09s);
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 14px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #3b82f6;
+  box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.8);
+  animation: timeline-pulse 1.6s ease-out infinite;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 19px;
+  top: 18px;
+  bottom: -6px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(59, 130, 246, 0.8),
+    rgba(59, 130, 246, 0)
+  );
+}
+
+.timeline-step:last-child .timeline-line {
+  display: none;
+}
+
+.timeline-icon {
+  position: absolute;
+  left: 34px;
+  top: -2px;
+  font-size: 1.1rem;
+}
+
+.timeline-content {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 14px;
+  border: 1px solid rgba(51, 65, 85, 0.85);
+  padding: 8px 10px 9px 30px;
+}
+
+.timeline-label {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #60a5fa;
+  margin-bottom: 2px;
+}
+
+.timeline-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 2px;
+}
+
+.timeline-desc {
+  font-size: 0.82rem;
+  color: #9ca3af;
+}
+
+/* Animations */
+
+@keyframes timeline-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes timeline-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.9);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+/* Responsive tweaks for timeline */
+
+@media (max-width: 768px) {
+  .timeline-card {
+    padding: 16px 14px 18px;
+  }
+
+  .timeline-step {
+    padding-left: 40px;
+  }
+
+  .timeline-content {
+    padding-left: 26px;
+  }
+
+  .timeline-icon {
+    left: 30px;
+  }
+}
+/* ====== "We come to you" map section ====== */
+
+.map-section {
+  width: 100%;
+  max-width: 1500px;
+  margin: 26px auto 0;
+}
+
+.map-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  background: radial-gradient(circle at top left, #020617, #020617 55%, #020617);
+  border-radius: 20px;
+  border: 1px solid rgba(37, 99, 235, 0.55);
+  padding: 18px 18px 20px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
+}
+
+.map-text h2 {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+}
+
+.map-text p {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.map-list {
+  margin: 0 0 8px 18px;
+  padding: 0;
+  font-size: 0.86rem;
+  color: #e5e7eb;
+}
+
+.map-note {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Visual "map" bubble */
+
+.map-visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.map-glow {
+  position: absolute;
+  inset: 4px;
+  background: radial-gradient(circle at center, rgba(37, 99, 235, 0.25), transparent 60%);
+  filter: blur(6px);
+  opacity: 0.8;
+}
+
+.map-circle {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background: radial-gradient(circle at center, #020617 0%, #020617 40%, #020617 100%);
+  border: 1px solid rgba(59, 130, 246, 0.7);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
+  overflow: hidden;
+}
+
+/* Rings that pulse outward */
+
+.map-ring {
+  position: absolute;
+  inset: 50%;
+  border-radius: 999px;
+  border: 1px solid rgba(59, 130, 246, 0.65);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: map-ring-ping 2.6s linear infinite;
+}
+
+.ring-1 {
+  width: 40%;
+  height: 40%;
+  animation-delay: 0s;
+}
+
+.ring-2 {
+  width: 65%;
+  height: 65%;
+  animation-delay: 0.4s;
+}
+
+.ring-3 {
+  width: 90%;
+  height: 90%;
+  animation-delay: 0.8s;
+}
+
+/* Pins */
+
+.map-pin {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.9);
+  animation: map-pin-pulse 2s ease-out infinite;
+}
+
+.map-pin-main {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #3b82f6, #22c55e);
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.9);
+  animation: map-main-pulse 2.2s ease-out infinite;
+}
+
+/* Small pins placed around */
+
+.map-pin-1 {
+  top: 24%;
+  left: 26%;
+}
+
+.map-pin-2 {
+  top: 28%;
+  right: 23%;
+}
+
+.map-pin-3 {
+  bottom: 24%;
+  left: 32%;
+}
+
+.map-pin-4 {
+  bottom: 20%;
+  right: 26%;
+}
+
+/* Animations */
+
+@keyframes map-ring-ping {
+  0% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+  80% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+}
+
+@keyframes map-pin-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes map-main-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.9);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+/* Responsive layout for map */
+
+@media (max-width: 900px) {
+  .map-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .map-circle {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (max-width: 640px) {
+  .map-card {
+    padding: 16px 14px 18px;
+  }
+
+  .map-circle {
+    width: 180px;
+    height: 180px;
+  }
+}
