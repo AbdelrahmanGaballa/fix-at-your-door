@@ -1,74 +1,137 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 720 220">
-
+<svg viewBox="0 0 950 260" xmlns="http://www.w3.org/2000/svg" style="background: transparent;">
   <defs>
-    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#16e0ff" stop-opacity="1" />
-      <stop offset="100%" stop-color="#3b82f6" stop-opacity="1" />
+    <!-- Enhanced gradients -->
+    <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60d5ff"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
     </linearGradient>
-
-    <filter id="softGlow">
-      <feGaussianBlur stdDeviation="10" result="coloredBlur" />
+    
+    <linearGradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+    
+    <!-- Intense neon glow for icon -->
+    <filter id="iconGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur2"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="24" result="blur3"/>
       <feMerge>
-        <feMergeNode in="coloredBlur" />
-        <feMergeNode in="SourceGraphic" />
+        <feMergeNode in="blur3"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Subtle text glow -->
+    <filter id="textGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Stronger glow for FIX -->
+    <filter id="fixGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-
-  <!-- Enlarged icon -->
-  <g transform="translate(60,35) scale(2)" filter="url(#softGlow)">
-    <!-- subtle circular backdrop -->
-    <circle cx="25" cy="25" r="30" fill="#1e293b" fill-opacity="0.5" />
-
-    <!-- location pin -->
-    <path
-      d="M 35 10 C 35 0, 15 0, 15 10 C 15 22, 25 40, 25 40 C 25 40, 35 22, 35 10 Z"
-      fill="url(#grad1)" />
-
-    <!-- door -->
-    <rect x="18" y="6" width="15" height="20" rx="2" fill="#0f172a" />
-    <circle cx="29" cy="16" r="3" fill="#22e7ff" />
-
-    <!-- phone body -->
-    <rect x="12" y="45" width="26" height="34" rx="4" fill="url(#grad1)" />
-    <rect x="15" y="48" width="20" height="24" rx="2" fill="#0f172a" />
-
-    <!-- repair mark -->
-    <line x1="18" y1="54" x2="28" y2="64"
-          stroke="#34f5c5" stroke-width="4" stroke-linecap="round" />
-    <line x1="28" y1="64" x2="33" y2="52"
-          stroke="#34f5c5" stroke-width="4" stroke-linecap="round" />
-
-    <!-- home button -->
-    <rect x="21" y="75" width="7" height="3" rx="1.5" fill="#22e7ff" />
+  
+  <!-- ===== ICON: Premium glowing A + phone + check ===== -->
+  <g transform="translate(5, 30) scale(2.2)" filter="url(#iconGlow)">
+    <!-- Outer A / triangle with gradient -->
+    <path d="M60 10 L110 115 L10 115 Z"
+          fill="none"
+          stroke="url(#gradBlue)"
+          stroke-width="11"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          opacity="0.95"/>
+    
+    <!-- Inner glow effect -->
+    <path d="M60 20 L100 105 L20 105 Z"
+          fill="none"
+          stroke="#3be4ff"
+          stroke-width="2"
+          opacity="0.4"/>
+    
+    <!-- Phone body with depth -->
+    <rect x="40" y="38" width="40" height="60" rx="7"
+          fill="#000510"
+          stroke="url(#gradBlue)"
+          stroke-width="2.5"/>
+    
+    <!-- Phone screen -->
+    <rect x="43" y="43" width="34" height="50" rx="4"
+          fill="#0a1628"
+          opacity="0.8"/>
+    
+    <!-- Neon green check with gradient -->
+    <polyline points="50,71 61,83 78,57"
+              fill="none"
+              stroke="url(#gradGreen)"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+    
+    <!-- Check inner highlight -->
+    <polyline points="50,71 61,83 78,57"
+              fill="none"
+              stroke="#6fffb0"
+              stroke-width="2"
+              opacity="0.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
   </g>
-
-  <!-- Brand text (shifted a bit left so the x doesn't get clipped) -->
-  <g transform="translate(190,120)">
-    <text
-      x="0"
-      y="0"
-      font-family="'Poppins', sans-serif"
-      font-size="82"
-      font-weight="800"
-      letter-spacing="-1">
-      <tspan fill="#ffffff">at</tspan>
-      <tspan fill="url(#grad1)">door</tspan>
-      <tspan fill="#10b981">fix</tspan>
-    </text>
-
-    <text
-      x="5"
-      y="40"
-      font-family="'Inter', sans-serif"
-      font-size="18"
-      font-weight="500"
-      fill="#7b93b8"
-      letter-spacing="3">
-      ON-DEMAND PHONE REPAIR
-    </text>
+  
+  <!-- ===== BRAND TEXT with improved typography ===== -->
+  <g transform="translate(200, 115)">
+    <!-- "at" in white with subtle glow -->
+    <text x="0" y="0"
+          font-family="'Poppins', 'Inter', sans-serif"
+          font-size="64"
+          font-weight="800"
+          fill="#ffffff"
+          filter="url(#textGlow)">at</text>
+    
+    <!-- "door" in blue gradient with glow -->
+    <text x="78" y="0"
+          font-family="'Poppins', 'Inter', sans-serif"
+          font-size="64"
+          font-weight="800"
+          fill="url(#gradBlue)"
+          filter="url(#textGlow)">door</text>
+    
+    <!-- "FIX" in green with strong glow -->
+    <text x="268" y="0"
+          font-family="'Poppins', 'Inter', sans-serif"
+          font-size="64"
+          font-weight="800"
+          fill="url(#gradGreen)"
+          filter="url(#fixGlow)">FIX</text>
+    
+    <!-- Tagline with better spacing and styling -->
+    <text x="2" y="38"
+          font-family="'Inter', 'Roboto', sans-serif"
+          font-size="15"
+          font-weight="600"
+          letter-spacing="3.5"
+          fill="#7ba3d0"
+          opacity="0.85">ON-DEMAND PHONE REPAIR</text>
+    
+    <!-- Subtle underline accent -->
+    <line x1="0" y1="48" x2="140" y2="48"
+          stroke="#3b82f6"
+          stroke-width="1.5"
+          opacity="0.25"/>
   </g>
 </svg>
