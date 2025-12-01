@@ -358,7 +358,10 @@ function App() {
             </h1>
 
             <p>Same-day screen &amp; battery repair at your home or office.</p>
-            <p className="service-area">Now serving: Your City, State</p>
+            <p className="service-area">
+  📍 Now serving: Daytona Beach · Ormond Beach · DeLand · Deltona · New Smyrna · Port Orange (FL)
+</p>
+
 
             <div className="hero-tags">
               <span className="hero-tag">🚗 Mobile technician</span>
