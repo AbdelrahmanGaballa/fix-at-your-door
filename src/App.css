@@ -143,6 +143,22 @@ body {
   font-weight: 500;
   color: #e5e7eb;
 }
+.service-area .pin {
+  color: #f472b6; /* soft pink */
+  margin-right: 4px;
+}
+
+.service-area .label {
+  color: #f9fafb; /* white */
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.service-area .city {
+  color: #93c5fd; /* soft premium blue */
+  font-weight: 500;
+}
+
 
 /* Hero tags & actions */
 

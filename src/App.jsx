@@ -358,9 +358,17 @@ function App() {
             </h1>
 
             <p>Same-day screen &amp; battery repair at your home or office.</p>
-            <p className="service-area">
-  📍 Now serving: Daytona Beach · Ormond Beach · DeLand · Deltona · New Smyrna · Port Orange (FL)
+     <p className="service-area">
+  <span className="pin">📍</span>
+  <span className="label">Now serving:</span>
+  <span className="city">Daytona Beach</span> · 
+  <span className="city">Ormond Beach</span> · 
+  <span className="city">DeLand</span> · 
+  <span className="city">Deltona</span> · 
+  <span className="city">New Smyrna</span> · 
+  <span className="city">Port Orange (FL)</span>
 </p>
+
 
 
             <div className="hero-tags">
