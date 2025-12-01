@@ -302,7 +302,7 @@ function App() {
     console.log("📦 Booking payload:", payload);
 
     const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbxvRvER_ouDa2Jg3cK-0ui2CCTlkuSFAk5a55Ahk3aN6w66n8QaLkWYzQkhZV3edvEjFw/exec";
+      "https://script.google.com/macros/s/AKfycbxawpysf2R4wR5IxFZNpgcSSxnCA6VNe_PBL9kMBqIWcrP3cwpem6J2NzBn5pTsFzwrHw/exec";
 
     try {
       await fetch(WEB_APP_URL, {
@@ -681,15 +681,27 @@ function App() {
 
               <form onSubmit={handleSubmit}>
                 <div className="field">
-                  <label>Full name *</label>
+                  <label>First name *</label>
                   <input
                     type="text"
-                    name="fullName"
+                    name="FirstName"
                     value={customer.fullName}
                     onChange={handleCustomerChange}
-                    placeholder="John Doe"
+                    placeholder="John"
                   />
                 </div>
+
+                  <div className="field">
+                  <label>Last name *</label>
+                  <input
+                    type="text"
+                    name="LastName"
+                    value={customer.fullName}
+                    onChange={handleCustomerChange}
+                    placeholder=" Doe"
+                  />
+                </div>
+                
 
                 <div className="field">
                   <label>Phone number *</label>
