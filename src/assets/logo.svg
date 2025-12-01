@@ -1,0 +1,79 @@
+<svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main gradients -->
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#16e0ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Glow -->
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ICON GROUP (ENLARGED + GLOW) -->
+  <g transform="translate(40, 25) scale(1.4)" filter="url(#softGlow)">
+
+    <!-- Glow circle -->
+    <circle cx="25" cy="25" r="28" fill="#1e293b80" />
+
+    <!-- Location pin shape -->
+    <path d="M 35 10 C 35 0, 15 0, 15 10 C 15 22, 25 40, 25 40 C 25 40, 35 22, 35 10 Z"
+          fill="url(#grad1)" />
+
+    <!-- Door inside pin -->
+    <rect x="18.5" y="6" width="13" height="18" rx="2" fill="#0f172a"/>
+    <circle cx="29" cy="15" r="2.2" fill="#22e7ff"/>
+
+    <!-- Phone below -->
+    <rect x="14" y="45" width="22" height="34" rx="4" fill="url(#grad1)"/>
+    <rect x="17" y="48" width="16" height="24" rx="2" fill="#0f172a"/>
+
+    <!-- Repair "checkmark" strokes -->
+    <line x1="19" y1="54" x2="27" y2="62"
+          stroke="#34f5c5"
+          stroke-width="3.5"
+          stroke-linecap="round"/>
+
+    <line x1="27" y1="62" x2="31" y2="52"
+          stroke="#34f5c5"
+          stroke-width="3.5"
+          stroke-linecap="round"/>
+
+    <rect x="22" y="74" width="5.5" height="2.2" rx="1" fill="#22e7ff" opacity="0.9"/>
+  </g>
+
+  <!-- BRAND TEXT -->
+  <g transform="translate(120, 95)">
+    <text x="0" y="0" 
+          font-family="'Poppins', 'Arial', sans-serif"
+          font-size="62"
+          font-weight="800"
+          letter-spacing="-1">
+
+      <tspan fill="#ffffff">at</tspan>
+      <tspan fill="url(#grad1)">door</tspan>
+      <tspan fill="#10b981">fix</tspan>
+    </text>
+
+    <!-- Subtitle -->
+    <text x="4" y="30"
+          font-family="'Inter', sans-serif"
+          font-size="15"
+          font-weight="500"
+          fill="#7b93b8"
+          letter-spacing="2">
+      ON-DEMAND PHONE REPAIR
+    </text>
+  </g>
+</svg>

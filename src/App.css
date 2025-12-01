@@ -83,20 +83,27 @@ body {
 
 /* Top brand row */
 
-.logo-row {
+..logo-row {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;   /* was 18–20 before */
 }
 
+
+/* New logo SVG */
 .logo-image {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  object-fit: cover;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.9);
+  width: 260px;        /* slightly larger so icons don't feel tiny */
+  height: auto;
+  display: block;
+  object-fit: contain;
+
+  margin-top: -18px;   /* move it higher */
+  margin-left: -8px;   /* move it a bit left */
 }
+
+
+
 
 .logo-text-group {
   display: flex;

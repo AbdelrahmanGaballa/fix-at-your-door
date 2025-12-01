@@ -1,6 +1,7 @@
 // src/App.jsx
 import { useEffect, useRef, useState } from "react";
-import logo3 from "./assets/logo3.png";
+import logo from "./assets/logo.svg";
+
 import tapSound from "./assets/audio/ui-tap.mp3";
 import "./App.css";
 import { SCREEN_PRICING, BATTERY_PRICING } from "./pricing";
@@ -344,11 +345,9 @@ function App() {
         <header className="header">
           <div className="header-inner">
             <div className="logo-row">
-              <img src={logo3} alt="Fix@YourDoor logo" className="logo-image" />
-              <div className="logo-text-group">
-                <div className="logo-title">FIX@YOURDOOR</div>
-                <div className="logo-subtitle">Doorstep Phone Repair</div>
-              </div>
+             <img src={logo} alt="ATDOORFIX logo" className="logo-image" />
+
+            
             </div>
 
             <h1>
