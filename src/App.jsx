@@ -113,7 +113,8 @@ function App() {
   const [otherModelText, setOtherModelText] = useState("");
 
   const [customer, setCustomer] = useState({
-    fullName: "",
+    FirstName: "",
+    LastName: "",
     phone: "",
     email: "",
     address: "",
