@@ -112,7 +112,7 @@
           filter="url(#textGlow)">door</text>
     
     <!-- "FIX" in green with strong glow -->
-    <text x="268" y="0"
+    <text x="255" y="0"
           font-family="'Poppins', 'Inter', sans-serif"
           font-size="64"
           font-weight="800"
