@@ -46,55 +46,90 @@
     </filter>
   </defs>
   
-  <!-- ===== ICON: Premium glowing A + phone + check ===== -->
-  <g transform="translate(5, 30) scale(2.2)" filter="url(#iconGlow)">
-    <!-- Outer A / triangle with gradient -->
-    <path d="M60 10 L110 115 L10 115 Z"
-          fill="none"
+  <!-- ===== ICON: Premium glowing house/door + phone + tools ===== -->
+  <g transform="translate(20, 40) scale(2.0)" filter="url(#iconGlow)">
+    <!-- House structure - roof and walls -->
+    <path d="M60 15 L110 65 L110 115 L10 115 L10 65 Z"
+          fill="rgba(15, 35, 70, 0.5)"
           stroke="url(#gradBlue)"
-          stroke-width="11"
+          stroke-width="9"
           stroke-linecap="round"
-          stroke-linejoin="round"
-          opacity="0.95"/>
+          stroke-linejoin="round"/>
+    
+    <!-- Proper foundation/base platform -->
+    <rect x="5" y="115" width="110" height="12"
+          fill="url(#gradBlue)"
+          stroke="url(#gradBlue)"
+          stroke-width="2"
+          rx="1"/>
     
     <!-- Inner glow effect -->
-    <path d="M60 20 L100 105 L20 105 Z"
+    <path d="M60 22 L102 62 L102 108 L18 108 L18 62 Z"
           fill="none"
           stroke="#3be4ff"
           stroke-width="2"
-          opacity="0.4"/>
+          opacity="0.5"/>
     
-    <!-- Phone body with depth -->
-    <rect x="40" y="38" width="40" height="60" rx="7"
+    <!-- Door element - centered -->
+    <rect x="52" y="80" width="16" height="40"
+          fill="none"
+          stroke="#3be4ff"
+          stroke-width="2.5"
+          rx="1"/>
+    
+    <!-- Door knob -->
+    <circle cx="63" cy="100" r="1.5"
+            fill="#3be4ff"/>
+    
+    <!-- Phone body - positioned left of door -->
+    <rect x="25" y="50" width="24" height="38" rx="4"
           fill="#000510"
           stroke="url(#gradBlue)"
           stroke-width="2.5"/>
     
     <!-- Phone screen -->
-    <rect x="43" y="43" width="34" height="50" rx="4"
+    <rect x="27" y="53" width="20" height="32" rx="2"
           fill="#0a1628"
           opacity="0.8"/>
     
-    <!-- Neon green check with gradient -->
-    <polyline points="50,71 61,83 78,57"
+    <!-- Checkmark on phone -->
+    <polyline points="31,67 35,71 43,61"
               fill="none"
               stroke="url(#gradGreen)"
-              stroke-width="6"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"/>
     
     <!-- Check inner highlight -->
-    <polyline points="50,71 61,83 78,57"
+    <polyline points="31,67 35,71 43,61"
               fill="none"
               stroke="#6fffb0"
-              stroke-width="2"
+              stroke-width="1.2"
               opacity="0.6"
               stroke-linecap="round"
               stroke-linejoin="round"/>
+    
+    <!-- Wrench tool - positioned right of door -->
+    <g transform="translate(75, 60)">
+      <!-- Wrench handle -->
+      <line x1="0" y1="0" x2="12" y2="12"
+            stroke="url(#gradGreen)"
+            stroke-width="3.5"
+            stroke-linecap="round"/>
+      <!-- Wrench head -->
+      <circle cx="0" cy="0" r="3.5"
+              fill="none"
+              stroke="url(#gradGreen)"
+              stroke-width="2.5"/>
+      <circle cx="0" cy="0" r="1.5"
+              fill="none"
+              stroke="#6fffb0"
+              stroke-width="1.2"/>
+    </g>
   </g>
   
   <!-- ===== BRAND TEXT with improved typography ===== -->
-  <g transform="translate(200, 115)">
+  <g transform="translate(260, 140)">
     <!-- "at" in white with subtle glow -->
     <text x="0" y="0"
           font-family="'Poppins', 'Inter', sans-serif"
