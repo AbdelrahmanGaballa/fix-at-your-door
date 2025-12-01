@@ -248,7 +248,8 @@ function App() {
       !selectedBrand ||
       (!isOtherBrand && !selectedModel) ||
       !issue ||
-      !customer.fullName ||
+      !customer.FirstName ||
+       !customer.LastName ||
       !customer.phone ||
       !customer.address ||
       !customer.city ||
@@ -290,7 +291,8 @@ function App() {
       Issue: issue,
       ScreenQuality: effectiveScreenQuality,
       EstPrice: estPrice,
-      FullName: customer.fullName,
+      FirstName: customer.FirstName,
+       LastName: customer.LastName,
       Phone: customer.phone,
       Email: customer.email,
       Address: customer.address,
@@ -696,7 +698,7 @@ function App() {
                   <input
                     type="text"
                     name="FirstName"
-                    value={customer.fullName}
+                    value={customer.FirstName}
                     onChange={handleCustomerChange}
                     placeholder="John"
                   />
@@ -707,7 +709,7 @@ function App() {
                   <input
                     type="text"
                     name="LastName"
-                    value={customer.fullName}
+                    value={customer.LastName}
                     onChange={handleCustomerChange}
                     placeholder=" Doe"
                   />
