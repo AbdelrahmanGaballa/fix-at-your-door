@@ -76,7 +76,6 @@ body {
 }
 
 .header-inner {
-  
   position: relative;
   z-index: 1;
 }
@@ -87,23 +86,18 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 14px;   /* was 18–20 before */
+  margin-bottom: 14px; /* was 18–20 before */
 }
 
-
-/* New logo SVG */
+/* NEW: logo sizing (desktop baseline) */
 .logo-image {
-  width: 260px;        /* slightly larger so icons don't feel tiny */
-  height: auto;
+  height: 80px;        /* good size for desktop */
+  width: auto;         /* keep SVG ratio */
   display: block;
   object-fit: contain;
-
-  margin-top: -18px;   /* move it higher */
-  margin-left: -8px;   /* move it a bit left */
+  margin-top: -8px;    /* nudge slightly up */
+  margin-left: -4px;   /* nudge slightly left */
 }
-
-
-
 
 .logo-text-group {
   display: flex;
@@ -448,6 +442,7 @@ select:focus {
   padding: 10px 12px;
   font-size: 0.85rem;
 }
+
 /* ====== Info section under cards ====== */
 
 .info-grid {
@@ -622,9 +617,7 @@ select:focus {
   text-align: left;
 }
 
-
-/* ====== Footer ====== */
-
+/* (duplicate footer kept same, harmless) */
 .footer {
   width: 100%;
   max-width: 1500px;
@@ -777,9 +770,12 @@ select:focus {
     gap: 10px;
   }
 
+  /* IMPORTANT: bigger logo on phones, not smaller */
   .logo-image {
-    width: 46px;
-    height: 46px;
+    height: 90px;   /* larger on mobile so details show */
+    width: auto;
+    margin-top: -6px;
+    margin-left: -2px;
   }
 
   .hero-btn-row {
@@ -810,7 +806,8 @@ select:focus {
     font-size: 0.72rem;
   }
 }
-/* ====== Animated repair timeline ====== */
+
+/* ====== Animated repair timeline (old version, still available if used) ====== */
 
 .timeline-section {
   width: 100%;
@@ -962,6 +959,7 @@ select:focus {
     left: 30px;
   }
 }
+
 /* ====== "We come to you" map section ====== */
 
 .map-section {
@@ -1179,7 +1177,8 @@ select:focus {
     height: 180px;
   }
 }
-/* ====== Animated Repair Timeline ====== */
+
+/* ====== Animated Repair Timeline (new layout) ====== */
 
 .repair-timeline {
   width: 100%;
@@ -1387,22 +1386,5 @@ select:focus {
 
   .guarantee-badges {
     grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.header-logo img {
-  width: 220px;       /* bigger on desktop */
-  height: auto;
-}
-
-@media (max-width: 768px) {
-  .header-logo img {
-    width: 180px;     /* bigger on mobile */
-  }
-}
-
-@media (max-width: 480px) {
-  .header-logo img {
-    width: 160px;     /* even bigger relative to screen */
   }
 }
