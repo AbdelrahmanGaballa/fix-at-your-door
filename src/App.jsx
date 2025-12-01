@@ -1068,6 +1068,110 @@ function App() {
           </div>
         </div>
       </section>
+      {/* ====== Animated Repair Timeline ====== */}
+<section className="repair-timeline" id="repair-timeline">
+  <div className="timeline-card">
+    <h2>What happens on repair day?</h2>
+    <p className="timeline-intro">
+      A simple, 4-step process. You always know what’s happening with your phone.
+    </p>
+
+    <div className="timeline-steps">
+      <div className="timeline-step">
+        <div className="timeline-step-dot" />
+        <div className="timeline-step-content">
+          <h4>1. We drive to you</h4>
+          <p>
+            Your technician heads to your home or office at the time you chose.
+            No driving, no waiting rooms.
+          </p>
+        </div>
+      </div>
+
+      <div className="timeline-step">
+        <div className="timeline-step-dot" />
+        <div className="timeline-step-content">
+          <h4>2. Quick check & quote</h4>
+          <p>
+            We double-check the issue in person and confirm the price before we
+            start any work.
+          </p>
+        </div>
+      </div>
+
+      <div className="timeline-step">
+        <div className="timeline-step-dot" />
+        <div className="timeline-step-content">
+          <h4>3. On-site repair</h4>
+          <p>
+            Most screen & battery repairs are done in under an hour right in our
+            service vehicle outside your door.
+          </p>
+        </div>
+      </div>
+
+      <div className="timeline-step">
+        <div className="timeline-step-dot" />
+        <div className="timeline-step-content">
+          <h4>4. You test & then pay</h4>
+          <p>
+            You check everything, we answer questions, and you only pay once
+            you&apos;re happy with the result.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* ====== Guarantee & safety badges ====== */}
+<section className="guarantee-strip" id="guarantees">
+  <div className="guarantee-card">
+    <h3>Every repair comes with:</h3>
+    <div className="guarantee-badges">
+      <div className="guarantee-badge">
+        <span className="badge-icon">🛡️</span>
+        <div>
+          <div className="badge-title">90-day warranty</div>
+          <div className="badge-text">
+            Coverage on parts & labor for your repair.
+          </div>
+        </div>
+      </div>
+
+      <div className="guarantee-badge">
+        <span className="badge-icon">👨‍🔧</span>
+        <div>
+          <div className="badge-title">Pro technician</div>
+          <div className="badge-text">
+            Experienced tech focused on quality & safety.
+          </div>
+        </div>
+      </div>
+
+      <div className="guarantee-badge">
+        <span className="badge-icon">✅</span>
+        <div>
+          <div className="badge-title">Pay after repair</div>
+          <div className="badge-text">
+            No deposits or pre-payment. You pay when the job is done.
+          </div>
+        </div>
+      </div>
+
+      <div className="guarantee-badge">
+        <span className="badge-icon">📱</span>
+        <div>
+          <div className="badge-title">Quality parts</div>
+          <div className="badge-text">
+            We source trusted parts that we&apos;re happy to warranty.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* ====== Compact feature strip ====== */}
     

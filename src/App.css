@@ -1171,3 +1171,213 @@ select:focus {
     height: 180px;
   }
 }
+/* ====== Animated Repair Timeline ====== */
+
+.repair-timeline {
+  width: 100%;
+  max-width: 1500px;
+  margin: 26px auto 0;
+}
+
+.timeline-card {
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), #020617 55%);
+  border-radius: 22px;
+  border: 1px solid rgba(37, 99, 235, 0.55);
+  padding: 18px 20px 20px;
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.9);
+}
+
+.timeline-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+}
+
+.timeline-intro {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.timeline-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  padding-left: 10px;
+}
+
+/* vertical line */
+.timeline-steps::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(59, 130, 246, 0.9),
+    rgba(56, 189, 248, 0.3)
+  );
+  opacity: 0.7;
+}
+
+.timeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  padding: 8px 10px 9px 4px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(31, 41, 55, 0.9);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.7);
+  transform: translateY(6px);
+  opacity: 0;
+  animation: timelineFadeUp 0.5s ease forwards;
+}
+
+/* small staggered delays for animation */
+.timeline-step:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.timeline-step:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.timeline-step:nth-child(3) {
+  animation-delay: 0.25s;
+}
+.timeline-step:nth-child(4) {
+  animation-delay: 0.35s;
+}
+
+.timeline-step:hover {
+  border-color: rgba(59, 130, 246, 0.9);
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.65);
+  transform: translateY(0);
+}
+
+.timeline-step-dot {
+  position: relative;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: radial-gradient(circle, #3b82f6 0%, #1d4ed8 60%, #0f172a 100%);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.8);
+  margin-left: 10px;
+}
+
+.timeline-step-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 1px solid rgba(96, 165, 250, 0.6);
+  opacity: 0.7;
+}
+
+.timeline-step-content h4 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+}
+
+.timeline-step-content p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+@keyframes timelineFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====== Guarantee & safety badges ====== */
+
+.guarantee-strip {
+  width: 100%;
+  max-width: 1500px;
+  margin: 24px auto 0;
+}
+
+.guarantee-card {
+  background: rgba(6, 12, 27, 0.96);
+  border-radius: 20px;
+  border: 1px solid rgba(30, 64, 175, 0.9);
+  padding: 16px 18px 18px;
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.9);
+}
+
+.guarantee-card h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.guarantee-badges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.guarantee-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 11px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(31, 41, 55, 0.9);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.75);
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+    border-color 0.12s ease-out, background 0.12s ease-out;
+}
+
+.guarantee-badge:hover {
+  transform: translateY(-2px);
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.26), #020617);
+  border-color: rgba(59, 130, 246, 0.9);
+  box-shadow: 0 14px 26px rgba(37, 99, 235, 0.7);
+}
+
+.badge-icon {
+  font-size: 1.2rem;
+}
+
+.badge-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.badge-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* responsive tweaks for timeline & guarantees */
+@media (max-width: 900px) {
+  .guarantee-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .timeline-card {
+    padding: 16px 14px 16px;
+  }
+
+  .guarantee-card {
+    padding: 14px 12px 16px;
+  }
+
+  .guarantee-badges {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
