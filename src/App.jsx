@@ -6,7 +6,53 @@ import tapSound from "./assets/audio/ui-tap.mp3";
 import "./App.css";
 import { SCREEN_PRICING, BATTERY_PRICING } from "./pricing";
 
-// Brand / model list for dropdown
+// ---------- static data ----------
+
+// Device type cards
+const DEVICE_TYPES = [
+  { id: "smartphone", label: "SMARTPHONE", icon: "📱" },
+  { id: "tablet", label: "TABLET / IPAD", icon: "📲" },
+  { id: "laptop", label: "LAPTOP", icon: "💻" },
+  { id: "watch", label: "WATCH", icon: "⌚" },
+];
+
+// Brand cards for smartphones
+const BRAND_CARDS = [
+  {
+    id: "apple",
+    value: "Apple",
+    label: "APPLE",
+    logoUrl: "https://logo.clearbit.com/apple.com",
+  },
+  {
+    id: "samsung",
+    value: "Samsung",
+    label: "SAMSUNG",
+    logoUrl: "https://logo.clearbit.com/samsung.com",
+  },
+  {
+    id: "google",
+    value: "Google",
+    label: "GOOGLE",
+    logoUrl: "https://logo.clearbit.com/google.com",
+  },
+  {
+    id: "motorola",
+    value: "Motorola",
+    label: "MOTOROLA",
+    logoUrl: "https://logo.clearbit.com/motorola.com",
+  },
+  {
+    id: "other",
+    value: "__otherBrand",
+    label: "OTHER BRAND",
+    logoUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/4/48/Markdown-mark.svg", // simple dots icon
+    isOther: true,
+  },
+];
+
+// Brand / model list for dropdown (only for smartphones we know)
 const PHONE_DATA = [
   {
     brand: "Apple",
@@ -50,10 +96,14 @@ const PHONE_DATA = [
   },
 ];
 
-const ISSUES = ["Screen Replacement", "Battery Replacement", "Not sure / Other"];
-const PAYMENT_METHODS = ["Zelle", "Cash"];
+const ISSUES = [
+  "Screen Replacement",
+  "Battery Replacement",
+  "Not sure / Other",
+];
 
-// Only 2 screen qualities now
+const PAYMENT_METHODS = ["cash", "Card"];
+
 const QUALITY_OPTIONS = [
   {
     key: "aftermarket",
@@ -74,8 +124,8 @@ const TIMELINE_STEPS = [
   {
     id: 1,
     label: "You book",
-    title: "Send us your phone & issue",
-    desc: "You choose your phone, issue, and a time that works for you. No payment upfront.",
+    title: "Send us your device & issue",
+    desc: "You choose your device, issue, and a time that works for you. No payment upfront.",
     icon: "📲",
   },
   {
@@ -104,12 +154,12 @@ const TIMELINE_STEPS = [
 function App() {
   const [step, setStep] = useState(1);
 
+  const [deviceType, setDeviceType] = useState("smartphone");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [issue, setIssue] = useState("");
   const [screenQuality, setScreenQuality] = useState("aftermarket");
   const [addProtector, setAddProtector] = useState(false);
-
 
   const [otherBrandText, setOtherBrandText] = useState("");
   const [otherModelText, setOtherModelText] = useState("");
@@ -124,7 +174,7 @@ function App() {
     zip: "",
     date: "",
     time: "",
-    paymentMethod: "Zelle",
+    paymentMethod: "cash",
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -156,70 +206,89 @@ function App() {
     }
   };
 
-  const isOtherBrand = selectedBrand === "__otherBrand";
-  const isOtherModel = selectedModel === "__other";
+  const isSmartphone = deviceType === "smartphone";
+  const isOtherBrand =
+    isSmartphone && selectedBrand === "__otherBrand";
+  const isOtherModel = isSmartphone && selectedModel === "__other";
 
-  const modelsForBrand = !isOtherBrand
-    ? PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || []
-    : [];
+  const modelsForBrand =
+    isSmartphone && !isOtherBrand
+      ? PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || []
+      : [];
 
   // ---------- pricing helpers (screens + battery) ----------
+  // Only treat it as known if it's a smartphone with a listed brand + model
 
   const hasKnownDevice =
+    isSmartphone &&
     !isOtherBrand &&
     !isOtherModel &&
-    selectedBrand &&
-    selectedModel &&
-    ((SCREEN_PRICING[selectedBrand] &&
-      SCREEN_PRICING[selectedBrand][selectedModel]) ||
+    !!selectedBrand &&
+    !!selectedModel &&
+    !!(
+      (SCREEN_PRICING[selectedBrand] &&
+        SCREEN_PRICING[selectedBrand][selectedModel]) ||
       (BATTERY_PRICING[selectedBrand] &&
-        BATTERY_PRICING[selectedBrand][selectedModel]));
+        BATTERY_PRICING[selectedBrand][selectedModel])
+    );
 
   let rawPrice = null;
 
   if (hasKnownDevice) {
     if (issue === "Screen Replacement") {
-      const screenPricing = SCREEN_PRICING[selectedBrand]?.[selectedModel];
+      const screenPricing =
+        SCREEN_PRICING[selectedBrand]?.[selectedModel] || null;
       if (screenPricing) {
-        rawPrice = screenPricing[screenQuality] ?? null;
+        const candidate = screenPricing[screenQuality];
+        rawPrice =
+          typeof candidate === "number" ? candidate : null;
       }
     } else if (issue === "Battery Replacement") {
-      const batteryPricing = BATTERY_PRICING[selectedBrand]?.[selectedModel];
-      if (batteryPricing != null) {
-        rawPrice = batteryPricing;
-      }
+      const batteryPricing =
+        BATTERY_PRICING[selectedBrand]?.[selectedModel];
+      rawPrice =
+        typeof batteryPricing === "number" ? batteryPricing : null;
     }
   }
 
-  const priceForSelection = rawPrice;
+  const priceForSelection =
+    typeof rawPrice === "number" ? rawPrice : null;
 
   // ---------- step handlers ----------
 
   function handleNextFromStep1() {
     playTap();
 
-    if (!selectedBrand) {
-      alert("Please select a brand.");
-      return;
-    }
-
-    if (isOtherBrand) {
-      if (!otherBrandText.trim() || !otherModelText.trim()) {
-        alert("Please type your phone brand and model.");
+    if (isSmartphone) {
+      if (!selectedBrand) {
+        alert("Please select a brand.");
         return;
       }
-      setStep(2);
-      return;
-    }
 
-    if (!selectedModel) {
-      alert("Please select a model.");
-      return;
-    }
+      if (isOtherBrand) {
+        if (!otherBrandText.trim() || !otherModelText.trim()) {
+          alert("Please type your phone brand and model.");
+          return;
+        }
+        setStep(2);
+        return;
+      }
 
-    if (isOtherModel && !otherModelText.trim()) {
-      alert("Please type your phone model.");
-      return;
+      if (!selectedModel) {
+        alert("Please select a model.");
+        return;
+      }
+
+      if (isOtherModel && !otherModelText.trim()) {
+        alert("Please type your phone model.");
+        return;
+      }
+    } else {
+      // tablet / laptop / watch – always custom
+      if (!otherBrandText.trim() || !otherModelText.trim()) {
+        alert("Please type your device brand and model.");
+        return;
+      }
     }
 
     setStep(2);
@@ -246,12 +315,19 @@ function App() {
     playTap();
     console.log("✅ handleSubmit fired");
 
+    // basic validation
     if (
-      !selectedBrand ||
-      (!isOtherBrand && !selectedModel) ||
+      (!isSmartphone &&
+        (!otherBrandText.trim() || !otherModelText.trim())) ||
+      (isSmartphone &&
+        (!selectedBrand ||
+          (!isOtherBrand && !selectedModel) ||
+          (isOtherBrand &&
+            (!otherBrandText.trim() || !otherModelText.trim())) ||
+          (isOtherModel && !otherModelText.trim()))) ||
       !issue ||
       !customer.FirstName ||
-       !customer.LastName ||
+      !customer.LastName ||
       !customer.phone ||
       !customer.address ||
       !customer.city ||
@@ -263,45 +339,58 @@ function App() {
       return;
     }
 
-    const effectiveBrand = isOtherBrand
-      ? otherBrandText.trim() || "Other brand"
-      : selectedBrand;
+    const effectiveBrand = isSmartphone
+      ? isOtherBrand
+        ? otherBrandText.trim() || "Other brand"
+        : selectedBrand
+      : otherBrandText.trim() || "Other device brand";
 
-    const effectiveModel =
-      isOtherBrand || isOtherModel
+    const effectiveModel = isSmartphone
+      ? isOtherBrand || isOtherModel
         ? otherModelText.trim() || "Other model"
-        : selectedModel;
+        : selectedModel
+      : otherModelText.trim() || "Other model";
 
     const effectiveScreenQuality =
       issue === "Screen Replacement" ? screenQuality : "";
 
     // use same computed price for both screen & battery when known
     let estPrice = "";
-if (
-  priceForSelection != null &&
-  (issue === "Screen Replacement" || issue === "Battery Replacement")
-) {
-  estPrice = priceForSelection;
 
-  // add $15 if they chose a screen protector on a screen repair
-  if (issue === "Screen Replacement" && addProtector) {
-    estPrice += 15;
-  }
-}
+    if (
+      typeof priceForSelection === "number" &&
+      (issue === "Screen Replacement" ||
+        issue === "Battery Replacement")
+    ) {
+      estPrice = priceForSelection;
 
+      if (issue === "Screen Replacement" && addProtector) {
+        estPrice += 15;
+      }
+    }
 
     const payload = {
       Brand: effectiveBrand,
       Model: effectiveModel,
-      CustomBrand: isOtherBrand ? otherBrandText.trim() || "" : "",
+      CustomBrand:
+        isSmartphone && isOtherBrand
+          ? otherBrandText.trim() || ""
+          : !isSmartphone
+          ? otherBrandText.trim() || ""
+          : "",
       CustomModel:
-        isOtherBrand || isOtherModel ? otherModelText.trim() || "" : "",
+        isSmartphone && (isOtherBrand || isOtherModel)
+          ? otherModelText.trim() || ""
+          : !isSmartphone
+          ? otherModelText.trim() || ""
+          : "",
       Issue: issue,
       ScreenQuality: effectiveScreenQuality,
       EstPrice: estPrice,
       AddScreenProtector: addProtector ? "Yes ($15)" : "No",
+      DeviceType: deviceType,
       FirstName: customer.FirstName,
-       LastName: customer.LastName,
+      LastName: customer.LastName,
       Phone: customer.phone,
       Email: customer.email,
       Address: customer.address,
@@ -337,16 +426,18 @@ if (
 
     setSubmitted(true);
     setStep(4);
-    alert("Booking submitted! Check your Google Sheet for a new row.");
   }
 
-  const displayBrand = isOtherBrand
-    ? otherBrandText || "Custom brand"
-    : selectedBrand;
+  const displayBrand = isSmartphone
+    ? isOtherBrand
+      ? otherBrandText || "Custom brand"
+      : selectedBrand
+    : otherBrandText || "Custom brand";
+
   const displayModel =
-    isOtherBrand || isOtherModel
-      ? otherModelText || "Custom model"
-      : selectedModel;
+    isSmartphone && !isOtherBrand && !isOtherModel
+      ? selectedModel
+      : otherModelText || "Custom model";
 
   // ---------- JSX ----------
 
@@ -357,9 +448,11 @@ if (
         <header className="header">
           <div className="header-inner">
             <div className="logo-row">
-             <img src={logo} alt="ATDOORFIX logo" className="logo-image" />
-
-            
+              <img
+                src={logo}
+                alt="AtDoorFix logo"
+                className="logo-image"
+              />
             </div>
 
             <h1>
@@ -368,31 +461,41 @@ if (
               right at your doorstep.
             </h1>
 
-            <p>Same-day screen &amp; battery repair at your home or office.</p>
-     <p className="service-area">
-  <span className="pin">📍</span>
-  <span className="label">Now serving:</span>
-  <span className="city">Daytona Beach</span> · 
-  <span className="city">Ormond Beach</span> · 
-  <span className="city">DeLand</span> · 
-  <span className="city">Deltona</span> · 
-  <span className="city">New Smyrna</span> · 
-  <span className="city">Port Orange (FL)</span>
-</p>
-
-
+            <p>
+              Same-day screen &amp; battery repair at your home or
+              office.
+            </p>
+            <p className="service-area">
+              <span className="pin">📍</span>
+              <span className="label">Now serving:</span>
+              <span className="city">Daytona Beach</span> ·
+              <span className="city">Ormond Beach</span> ·
+              <span className="city">DeLand</span> ·
+              <span className="city">Deltona</span> ·
+              <span className="city">New Smyrna</span> ·
+              <span className="city">Port Orange (FL)</span>
+            </p>
 
             <div className="hero-tags">
-              <span className="hero-tag">🚗 Mobile technician</span>
+              <span className="hero-tag">
+                🚗 Mobile technician
+              </span>
               <span className="hero-tag">⚡ Same-day slots</span>
-              <span className="hero-tag">💳 Zelle or Cash</span>
+              <span className="hero-tag">
+                💳 Cash or card after repair
+              </span>
             </div>
 
             <div className="hero-btn-row">
-              <button className="btn primary" onClick={handleHeroBook}>
+              <button
+                className="btn primary"
+                onClick={handleHeroBook}
+              >
                 Book a repair
               </button>
-              <span className="hero-note">No upfront payment required.</span>
+              <span className="hero-note">
+                No upfront payment required.
+              </span>
             </div>
           </div>
         </header>
@@ -407,7 +510,9 @@ if (
             </span>
             <span className={step >= 2 ? "step active" : "step"}>
               <span className="step-dot">2</span>
-              <span className="step-label">Issue &amp; screen</span>
+              <span className="step-label">
+                Issue &amp; screen
+              </span>
             </span>
             <span className={step >= 3 ? "step active" : "step"}>
               <span className="step-dot">3</span>
@@ -422,147 +527,198 @@ if (
           {/* STEP 1 – Device */}
           {step === 1 && (
             <section>
-              <h2>Select your phone</h2>
-              <p>Tell us what you’re using so we bring the right parts.</p>
+              <h2>Select your device</h2>
+              <p>
+                Tell us what you’re using so we bring the right
+                parts.
+              </p>
 
-              {/* BRAND */}
+              {/* Device type cards */}
               <div className="field">
-                <label>Brand</label>
-                <select
-                  value={selectedBrand}
-                  onChange={(e) => {
-                    setSelectedBrand(e.target.value);
-                    setSelectedModel("");
-                    setOtherBrandText("");
-                    setOtherModelText("");
-                  }}
-                >
-                  <option value="">Choose brand</option>
-                  {PHONE_DATA.map((p) => (
-                    <option key={p.brand} value={p.brand}>
-                      {p.brand}
-                    </option>
+                <label>Device type</label>
+                <div className="device-type-row">
+                  {DEVICE_TYPES.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      className={
+                        deviceType === t.id
+                          ? "device-type-card active"
+                          : "device-type-card"
+                      }
+                      onClick={() => {
+                        playTap();
+                        setDeviceType(t.id);
+                        setSelectedBrand("");
+                        setSelectedModel("");
+                        setOtherBrandText("");
+                        setOtherModelText("");
+                      }}
+                    >
+                      <span className="device-type-icon">
+                        {t.icon}
+                      </span>
+                      <span className="device-type-label">
+                        {t.label}
+                      </span>
+                    </button>
                   ))}
-                  <option value="__otherBrand">Other brand (not listed)</option>
-                </select>
+                </div>
               </div>
 
-              {/* MODEL */}
-              <div className="field">
-                <label>Model</label>
-                <select
-                  value={selectedModel}
-                  onChange={(e) => setSelectedModel(e.target.value)}
-                  disabled={!selectedBrand || isOtherBrand}
-                >
-                  <option value="">
-                    {selectedBrand
-                      ? isOtherBrand
-                        ? "Model handled below"
-                        : "Choose model"
-                      : "Select brand first"}
-                  </option>
-                  {modelsForBrand.map((m) => (
-                    <option key={m} value={m}>
-                      {m}
-                    </option>
-                  ))}
-                  {!isOtherBrand && selectedBrand && (
-                    <option value="__other">Other (not listed)</option>
-                  )}
-                </select>
-              </div>
-
-              {/* FIELDS WHEN OTHER BRAND */}
-              {isOtherBrand && (
+              {/* Smartphone flow: brand cards + model */}
+              {isSmartphone ? (
                 <>
                   <div className="field">
-                    <label>Phone brand *</label>
+                    <label>Brand</label>
+                    <div className="brand-grid">
+                      {BRAND_CARDS.map((b) => (
+                        <button
+                          key={b.id}
+                          type="button"
+                          className={
+                            selectedBrand === b.value
+                              ? "brand-card active"
+                              : "brand-card"
+                          }
+                          onClick={() => {
+                            playTap();
+                            setSelectedBrand(b.value);
+                            setSelectedModel("");
+                            if (b.isOther) {
+                              setOtherBrandText("");
+                              setOtherModelText("");
+                            }
+                          }}
+                        >
+                          <div className="brand-logo-wrapper">
+                            {b.logoUrl ? (
+                              <img
+                                src={b.logoUrl}
+                                alt={b.label}
+                                className="brand-logo"
+                              />
+                            ) : (
+                              <span className="brand-logo-text">
+                                {b.label[0]}
+                              </span>
+                            )}
+                          </div>
+                          <div className="brand-label">
+                            {b.label}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* MODEL SELECT (for known brands) */}
+                  {!isOtherBrand && selectedBrand && (
+                    <div className="field">
+                      <label>Model</label>
+                      <select
+                        value={selectedModel}
+                        onChange={(e) =>
+                          setSelectedModel(e.target.value)
+                        }
+                      >
+                        <option value="">
+                          {selectedBrand
+                            ? "Choose model"
+                            : "Select brand first"}
+                        </option>
+                        {modelsForBrand.map((m) => (
+                          <option key={m} value={m}>
+                            {m}
+                          </option>
+                        ))}
+                        {selectedBrand && (
+                          <option value="__other">
+                            Other (not listed)
+                          </option>
+                        )}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* FIELDS WHEN SMARTPHONE OTHER BRAND */}
+                  {isOtherBrand && (
+                    <>
+                      <div className="field">
+                        <label>Phone brand *</label>
+                        <input
+                          type="text"
+                          value={otherBrandText}
+                          onChange={(e) =>
+                            setOtherBrandText(e.target.value)
+                          }
+                          placeholder="Example: Huawei, OnePlus, Xiaomi..."
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label>Phone model *</label>
+                        <input
+                          type="text"
+                          value={otherModelText}
+                          onChange={(e) =>
+                            setOtherModelText(e.target.value)
+                          }
+                          placeholder="Example: P40 Pro, OnePlus 11R..."
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {/* FIELDS WHEN BRAND NORMAL BUT MODEL = OTHER */}
+                  {!isOtherBrand && isOtherModel && (
+                    <div className="field">
+                      <label>Phone model *</label>
+                      <input
+                        type="text"
+                        value={otherModelText}
+                        onChange={(e) =>
+                          setOtherModelText(e.target.value)
+                        }
+                        placeholder="Type your exact model (e.g. iPhone SE 2022)"
+                      />
+                    </div>
+                  )}
+                </>
+              ) : (
+                // Non-smartphone devices
+                <>
+                  <div className="field">
+                    <label>Device brand *</label>
                     <input
                       type="text"
                       value={otherBrandText}
-                      onChange={(e) => setOtherBrandText(e.target.value)}
-                      placeholder="Example: Huawei, OnePlus, Xiaomi, Motorola..."
+                      onChange={(e) =>
+                        setOtherBrandText(e.target.value)
+                      }
+                      placeholder="Example: iPad, Surface, MacBook, Galaxy Tab..."
                     />
                   </div>
 
                   <div className="field">
-                    <label>Phone model *</label>
+                    <label>Device model *</label>
                     <input
                       type="text"
                       value={otherModelText}
-                      onChange={(e) => setOtherModelText(e.target.value)}
-                      placeholder="Example: P40 Pro, OnePlus 11R, Redmi Note 13..."
+                      onChange={(e) =>
+                        setOtherModelText(e.target.value)
+                      }
+                      placeholder="Example: iPad Pro 11, Surface Laptop 5..."
                     />
-                  </div>
-
-                  <div className="field">
-                    <label>Preferred screen quality</label>
-                    <select
-                      value={screenQuality}
-                      onChange={(e) => setScreenQuality(e.target.value)}
-                    >
-                      {QUALITY_OPTIONS.map((q) => (
-                        <option key={q.key} value={q.key}>
-                          {q.label} – {q.short}
-                        </option>
-                      ))}
-                    </select>
-                    <p
-                      style={{
-                        fontSize: "0.78rem",
-                        marginTop: "4px",
-                        color: "#9ca3af",
-                      }}
-                    >
-                      We&apos;ll check availability for your exact phone and text
-                      you back with price before confirming.
-                    </p>
-                  </div>
-                </>
-              )}
-
-              {/* FIELDS WHEN BRAND NORMAL BUT MODEL = OTHER */}
-              {!isOtherBrand && isOtherModel && (
-                <>
-                  <div className="field">
-                    <label>Phone model *</label>
-                    <input
-                      type="text"
-                      value={otherModelText}
-                      onChange={(e) => setOtherModelText(e.target.value)}
-                      placeholder="Type your exact model (e.g. iPhone SE 2022)"
-                    />
-                  </div>
-
-                  <div className="field">
-                    <label>Preferred screen quality</label>
-                    <select
-                      value={screenQuality}
-                      onChange={(e) => setScreenQuality(e.target.value)}
-                    >
-                      {QUALITY_OPTIONS.map((q) => (
-                        <option key={q.key} value={q.key}>
-                          {q.label} – {q.short}
-                        </option>
-                      ))}
-                    </select>
-                    <p
-                      style={{
-                        fontSize: "0.78rem",
-                        marginTop: "4px",
-                        color: "#9ca3af",
-                      }}
-                    >
-                      We&apos;ll confirm availability for this exact model and
-                      send you the final price before confirming.
-                    </p>
                   </div>
                 </>
               )}
 
               <div className="buttons">
-                <button className="btn primary" onClick={handleNextFromStep1}>
+                <button
+                  className="btn primary"
+                  onClick={handleNextFromStep1}
+                >
                   Next: Choose issue
                 </button>
               </div>
@@ -574,21 +730,20 @@ if (
             <section>
               <h2>Issue &amp; screen</h2>
               <p>
-                Tell us what’s wrong. If it’s a screen repair we’ll show you the
-                screen options.
+                Tell us what’s wrong. If it’s a screen repair we’ll
+                show you the screen options.
               </p>
 
               {/* ISSUE */}
               <div className="field">
                 <label>Problem</label>
                 <select
-  value={issue}
-  onChange={(e) => {
-    setIssue(e.target.value);
-    setAddProtector(false); // reset when user changes issue
-  }}
->
-
+                  value={issue}
+                  onChange={(e) => {
+                    setIssue(e.target.value);
+                    setAddProtector(false);
+                  }}
+                >
                   <option value="">Choose issue</option>
                   {ISSUES.map((i) => (
                     <option key={i} value={i}>
@@ -604,9 +759,11 @@ if (
                   <label>Screen quality preference</label>
                   <div className="quality-box">
                     {QUALITY_OPTIONS.map((q) => {
-                      const perQualityPrice =
-                        hasKnownDevice &&
-                        SCREEN_PRICING[selectedBrand]?.[selectedModel]?.[q.key];
+                      const perQualityPrice = hasKnownDevice
+                        ? SCREEN_PRICING[selectedBrand]?.[
+                            selectedModel
+                          ]?.[q.key] ?? null
+                        : null;
 
                       return (
                         <label key={q.key}>
@@ -615,20 +772,32 @@ if (
                             name="screenQuality"
                             value={q.key}
                             checked={screenQuality === q.key}
-                            onChange={(e) => setScreenQuality(e.target.value)}
+                            onChange={(e) =>
+                              setScreenQuality(e.target.value)
+                            }
                           />
                           <span>
                             <strong>
                               {q.label} – {q.short}
                             </strong>
                             <br />
-                            <span style={{ fontSize: "0.8rem" }}>
+                            <span
+                              style={{ fontSize: "0.8rem" }}
+                            >
                               {q.description}{" "}
-                              {perQualityPrice != null && (
+                              {typeof perQualityPrice ===
+                                "number" && (
                                 <>
                                   ·{" "}
-                                  <span style={{ color: "#a5b4fc" }}>
-                                    Est. ${perQualityPrice.toFixed(2)}
+                                  <span
+                                    style={{
+                                      color: "#a5b4fc",
+                                    }}
+                                  >
+                                    Est. $
+                                    {perQualityPrice.toFixed(
+                                      2
+                                    )}
                                   </span>
                                 </>
                               )}
@@ -639,7 +808,9 @@ if (
                     })}
                   </div>
 
-                  {(isOtherBrand || isOtherModel) && (
+                  {(isOtherBrand ||
+                    isOtherModel ||
+                    !isSmartphone) && (
                     <p
                       style={{
                         fontSize: "0.78rem",
@@ -647,12 +818,14 @@ if (
                         color: "#9ca3af",
                       }}
                     >
-                      Because your phone is custom or not on our list,{" "}
+                      Because your device is custom or not on our
+                      list,{" "}
                       <strong>
-                        we&apos;ll check parts availability and text you your
-                        price
+                        we&apos;ll check parts availability and
+                        text you your price
                       </strong>{" "}
-                      for this screen quality before confirming the job.
+                      for this screen quality before confirming the
+                      job.
                     </p>
                   )}
                 </div>
@@ -661,55 +834,77 @@ if (
               {/* Battery price hint */}
               {issue === "Battery Replacement" && (
                 <div className="info-box">
-                  {priceForSelection != null ? (
+                  {typeof priceForSelection === "number" ? (
                     <p>
                       Estimated total for{" "}
-                      <strong>battery replacement</strong> on your{" "}
+                      <strong>battery replacement</strong> on
+                      your{" "}
                       <strong>
                         {displayBrand} {displayModel}
                       </strong>
                       :{" "}
-                      <strong>${priceForSelection.toFixed(2)}</strong> (plus tax
-    ).
+                      <strong>
+                        ${priceForSelection.toFixed(2)}
+                      </strong>{" "}
+                      (plus tax).
                     </p>
                   ) : (
                     <p>
-                      Once we check the exact battery for your model,{" "}
-                      <strong>we&apos;ll text you the final price</strong>{" "}
+                      Once we check the exact battery for your
+                      model,{" "}
+                      <strong>
+                        we&apos;ll text you the final price
+                      </strong>{" "}
                       before confirming anything.
                     </p>
                   )}
                 </div>
               )}
+
               {/* Optional screen protector add-on */}
-{issue && (
-  <div className="field">
-    <label>Optional add-on</label>
-    <label style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-      <input
-        type="checkbox"
-        checked={addProtector}
-        onChange={(e) => setAddProtector(e.target.checked)}
-        style={{ marginTop: "3px" }}
-      />
-      <span>
-        Add a{" "}
-        <strong>tempered glass screen protector for $15</strong> during your
-        visit.
-      </span>
-    </label>
+              {issue && (
+                <div className="field">
+                  <label>Optional add-on</label>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "8px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={addProtector}
+                      onChange={(e) =>
+                        setAddProtector(e.target.checked)
+                      }
+                      style={{ marginTop: "3px" }}
+                    />
+                    <span>
+                      Add a{" "}
+                      <strong>
+                        tempered glass screen protector for $15
+                      </strong>{" "}
+                      during your visit.
+                    </span>
+                  </label>
 
-    {issue === "Screen Replacement" &&
-      priceForSelection != null &&
-      addProtector && (
-        <p className="field-helper">
-          Estimated total with screen protector:{" "}
-          <strong>${(priceForSelection + 15).toFixed(2)}</strong> (plus tax).
-        </p>
-      )}
-  </div>
-)}
-
+                  {issue === "Screen Replacement" &&
+                    typeof priceForSelection === "number" &&
+                    addProtector && (
+                      <p className="field-helper">
+                        Estimated total with screen protector:{" "}
+                        <strong>
+                          $
+                          {(priceForSelection + 15).toFixed(
+                            2
+                          )}
+                        </strong>{" "}
+                        (plus tax).
+                      </p>
+                    )}
+                </div>
+              )}
 
               <div className="buttons">
                 <button
@@ -721,7 +916,10 @@ if (
                 >
                   Back
                 </button>
-                <button className="btn primary" onClick={handleNextFromStep2}>
+                <button
+                  className="btn primary"
+                  onClick={handleNextFromStep2}
+                >
                   Next: Your details
                 </button>
               </div>
@@ -746,17 +944,16 @@ if (
                   />
                 </div>
 
-                  <div className="field">
+                <div className="field">
                   <label>Last name *</label>
                   <input
                     type="text"
                     name="LastName"
                     value={customer.LastName}
                     onChange={handleCustomerChange}
-                    placeholder=" Doe"
+                    placeholder="Doe"
                   />
                 </div>
-                
 
                 <div className="field">
                   <label>Phone number *</label>
@@ -861,7 +1058,10 @@ if (
                   >
                     Back
                   </button>
-                  <button type="submit" className="btn primary">
+                  <button
+                    type="submit"
+                    className="btn primary"
+                  >
                     Submit booking
                   </button>
                 </div>
@@ -891,11 +1091,13 @@ if (
               <p>
                 Address:{" "}
                 <strong>
-                  {customer.address}, {customer.city} {customer.zip}
+                  {customer.address}, {customer.city}{" "}
+                  {customer.zip}
                 </strong>
               </p>
               <p>
-                Payment method: <strong>{customer.paymentMethod}</strong>
+                Payment method:{" "}
+                <strong>{customer.paymentMethod}</strong>
               </p>
 
               {/* Screen price summary */}
@@ -905,26 +1107,32 @@ if (
                     Screen quality chosen:{" "}
                     <strong>
                       {
-                        QUALITY_OPTIONS.find((q) => q.key === screenQuality)
-                          ?.label
+                        QUALITY_OPTIONS.find(
+                          (q) => q.key === screenQuality
+                        )?.label
                       }
                     </strong>
                   </p>
 
-                  {priceForSelection != null ? (
+                  {typeof priceForSelection === "number" ? (
                     <p>
-                      Estimated total for your screen replacement:{" "}
-                      <strong>${priceForSelection.toFixed(2)}</strong> (plus tax
-                      ).
+                      Estimated total for your screen
+                      replacement:{" "}
+                      <strong>
+                        ${priceForSelection.toFixed(2)}
+                      </strong>{" "}
+                      (plus tax).
                     </p>
                   ) : (
                     <p>
-                      Because your phone is custom or not on our list,{" "}
+                      Because your device is custom or not on
+                      our list,{" "}
                       <strong>
-                        we&apos;ll text you back with price &amp; parts
-                        availability
+                        we&apos;ll text you back with price
+                        &amp; parts availability
                       </strong>{" "}
-                      for your chosen screen quality before confirming the job.
+                      for your chosen screen quality before
+                      confirming the job.
                     </p>
                   )}
                 </>
@@ -933,40 +1141,50 @@ if (
               {/* Battery price summary */}
               {issue === "Battery Replacement" && (
                 <>
-                  {priceForSelection != null ? (
+                  {typeof priceForSelection === "number" ? (
                     <p>
-                      Estimated total for your battery replacement:{" "}
-                      <strong>${priceForSelection.toFixed(2)}</strong> (plus tax
-                      ).
+                      Estimated total for your battery
+                      replacement:{" "}
+                      <strong>
+                        ${priceForSelection.toFixed(2)}
+                      </strong>{" "}
+                      (plus tax).
                     </p>
                   ) : (
                     <p>
-                      We&apos;ll confirm the exact battery price for your model
-                      and text you before starting any work.
+                      We&apos;ll confirm the exact battery
+                      price for your model and text you before
+                      starting any work.
                     </p>
                   )}
                 </>
               )}
 
-              {customer.paymentMethod === "Zelle" && (
-                <div className="info-box">
+              <div className="info-box">
+                <p>
+                  You&apos;ll pay{" "}
+                  <strong>after the repair is complete</strong>{" "}
+                  using{" "}
+                  {customer.paymentMethod === "Card"
+                    ? "your card"
+                    : "cash"}
+                  – no pre-payment or deposit.
+                </p>
+              </div>
+
+              {issue === "Screen Replacement" &&
+                addProtector && (
                   <p>
-                    You can pay via Zelle to:{" "}
-                    <strong>your-zelle-email@example.com</strong> or{" "}
-                    <strong>+1-234-567-8901</strong> after the repair is
-                    complete.
+                    Screen protector add-on:{" "}
+                    <strong>+ $15</strong> will be added
+                    during your visit.
                   </p>
-                </div>
-              )}
+                )}
 
-              <p>We will contact you shortly to confirm your appointment.</p>
-              {issue === "Screen Replacement" && addProtector && (
-  <p>
-    Screen protector add-on: <strong>+ $15</strong> will be added during
-    your visit.
-  </p>
-)}
-
+              <p>
+                We will contact you shortly to confirm your
+                appointment.
+              </p>
 
               <div className="buttons">
                 <button
@@ -990,7 +1208,8 @@ if (
         <div className="timeline-card">
           <h2>What happens after you book?</h2>
           <p className="timeline-intro">
-            A simple, door-to-door repair flow designed so you don&apos;t lose your day.
+            A simple, door-to-door repair flow designed so you
+            don&apos;t lose your day.
           </p>
 
           <div className="timeline">
@@ -1002,11 +1221,19 @@ if (
               >
                 <div className="timeline-dot" />
                 <div className="timeline-line" />
-                <div className="timeline-icon">{stepItem.icon}</div>
+                <div className="timeline-icon">
+                  {stepItem.icon}
+                </div>
                 <div className="timeline-content">
-                  <div className="timeline-label">{stepItem.label}</div>
-                  <div className="timeline-title">{stepItem.title}</div>
-                  <div className="timeline-desc">{stepItem.desc}</div>
+                  <div className="timeline-label">
+                    {stepItem.label}
+                  </div>
+                  <div className="timeline-title">
+                    {stepItem.title}
+                  </div>
+                  <div className="timeline-desc">
+                    {stepItem.desc}
+                  </div>
                 </div>
               </div>
             ))}
@@ -1020,8 +1247,9 @@ if (
           <div className="map-text">
             <h2>We come to you in your city</h2>
             <p>
-              Instead of driving across town and waiting in a crowded shop,
-              your technician drives to <strong>you</strong>.
+              Instead of driving across town and waiting in a
+              crowded shop, your technician drives to{" "}
+              <strong>you</strong>.
             </p>
             <ul className="map-list">
               <li>🏠 Homes & apartments</li>
@@ -1029,7 +1257,8 @@ if (
               <li>☕ Coffee shops & public spots</li>
             </ul>
             <p className="map-note">
-              You pick the location. We bring the tools, parts & experience.
+              You pick the location. We bring the tools, parts &
+              experience.
             </p>
           </div>
 
@@ -1055,12 +1284,18 @@ if (
         <div className="info-card">
           <h3>How AtDoorFix works</h3>
           <ol>
-            <li>Choose your phone, issue & preferred screen or battery option.</li>
+            <li>
+              Choose your device, issue & preferred screen or
+              battery option.
+            </li>
             <li>Pick a time and enter your address.</li>
-            <li>Our tech comes to your door and fixes it on-site.</li>
+            <li>
+              Our tech comes to your door and fixes it on-site.
+            </li>
           </ol>
           <p className="info-small">
-            You only pay after the job is done and you&apos;re happy.
+            You only pay after the job is done and you&apos;re
+            happy.
           </p>
         </div>
 
@@ -1072,32 +1307,44 @@ if (
             <li>✅ Charging issues &amp; basic diagnostics</li>
           </ul>
           <p className="info-small">
-            Not sure what&apos;s wrong? Choose <strong>“Not sure / Other”</strong> and we&apos;ll help you
-            figure it out.
+            Not sure what&apos;s wrong? Choose{" "}
+            <strong>“Not sure / Other”</strong> and we&apos;ll
+            help you figure it out.
           </p>
         </div>
 
         <div className="info-card">
           <h3>Why people love AtDoorFix</h3>
           <ul>
-            <li>🚗 No driving, no waiting rooms – we come to you.</li>
-            <li>💸 Upfront pricing with parts + labor included.</li>
-            <li>💳 Pay with Zelle or cash after the job is done.</li>
+            <li>
+              🚗 No driving, no waiting rooms – we come to you.
+            </li>
+            <li>
+              💸 Upfront pricing with parts + labor included.
+            </li>
+            <li>
+              💳 Pay with cash or card after the job is done.
+            </li>
           </ul>
         </div>
       </section>
 
-      {/* ====== Comparison: shop vs Fix@YourDoor ====== */}
+      {/* ====== Comparison: shop vs AtDoorFix ====== */}
       <section className="compare-section" id="compare">
         <div className="compare-card">
           <h2>Typical repair shop vs AtDoorFix</h2>
           <p className="compare-intro">
-            Same goal – a working phone. But the experience is very different.
+            Same goal – a working phone. But the experience is
+            very different.
           </p>
 
           <div className="compare-table">
-            <div className="compare-header">What it&apos;s like</div>
-            <div className="compare-header">Typical repair shop</div>
+            <div className="compare-header">
+              What it&apos;s like
+            </div>
+            <div className="compare-header">
+              Typical repair shop
+            </div>
             <div className="compare-header">AtDoorFix</div>
 
             <div className="compare-label">Getting there</div>
@@ -1108,7 +1355,9 @@ if (
               🏠 We come to your home or office
             </div>
 
-            <div className="compare-label">Time without your phone</div>
+            <div className="compare-label">
+              Time without your phone
+            </div>
             <div className="compare-cell bad">
               ⏳ Leave your phone for hours or days
             </div>
@@ -1116,7 +1365,9 @@ if (
               ⚡ Most repairs done in under 1 hour
             </div>
 
-            <div className="compare-label">Pricing clarity</div>
+            <div className="compare-label">
+              Pricing clarity
+            </div>
             <div className="compare-cell bad">
               💸 Pricing often not clear up-front
             </div>
@@ -1137,118 +1388,130 @@ if (
               💳 Pay before you know if you&apos;re happy
             </div>
             <div className="compare-cell good">
-              🤝 Pay only after the job is done &amp; you&apos;re happy
+              🤝 Pay only after the job is done &amp; you&apos;re
+              happy
             </div>
           </div>
         </div>
       </section>
-      {/* ====== Animated Repair Timeline ====== */}
-<section className="repair-timeline" id="repair-timeline">
-  <div className="timeline-card">
-    <h2>What happens on repair day?</h2>
-    <p className="timeline-intro">
-      A simple, 4-step process. You always know what’s happening with your phone.
-    </p>
 
-    <div className="timeline-steps">
-      <div className="timeline-step">
-        <div className="timeline-step-dot" />
-        <div className="timeline-step-content">
-          <h4>1. We drive to you</h4>
-          <p>
-            Your technician heads to your home or office at the time you chose.
-            No driving, no waiting rooms.
+      {/* ====== Repair day timeline ====== */}
+      <section className="repair-timeline" id="repair-timeline">
+        <div className="timeline-card">
+          <h2>What happens on repair day?</h2>
+          <p className="timeline-intro">
+            A simple, 4-step process. You always know what’s
+            happening with your device.
           </p>
-        </div>
-      </div>
 
-      <div className="timeline-step">
-        <div className="timeline-step-dot" />
-        <div className="timeline-step-content">
-          <h4>2. Quick check & quote</h4>
-          <p>
-            We double-check the issue in person and confirm the price before we
-            start any work.
-          </p>
-        </div>
-      </div>
+          <div className="timeline-steps">
+            <div className="timeline-step">
+              <div className="timeline-step-dot" />
+              <div className="timeline-step-content">
+                <h4>1. We drive to you</h4>
+                <p>
+                  Your technician heads to your home or office at
+                  the time you chose. No driving, no waiting
+                  rooms.
+                </p>
+              </div>
+            </div>
 
-      <div className="timeline-step">
-        <div className="timeline-step-dot" />
-        <div className="timeline-step-content">
-          <h4>3. On-site repair</h4>
-          <p>
-            Most screen & battery repairs are done in under an hour right in our
-            service vehicle outside your door.
-          </p>
-        </div>
-      </div>
+            <div className="timeline-step">
+              <div className="timeline-step-dot" />
+              <div className="timeline-step-content">
+                <h4>2. Quick check & quote</h4>
+                <p>
+                  We double-check the issue in person and confirm
+                  the price before we start any work.
+                </p>
+              </div>
+            </div>
 
-      <div className="timeline-step">
-        <div className="timeline-step-dot" />
-        <div className="timeline-step-content">
-          <h4>4. You test & then pay</h4>
-          <p>
-            You check everything, we answer questions, and you only pay once
-            you&apos;re happy with the result.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+            <div className="timeline-step">
+              <div className="timeline-step-dot" />
+              <div className="timeline-step-content">
+                <h4>3. On-site repair</h4>
+                <p>
+                  Most screen & battery repairs are done in under
+                  an hour right in our service vehicle outside
+                  your door.
+                </p>
+              </div>
+            </div>
 
-{/* ====== Guarantee & safety badges ====== */}
-<section className="guarantee-strip" id="guarantees">
-  <div className="guarantee-card">
-    <h3>Every repair comes with:</h3>
-    <div className="guarantee-badges">
-      <div className="guarantee-badge">
-        <span className="badge-icon">🛡️</span>
-        <div>
-          <div className="badge-title">90-day warranty</div>
-          <div className="badge-text">
-            Coverage on parts & labor for your repair.
+            <div className="timeline-step">
+              <div className="timeline-step-dot" />
+              <div className="timeline-step-content">
+                <h4>4. You test & then pay</h4>
+                <p>
+                  You check everything, we answer questions, and
+                  you only pay once you&apos;re happy with the
+                  result.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="guarantee-badge">
-        <span className="badge-icon">👨‍🔧</span>
-        <div>
-          <div className="badge-title">Pro technician</div>
-          <div className="badge-text">
-            Experienced tech focused on quality & safety.
+      {/* ====== Guarantee & safety badges ====== */}
+      <section className="guarantee-strip" id="guarantees">
+        <div className="guarantee-card">
+          <h3>Every repair comes with:</h3>
+          <div className="guarantee-badges">
+            <div className="guarantee-badge">
+              <span className="badge-icon">🛡️</span>
+              <div>
+                <div className="badge-title">
+                  90-day warranty
+                </div>
+                <div className="badge-text">
+                  Coverage on parts & labor for your repair.
+                </div>
+              </div>
+            </div>
+
+            <div className="guarantee-badge">
+              <span className="badge-icon">👨‍🔧</span>
+              <div>
+                <div className="badge-title">
+                  Pro technician
+                </div>
+                <div className="badge-text">
+                  Experienced tech focused on quality & safety.
+                </div>
+              </div>
+            </div>
+
+            <div className="guarantee-badge">
+              <span className="badge-icon">✅</span>
+              <div>
+                <div className="badge-title">
+                  Pay after repair
+                </div>
+                <div className="badge-text">
+                  No deposits or pre-payment. You pay when the
+                  job is done.
+                </div>
+              </div>
+            </div>
+
+            <div className="guarantee-badge">
+              <span className="badge-icon">📱</span>
+              <div>
+                <div className="badge-title">
+                  Quality parts
+                </div>
+                <div className="badge-text">
+                  We source trusted parts that we&apos;re happy
+                  to warranty.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="guarantee-badge">
-        <span className="badge-icon">✅</span>
-        <div>
-          <div className="badge-title">Pay after repair</div>
-          <div className="badge-text">
-            No deposits or pre-payment. You pay when the job is done.
-          </div>
-        </div>
-      </div>
-
-      <div className="guarantee-badge">
-        <span className="badge-icon">📱</span>
-        <div>
-          <div className="badge-title">Quality parts</div>
-          <div className="badge-text">
-            We source trusted parts that we&apos;re happy to warranty.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-      {/* ====== Compact feature strip ====== */}
-    
+      </section>
 
       <footer className="footer">
         © 2025 AtDoorFix. All rights reserved.
