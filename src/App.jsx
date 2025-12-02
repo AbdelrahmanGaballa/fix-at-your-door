@@ -47,7 +47,7 @@ const BRAND_CARDS = [
     value: "__otherBrand",
     label: "OTHER BRAND",
     logoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/4/48/Markdown-mark.svg", // simple dots icon
+      "https://upload.wikimedia.org/wikipedia/commons/4/48/Markdown-mark.svg",
     isOther: true,
   },
 ];
@@ -96,11 +96,7 @@ const PHONE_DATA = [
   },
 ];
 
-const ISSUES = [
-  "Screen Replacement",
-  "Battery Replacement",
-  "Not sure / Other",
-];
+const ISSUES = ["Screen Replacement", "Battery Replacement", "Not sure / Other"];
 
 const PAYMENT_METHODS = ["cash", "Card"];
 
@@ -179,9 +175,16 @@ function App() {
 
   const [submitted, setSubmitted] = useState(false);
 
-  // smooth scroll to booking + audio tap
+  // smooth scroll + audio tap
   const bookingRef = useRef(null);
   const audioRef = useRef(null);
+
+  // section refs for auto-scroll / accordion feel
+  const deviceRef = useRef(null);
+  const brandRef = useRef(null);
+  const modelRef = useRef(null);
+  const issueRef = useRef(null);
+  const detailsRef = useRef(null);
 
   useEffect(() => {
     audioRef.current = new Audio(tapSound);
@@ -194,6 +197,15 @@ function App() {
     audio.play().catch(() => {});
   };
 
+  const scrollTo = (ref) => {
+    if (ref && ref.current) {
+      ref.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   const handleHeroBook = () => {
     playTap();
     setSubmitted(false);
@@ -204,11 +216,12 @@ function App() {
         block: "start",
       });
     }
+    // focus the device section after a tiny delay
+    setTimeout(() => scrollTo(deviceRef), 350);
   };
 
   const isSmartphone = deviceType === "smartphone";
-  const isOtherBrand =
-    isSmartphone && selectedBrand === "__otherBrand";
+  const isOtherBrand = isSmartphone && selectedBrand === "__otherBrand";
   const isOtherModel = isSmartphone && selectedModel === "__other";
 
   const modelsForBrand =
@@ -217,7 +230,6 @@ function App() {
       : [];
 
   // ---------- pricing helpers (screens + battery) ----------
-  // Only treat it as known if it's a smartphone with a listed brand + model
 
   const hasKnownDevice =
     isSmartphone &&
@@ -240,12 +252,10 @@ function App() {
         SCREEN_PRICING[selectedBrand]?.[selectedModel] || null;
       if (screenPricing) {
         const candidate = screenPricing[screenQuality];
-        rawPrice =
-          typeof candidate === "number" ? candidate : null;
+        rawPrice = typeof candidate === "number" ? candidate : null;
       }
     } else if (issue === "Battery Replacement") {
-      const batteryPricing =
-        BATTERY_PRICING[selectedBrand]?.[selectedModel];
+      const batteryPricing = BATTERY_PRICING[selectedBrand]?.[selectedModel];
       rawPrice =
         typeof batteryPricing === "number" ? batteryPricing : null;
     }
@@ -271,6 +281,7 @@ function App() {
           return;
         }
         setStep(2);
+        scrollTo(issueRef);
         return;
       }
 
@@ -292,6 +303,7 @@ function App() {
     }
 
     setStep(2);
+    scrollTo(issueRef);
   }
 
   function handleNextFromStep2() {
@@ -301,6 +313,7 @@ function App() {
       return;
     }
     setStep(3);
+    scrollTo(detailsRef);
   }
 
   function handleCustomerChange(e) {
@@ -315,7 +328,6 @@ function App() {
     playTap();
     console.log("✅ handleSubmit fired");
 
-    // basic validation
     if (
       (!isSmartphone &&
         (!otherBrandText.trim() || !otherModelText.trim())) ||
@@ -359,8 +371,7 @@ function App() {
 
     if (
       typeof priceForSelection === "number" &&
-      (issue === "Screen Replacement" ||
-        issue === "Battery Replacement")
+      (issue === "Screen Replacement" || issue === "Battery Replacement")
     ) {
       estPrice = priceForSelection;
 
@@ -426,6 +437,7 @@ function App() {
 
     setSubmitted(true);
     setStep(4);
+    scrollTo(bookingRef);
   }
 
   const displayBrand = isSmartphone
@@ -439,6 +451,9 @@ function App() {
       ? selectedModel
       : otherModelText || "Custom model";
 
+  // progress for sticky bar
+  const progress = (step / 4) * 100;
+
   // ---------- JSX ----------
 
   return (
@@ -448,11 +463,7 @@ function App() {
         <header className="header">
           <div className="header-inner">
             <div className="logo-row">
-              <img
-                src={logo}
-                alt="AtDoorFix logo"
-                className="logo-image"
-              />
+              <img src={logo} alt="AtDoorFix logo" className="logo-image" />
             </div>
 
             <h1>
@@ -461,10 +472,7 @@ function App() {
               right at your doorstep.
             </h1>
 
-            <p>
-              Same-day screen &amp; battery repair at your home or
-              office.
-            </p>
+            <p>Same-day screen &amp; battery repair at your home or office.</p>
             <p className="service-area">
               <span className="pin">📍</span>
               <span className="label">Now serving:</span>
@@ -477,25 +485,16 @@ function App() {
             </p>
 
             <div className="hero-tags">
-              <span className="hero-tag">
-                🚗 Mobile technician
-              </span>
+              <span className="hero-tag">🚗 Mobile technician</span>
               <span className="hero-tag">⚡ Same-day slots</span>
-              <span className="hero-tag">
-                💳 Cash or card after repair
-              </span>
+              <span className="hero-tag">💳 Cash or card after repair</span>
             </div>
 
             <div className="hero-btn-row">
-              <button
-                className="btn primary"
-                onClick={handleHeroBook}
-              >
+              <button className="btn primary" onClick={handleHeroBook}>
                 Book a repair
               </button>
-              <span className="hero-note">
-                No upfront payment required.
-              </span>
+              <span className="hero-note">No upfront payment required.</span>
             </div>
           </div>
         </header>
@@ -510,9 +509,7 @@ function App() {
             </span>
             <span className={step >= 2 ? "step active" : "step"}>
               <span className="step-dot">2</span>
-              <span className="step-label">
-                Issue &amp; screen
-              </span>
+              <span className="step-label">Issue &amp; screen</span>
             </span>
             <span className={step >= 3 ? "step active" : "step"}>
               <span className="step-dot">3</span>
@@ -526,12 +523,12 @@ function App() {
 
           {/* STEP 1 – Device */}
           {step === 1 && (
-            <section>
+            <section
+              ref={deviceRef}
+              className="accordion-section accordion-section-active"
+            >
               <h2>Select your device</h2>
-              <p>
-                Tell us what you’re using so we bring the right
-                parts.
-              </p>
+              <p>Tell us what you’re using so we bring the right parts.</p>
 
               {/* Device type cards */}
               <div className="field">
@@ -553,14 +550,11 @@ function App() {
                         setSelectedModel("");
                         setOtherBrandText("");
                         setOtherModelText("");
+                        scrollTo(brandRef);
                       }}
                     >
-                      <span className="device-type-icon">
-                        {t.icon}
-                      </span>
-                      <span className="device-type-label">
-                        {t.label}
-                      </span>
+                      <span className="device-type-icon">{t.icon}</span>
+                      <span className="device-type-label">{t.label}</span>
                     </button>
                   ))}
                 </div>
@@ -569,7 +563,7 @@ function App() {
               {/* Smartphone flow: brand cards + model */}
               {isSmartphone ? (
                 <>
-                  <div className="field">
+                  <div className="field" ref={brandRef}>
                     <label>Brand</label>
                     <div className="brand-grid">
                       {BRAND_CARDS.map((b) => (
@@ -589,6 +583,8 @@ function App() {
                               setOtherBrandText("");
                               setOtherModelText("");
                             }
+                            // jump user down to model area
+                            scrollTo(modelRef);
                           }}
                         >
                           <div className="brand-logo-wrapper">
@@ -604,9 +600,7 @@ function App() {
                               </span>
                             )}
                           </div>
-                          <div className="brand-label">
-                            {b.label}
-                          </div>
+                          <div className="brand-label">{b.label}</div>
                         </button>
                       ))}
                     </div>
@@ -614,18 +608,20 @@ function App() {
 
                   {/* MODEL SELECT (for known brands) */}
                   {!isOtherBrand && selectedBrand && (
-                    <div className="field">
+                    <div className="field" ref={modelRef}>
                       <label>Model</label>
                       <select
                         value={selectedModel}
-                        onChange={(e) =>
-                          setSelectedModel(e.target.value)
-                        }
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSelectedModel(value);
+                          if (value) {
+                            scrollTo(issueRef);
+                          }
+                        }}
                       >
                         <option value="">
-                          {selectedBrand
-                            ? "Choose model"
-                            : "Select brand first"}
+                          {selectedBrand ? "Choose model" : "Select brand first"}
                         </option>
                         {modelsForBrand.map((m) => (
                           <option key={m} value={m}>
@@ -633,9 +629,7 @@ function App() {
                           </option>
                         ))}
                         {selectedBrand && (
-                          <option value="__other">
-                            Other (not listed)
-                          </option>
+                          <option value="__other">Other (not listed)</option>
                         )}
                       </select>
                     </div>
@@ -644,7 +638,7 @@ function App() {
                   {/* FIELDS WHEN SMARTPHONE OTHER BRAND */}
                   {isOtherBrand && (
                     <>
-                      <div className="field">
+                      <div className="field" ref={modelRef}>
                         <label>Phone brand *</label>
                         <input
                           type="text"
@@ -688,26 +682,22 @@ function App() {
               ) : (
                 // Non-smartphone devices
                 <>
-                  <div className="field">
+                  <div className="field" ref={brandRef}>
                     <label>Device brand *</label>
                     <input
                       type="text"
                       value={otherBrandText}
-                      onChange={(e) =>
-                        setOtherBrandText(e.target.value)
-                      }
+                      onChange={(e) => setOtherBrandText(e.target.value)}
                       placeholder="Example: iPad, Surface, MacBook, Galaxy Tab..."
                     />
                   </div>
 
-                  <div className="field">
+                  <div className="field" ref={modelRef}>
                     <label>Device model *</label>
                     <input
                       type="text"
                       value={otherModelText}
-                      onChange={(e) =>
-                        setOtherModelText(e.target.value)
-                      }
+                      onChange={(e) => setOtherModelText(e.target.value)}
                       placeholder="Example: iPad Pro 11, Surface Laptop 5..."
                     />
                   </div>
@@ -715,11 +705,9 @@ function App() {
               )}
 
               <div className="buttons">
-                <button
-                  className="btn primary"
-                  onClick={handleNextFromStep1}
-                >
+                <button className="btn primary" onClick={handleNextFromStep1}>
                   Next: Choose issue
+                  <span className="next-arrow">➜</span>
                 </button>
               </div>
             </section>
@@ -727,11 +715,14 @@ function App() {
 
           {/* STEP 2 – Issue + Screen/Battery info */}
           {step === 2 && (
-            <section>
+            <section
+              ref={issueRef}
+              className="accordion-section accordion-section-active"
+            >
               <h2>Issue &amp; screen</h2>
               <p>
-                Tell us what’s wrong. If it’s a screen repair we’ll
-                show you the screen options.
+                Tell us what’s wrong. If it’s a screen repair we’ll show you the
+                screen options.
               </p>
 
               {/* ISSUE */}
@@ -760,9 +751,9 @@ function App() {
                   <div className="quality-box">
                     {QUALITY_OPTIONS.map((q) => {
                       const perQualityPrice = hasKnownDevice
-                        ? SCREEN_PRICING[selectedBrand]?.[
-                            selectedModel
-                          ]?.[q.key] ?? null
+                        ? SCREEN_PRICING[selectedBrand]?.[selectedModel]?.[
+                            q.key
+                          ] ?? null
                         : null;
 
                       return (
@@ -781,23 +772,13 @@ function App() {
                               {q.label} – {q.short}
                             </strong>
                             <br />
-                            <span
-                              style={{ fontSize: "0.8rem" }}
-                            >
+                            <span style={{ fontSize: "0.8rem" }}>
                               {q.description}{" "}
-                              {typeof perQualityPrice ===
-                                "number" && (
+                              {typeof perQualityPrice === "number" && (
                                 <>
                                   ·{" "}
-                                  <span
-                                    style={{
-                                      color: "#a5b4fc",
-                                    }}
-                                  >
-                                    Est. $
-                                    {perQualityPrice.toFixed(
-                                      2
-                                    )}
+                                  <span style={{ color: "#a5b4fc" }}>
+                                    Est. ${perQualityPrice.toFixed(2)}
                                   </span>
                                 </>
                               )}
@@ -808,9 +789,7 @@ function App() {
                     })}
                   </div>
 
-                  {(isOtherBrand ||
-                    isOtherModel ||
-                    !isSmartphone) && (
+                  {(isOtherBrand || isOtherModel || !isSmartphone) && (
                     <p
                       style={{
                         fontSize: "0.78rem",
@@ -818,14 +797,12 @@ function App() {
                         color: "#9ca3af",
                       }}
                     >
-                      Because your device is custom or not on our
-                      list,{" "}
+                      Because your device is custom or not on our list,{" "}
                       <strong>
-                        we&apos;ll check parts availability and
-                        text you your price
+                        we&apos;ll check parts availability and text you your
+                        price
                       </strong>{" "}
-                      for this screen quality before confirming the
-                      job.
+                      for this screen quality before confirming the job.
                     </p>
                   )}
                 </div>
@@ -836,25 +813,19 @@ function App() {
                 <div className="info-box">
                   {typeof priceForSelection === "number" ? (
                     <p>
-                      Estimated total for{" "}
-                      <strong>battery replacement</strong> on
-                      your{" "}
+                      Estimated total for <strong>battery replacement</strong>{" "}
+                      on your{" "}
                       <strong>
                         {displayBrand} {displayModel}
                       </strong>
                       :{" "}
-                      <strong>
-                        ${priceForSelection.toFixed(2)}
-                      </strong>{" "}
-                      (plus tax).
+                      <strong>${priceForSelection.toFixed(2)}</strong> (plus
+                      tax).
                     </p>
                   ) : (
                     <p>
-                      Once we check the exact battery for your
-                      model,{" "}
-                      <strong>
-                        we&apos;ll text you the final price
-                      </strong>{" "}
+                      Once we check the exact battery for your model,{" "}
+                      <strong>we&apos;ll text you the final price</strong>{" "}
                       before confirming anything.
                     </p>
                   )}
@@ -875,16 +846,12 @@ function App() {
                     <input
                       type="checkbox"
                       checked={addProtector}
-                      onChange={(e) =>
-                        setAddProtector(e.target.checked)
-                      }
+                      onChange={(e) => setAddProtector(e.target.checked)}
                       style={{ marginTop: "3px" }}
                     />
                     <span>
                       Add a{" "}
-                      <strong>
-                        tempered glass screen protector for $15
-                      </strong>{" "}
+                      <strong>tempered glass screen protector for $15</strong>{" "}
                       during your visit.
                     </span>
                   </label>
@@ -895,10 +862,7 @@ function App() {
                       <p className="field-helper">
                         Estimated total with screen protector:{" "}
                         <strong>
-                          $
-                          {(priceForSelection + 15).toFixed(
-                            2
-                          )}
+                          ${(priceForSelection + 15).toFixed(2)}
                         </strong>{" "}
                         (plus tax).
                       </p>
@@ -912,15 +876,14 @@ function App() {
                   onClick={() => {
                     playTap();
                     setStep(1);
+                    scrollTo(deviceRef);
                   }}
                 >
                   Back
                 </button>
-                <button
-                  className="btn primary"
-                  onClick={handleNextFromStep2}
-                >
+                <button className="btn primary" onClick={handleNextFromStep2}>
                   Next: Your details
+                  <span className="next-arrow">➜</span>
                 </button>
               </div>
             </section>
@@ -928,7 +891,10 @@ function App() {
 
           {/* STEP 3 – Customer details */}
           {step === 3 && (
-            <section>
+            <section
+              ref={detailsRef}
+              className="accordion-section accordion-section-active"
+            >
               <h2>Your details &amp; appointment</h2>
               <p>We’ll come to you at your chosen time.</p>
 
@@ -1054,15 +1020,14 @@ function App() {
                     onClick={() => {
                       playTap();
                       setStep(2);
+                      scrollTo(issueRef);
                     }}
                   >
                     Back
                   </button>
-                  <button
-                    type="submit"
-                    className="btn primary"
-                  >
+                  <button type="submit" className="btn primary">
                     Submit booking
+                    <span className="next-arrow">➜</span>
                   </button>
                 </div>
               </form>
@@ -1071,7 +1036,7 @@ function App() {
 
           {/* STEP 4 – Confirmation */}
           {step === 4 && submitted && (
-            <section>
+            <section className="accordion-section accordion-section-active">
               <h2>Thank you! 🎉</h2>
               <p>
                 We received your request for{" "}
@@ -1091,13 +1056,11 @@ function App() {
               <p>
                 Address:{" "}
                 <strong>
-                  {customer.address}, {customer.city}{" "}
-                  {customer.zip}
+                  {customer.address}, {customer.city} {customer.zip}
                 </strong>
               </p>
               <p>
-                Payment method:{" "}
-                <strong>{customer.paymentMethod}</strong>
+                Payment method: <strong>{customer.paymentMethod}</strong>
               </p>
 
               {/* Screen price summary */}
@@ -1116,23 +1079,18 @@ function App() {
 
                   {typeof priceForSelection === "number" ? (
                     <p>
-                      Estimated total for your screen
-                      replacement:{" "}
-                      <strong>
-                        ${priceForSelection.toFixed(2)}
-                      </strong>{" "}
-                      (plus tax).
+                      Estimated total for your screen replacement:{" "}
+                      <strong>${priceForSelection.toFixed(2)}</strong> (plus
+                      tax).
                     </p>
                   ) : (
                     <p>
-                      Because your device is custom or not on
-                      our list,{" "}
+                      Because your device is custom or not on our list,{" "}
                       <strong>
-                        we&apos;ll text you back with price
-                        &amp; parts availability
+                        we&apos;ll text you back with price &amp; parts
+                        availability
                       </strong>{" "}
-                      for your chosen screen quality before
-                      confirming the job.
+                      for your chosen screen quality before confirming the job.
                     </p>
                   )}
                 </>
@@ -1143,18 +1101,14 @@ function App() {
                 <>
                   {typeof priceForSelection === "number" ? (
                     <p>
-                      Estimated total for your battery
-                      replacement:{" "}
-                      <strong>
-                        ${priceForSelection.toFixed(2)}
-                      </strong>{" "}
-                      (plus tax).
+                      Estimated total for your battery replacement:{" "}
+                      <strong>${priceForSelection.toFixed(2)}</strong> (plus
+                      tax).
                     </p>
                   ) : (
                     <p>
-                      We&apos;ll confirm the exact battery
-                      price for your model and text you before
-                      starting any work.
+                      We&apos;ll confirm the exact battery price for your model
+                      and text you before starting any work.
                     </p>
                   )}
                 </>
@@ -1163,28 +1117,20 @@ function App() {
               <div className="info-box">
                 <p>
                   You&apos;ll pay{" "}
-                  <strong>after the repair is complete</strong>{" "}
-                  using{" "}
-                  {customer.paymentMethod === "Card"
-                    ? "your card"
-                    : "cash"}
-                  – no pre-payment or deposit.
+                  <strong>after the repair is complete</strong> using{" "}
+                  {customer.paymentMethod === "Card" ? "your card" : "cash"} – no
+                  pre-payment or deposit.
                 </p>
               </div>
 
-              {issue === "Screen Replacement" &&
-                addProtector && (
-                  <p>
-                    Screen protector add-on:{" "}
-                    <strong>+ $15</strong> will be added
-                    during your visit.
-                  </p>
-                )}
+              {issue === "Screen Replacement" && addProtector && (
+                <p>
+                  Screen protector add-on: <strong>+ $15</strong> will be added
+                  during your visit.
+                </p>
+              )}
 
-              <p>
-                We will contact you shortly to confirm your
-                appointment.
-              </p>
+              <p>We will contact you shortly to confirm your appointment.</p>
 
               <div className="buttons">
                 <button
@@ -1193,6 +1139,7 @@ function App() {
                     playTap();
                     setSubmitted(false);
                     setStep(1);
+                    scrollTo(deviceRef);
                   }}
                 >
                   Book another repair
@@ -1203,13 +1150,24 @@ function App() {
         </main>
       </div>
 
+      {/* Bottom sticky progress bar */}
+      <div className="booking-progress">
+        <div className="booking-progress-track">
+          <div
+            className="booking-progress-bar"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="booking-progress-text">Step {step} of 4</div>
+      </div>
+
       {/* ====== Animated repair timeline ====== */}
       <section className="timeline-section">
         <div className="timeline-card">
           <h2>What happens after you book?</h2>
           <p className="timeline-intro">
-            A simple, door-to-door repair flow designed so you
-            don&apos;t lose your day.
+            A simple, door-to-door repair flow designed so you don&apos;t lose
+            your day.
           </p>
 
           <div className="timeline">
@@ -1221,19 +1179,11 @@ function App() {
               >
                 <div className="timeline-dot" />
                 <div className="timeline-line" />
-                <div className="timeline-icon">
-                  {stepItem.icon}
-                </div>
+                <div className="timeline-icon">{stepItem.icon}</div>
                 <div className="timeline-content">
-                  <div className="timeline-label">
-                    {stepItem.label}
-                  </div>
-                  <div className="timeline-title">
-                    {stepItem.title}
-                  </div>
-                  <div className="timeline-desc">
-                    {stepItem.desc}
-                  </div>
+                  <div className="timeline-label">{stepItem.label}</div>
+                  <div className="timeline-title">{stepItem.title}</div>
+                  <div className="timeline-desc">{stepItem.desc}</div>
                 </div>
               </div>
             ))}
@@ -1247,9 +1197,8 @@ function App() {
           <div className="map-text">
             <h2>We come to you in your city</h2>
             <p>
-              Instead of driving across town and waiting in a
-              crowded shop, your technician drives to{" "}
-              <strong>you</strong>.
+              Instead of driving across town and waiting in a crowded shop, your
+              technician drives to <strong>you</strong>.
             </p>
             <ul className="map-list">
               <li>🏠 Homes & apartments</li>
@@ -1257,8 +1206,7 @@ function App() {
               <li>☕ Coffee shops & public spots</li>
             </ul>
             <p className="map-note">
-              You pick the location. We bring the tools, parts &
-              experience.
+              You pick the location. We bring the tools, parts & experience.
             </p>
           </div>
 
@@ -1285,17 +1233,13 @@ function App() {
           <h3>How AtDoorFix works</h3>
           <ol>
             <li>
-              Choose your device, issue & preferred screen or
-              battery option.
+              Choose your device, issue & preferred screen or battery option.
             </li>
             <li>Pick a time and enter your address.</li>
-            <li>
-              Our tech comes to your door and fixes it on-site.
-            </li>
+            <li>Our tech comes to your door and fixes it on-site.</li>
           </ol>
           <p className="info-small">
-            You only pay after the job is done and you&apos;re
-            happy.
+            You only pay after the job is done and you&apos;re happy.
           </p>
         </div>
 
@@ -1308,23 +1252,17 @@ function App() {
           </ul>
           <p className="info-small">
             Not sure what&apos;s wrong? Choose{" "}
-            <strong>“Not sure / Other”</strong> and we&apos;ll
-            help you figure it out.
+            <strong>“Not sure / Other”</strong> and we&apos;ll help you figure
+            it out.
           </p>
         </div>
 
         <div className="info-card">
           <h3>Why people love AtDoorFix</h3>
           <ul>
-            <li>
-              🚗 No driving, no waiting rooms – we come to you.
-            </li>
-            <li>
-              💸 Upfront pricing with parts + labor included.
-            </li>
-            <li>
-              💳 Pay with cash or card after the job is done.
-            </li>
+            <li>🚗 No driving, no waiting rooms – we come to you.</li>
+            <li>💸 Upfront pricing with parts + labor included.</li>
+            <li>💳 Pay with cash or card after the job is done.</li>
           </ul>
         </div>
       </section>
@@ -1334,17 +1272,12 @@ function App() {
         <div className="compare-card">
           <h2>Typical repair shop vs AtDoorFix</h2>
           <p className="compare-intro">
-            Same goal – a working phone. But the experience is
-            very different.
+            Same goal – a working phone. But the experience is very different.
           </p>
 
           <div className="compare-table">
-            <div className="compare-header">
-              What it&apos;s like
-            </div>
-            <div className="compare-header">
-              Typical repair shop
-            </div>
+            <div className="compare-header">What it&apos;s like</div>
+            <div className="compare-header">Typical repair shop</div>
             <div className="compare-header">AtDoorFix</div>
 
             <div className="compare-label">Getting there</div>
@@ -1355,9 +1288,7 @@ function App() {
               🏠 We come to your home or office
             </div>
 
-            <div className="compare-label">
-              Time without your phone
-            </div>
+            <div className="compare-label">Time without your phone</div>
             <div className="compare-cell bad">
               ⏳ Leave your phone for hours or days
             </div>
@@ -1365,9 +1296,7 @@ function App() {
               ⚡ Most repairs done in under 1 hour
             </div>
 
-            <div className="compare-label">
-              Pricing clarity
-            </div>
+            <div className="compare-label">Pricing clarity</div>
             <div className="compare-cell bad">
               💸 Pricing often not clear up-front
             </div>
@@ -1388,8 +1317,7 @@ function App() {
               💳 Pay before you know if you&apos;re happy
             </div>
             <div className="compare-cell good">
-              🤝 Pay only after the job is done &amp; you&apos;re
-              happy
+              🤝 Pay only after the job is done &amp; you&apos;re happy
             </div>
           </div>
         </div>
@@ -1400,8 +1328,8 @@ function App() {
         <div className="timeline-card">
           <h2>What happens on repair day?</h2>
           <p className="timeline-intro">
-            A simple, 4-step process. You always know what’s
-            happening with your device.
+            A simple, 4-step process. You always know what’s happening with your
+            device.
           </p>
 
           <div className="timeline-steps">
@@ -1410,9 +1338,8 @@ function App() {
               <div className="timeline-step-content">
                 <h4>1. We drive to you</h4>
                 <p>
-                  Your technician heads to your home or office at
-                  the time you chose. No driving, no waiting
-                  rooms.
+                  Your technician heads to your home or office at the time you
+                  chose. No driving, no waiting rooms.
                 </p>
               </div>
             </div>
@@ -1422,8 +1349,8 @@ function App() {
               <div className="timeline-step-content">
                 <h4>2. Quick check & quote</h4>
                 <p>
-                  We double-check the issue in person and confirm
-                  the price before we start any work.
+                  We double-check the issue in person and confirm the price
+                  before we start any work.
                 </p>
               </div>
             </div>
@@ -1433,9 +1360,8 @@ function App() {
               <div className="timeline-step-content">
                 <h4>3. On-site repair</h4>
                 <p>
-                  Most screen & battery repairs are done in under
-                  an hour right in our service vehicle outside
-                  your door.
+                  Most screen & battery repairs are done in under an hour right
+                  in our service vehicle outside your door.
                 </p>
               </div>
             </div>
@@ -1445,9 +1371,8 @@ function App() {
               <div className="timeline-step-content">
                 <h4>4. You test & then pay</h4>
                 <p>
-                  You check everything, we answer questions, and
-                  you only pay once you&apos;re happy with the
-                  result.
+                  You check everything, we answer questions, and you only pay
+                  once you&apos;re happy with the result.
                 </p>
               </div>
             </div>
@@ -1463,9 +1388,7 @@ function App() {
             <div className="guarantee-badge">
               <span className="badge-icon">🛡️</span>
               <div>
-                <div className="badge-title">
-                  90-day warranty
-                </div>
+                <div className="badge-title">90-day warranty</div>
                 <div className="badge-text">
                   Coverage on parts & labor for your repair.
                 </div>
@@ -1475,9 +1398,7 @@ function App() {
             <div className="guarantee-badge">
               <span className="badge-icon">👨‍🔧</span>
               <div>
-                <div className="badge-title">
-                  Pro technician
-                </div>
+                <div className="badge-title">Pro technician</div>
                 <div className="badge-text">
                   Experienced tech focused on quality & safety.
                 </div>
@@ -1487,12 +1408,9 @@ function App() {
             <div className="guarantee-badge">
               <span className="badge-icon">✅</span>
               <div>
-                <div className="badge-title">
-                  Pay after repair
-                </div>
+                <div className="badge-title">Pay after repair</div>
                 <div className="badge-text">
-                  No deposits or pre-payment. You pay when the
-                  job is done.
+                  No deposits or pre-payment. You pay when the job is done.
                 </div>
               </div>
             </div>
@@ -1500,12 +1418,9 @@ function App() {
             <div className="guarantee-badge">
               <span className="badge-icon">📱</span>
               <div>
-                <div className="badge-title">
-                  Quality parts
-                </div>
+                <div className="badge-title">Quality parts</div>
                 <div className="badge-text">
-                  We source trusted parts that we&apos;re happy
-                  to warranty.
+                  We source trusted parts that we&apos;re happy to warranty.
                 </div>
               </div>
             </div>

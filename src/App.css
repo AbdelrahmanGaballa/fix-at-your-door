@@ -1680,3 +1680,66 @@ select:focus {
   height: 65px;
   object-fit: contain;
 }
+
+.device-type-card,
+.brand-card {
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+}
+
+.device-type-card.active,
+.brand-card.active {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px #22c55e, 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+.next-arrow {
+  display: inline-block;
+  margin-left: 8px;
+  transition: transform 0.2s ease;
+}
+
+.btn.primary:hover .next-arrow {
+  transform: translateX(4px);
+}
+.accordion-section {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.accordion-section-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.booking-progress {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  padding: 8px 16px;
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 40%, #000 100%);
+  border-top: 1px solid rgba(148, 163, 184, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.booking-progress-track {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(30, 64, 175, 0.6);
+  overflow: hidden;
+}
+
+.booking-progress-bar {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #22c55e, #38bdf8);
+  transition: width 0.25s ease;
+}
+
+.booking-progress-text {
+  font-size: 0.75rem;
+  color: #e5e7eb;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
