@@ -108,6 +108,8 @@ function App() {
   const [selectedModel, setSelectedModel] = useState("");
   const [issue, setIssue] = useState("");
   const [screenQuality, setScreenQuality] = useState("aftermarket");
+  const [addProtector, setAddProtector] = useState(false);
+
 
   const [otherBrandText, setOtherBrandText] = useState("");
   const [otherModelText, setOtherModelText] = useState("");
@@ -275,12 +277,18 @@ function App() {
 
     // use same computed price for both screen & battery when known
     let estPrice = "";
-    if (
-      priceForSelection != null &&
-      (issue === "Screen Replacement" || issue === "Battery Replacement")
-    ) {
-      estPrice = priceForSelection;
-    }
+if (
+  priceForSelection != null &&
+  (issue === "Screen Replacement" || issue === "Battery Replacement")
+) {
+  estPrice = priceForSelection;
+
+  // add $15 if they chose a screen protector on a screen repair
+  if (issue === "Screen Replacement" && addProtector) {
+    estPrice += 15;
+  }
+}
+
 
     const payload = {
       Brand: effectiveBrand,
@@ -291,6 +299,7 @@ function App() {
       Issue: issue,
       ScreenQuality: effectiveScreenQuality,
       EstPrice: estPrice,
+      AddScreenProtector: addProtector ? "Yes ($15)" : "No",
       FirstName: customer.FirstName,
        LastName: customer.LastName,
       Phone: customer.phone,
@@ -306,7 +315,7 @@ function App() {
     console.log("📦 Booking payload:", payload);
 
     const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbxawpysf2R4wR5IxFZNpgcSSxnCA6VNe_PBL9kMBqIWcrP3cwpem6J2NzBn5pTsFzwrHw/exec";
+      "https://script.google.com/macros/s/AKfycbx2e886qfsmEzm_aAll-0LoZg9R9ubyBvqTRjOdGGM1RSbAbyN9MeSw8V4_aImloklyNg/exec";
 
     try {
       await fetch(WEB_APP_URL, {
@@ -573,9 +582,13 @@ function App() {
               <div className="field">
                 <label>Problem</label>
                 <select
-                  value={issue}
-                  onChange={(e) => setIssue(e.target.value)}
-                >
+  value={issue}
+  onChange={(e) => {
+    setIssue(e.target.value);
+    setAddProtector(false); // reset when user changes issue
+  }}
+>
+
                   <option value="">Choose issue</option>
                   {ISSUES.map((i) => (
                     <option key={i} value={i}>
@@ -668,6 +681,35 @@ function App() {
                   )}
                 </div>
               )}
+              {/* Optional screen protector add-on */}
+{issue && (
+  <div className="field">
+    <label>Optional add-on</label>
+    <label style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+      <input
+        type="checkbox"
+        checked={addProtector}
+        onChange={(e) => setAddProtector(e.target.checked)}
+        style={{ marginTop: "3px" }}
+      />
+      <span>
+        Add a{" "}
+        <strong>tempered glass screen protector for $15</strong> during your
+        visit.
+      </span>
+    </label>
+
+    {issue === "Screen Replacement" &&
+      priceForSelection != null &&
+      addProtector && (
+        <p className="field-helper">
+          Estimated total with screen protector:{" "}
+          <strong>${(priceForSelection + 15).toFixed(2)}</strong> (plus tax).
+        </p>
+      )}
+  </div>
+)}
+
 
               <div className="buttons">
                 <button
@@ -918,6 +960,13 @@ function App() {
               )}
 
               <p>We will contact you shortly to confirm your appointment.</p>
+              {issue === "Screen Replacement" && addProtector && (
+  <p>
+    Screen protector add-on: <strong>+ $15</strong> will be added during
+    your visit.
+  </p>
+)}
+
 
               <div className="buttons">
                 <button
