@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- Blue gradient -->
+    <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6fe8ff" />
+      <stop offset="50%" stop-color="#3da2ff" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+
+    <!-- Green gradient -->
+    <linearGradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#22c55e" />
+    </linearGradient>
+
+    <!-- Strong neon glow -->
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4" result="b1" />
+      <feGaussianBlur stdDeviation="8" result="b2" />
+      <feMerge>
+        <feMergeNode in="b2" />
+        <feMergeNode in="b1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="64" height="64" rx="14" fill="#020617" />
+
+  <!-- BIG A SHAPE -->
+  <g transform="translate(7,5)" filter="url(#glow)">
+    <!-- Outer A -->
+    <path
+      d="M25 4 L51 52 H38 L32 40 H18 L12 52 H1 Z"
+      fill="none"
+      stroke="url(#gradBlue)"
+      stroke-width="7"
+      stroke-linejoin="round"
+    />
+
+    <!-- Inner A highlight -->
+    <path
+      d="M25 12 L44 50 H36 L25 30 L14 50 H6 Z"
+      fill="none"
+      stroke="#7fe9ff"
+      stroke-width="2.2"
+      opacity="0.6"
+    />
+
+    <!-- Checkmark inside -->
+    <polyline
+      points="18,30 26,38 40,20"
+      fill="none"
+      stroke="url(#gradGreen)"
+      stroke-width="6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+</svg>

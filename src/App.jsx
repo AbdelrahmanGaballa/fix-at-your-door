@@ -656,8 +656,8 @@ function App() {
                         {displayBrand} {displayModel}
                       </strong>
                       :{" "}
-                      <strong>${priceForSelection.toFixed(2)}</strong> (parts +
-                      labor).
+                      <strong>${priceForSelection.toFixed(2)}</strong> (plus tax
+    ).
                     </p>
                   ) : (
                     <p>
@@ -872,8 +872,8 @@ function App() {
                   {priceForSelection != null ? (
                     <p>
                       Estimated total for your screen replacement:{" "}
-                      <strong>${priceForSelection.toFixed(2)}</strong> (parts +
-                      labor).
+                      <strong>${priceForSelection.toFixed(2)}</strong> (plus tax
+                      ).
                     </p>
                   ) : (
                     <p>
@@ -894,8 +894,8 @@ function App() {
                   {priceForSelection != null ? (
                     <p>
                       Estimated total for your battery replacement:{" "}
-                      <strong>${priceForSelection.toFixed(2)}</strong> (parts +
-                      labor).
+                      <strong>${priceForSelection.toFixed(2)}</strong> (plus tax
+                      ).
                     </p>
                   ) : (
                     <p>
