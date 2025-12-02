@@ -1004,7 +1004,7 @@ function App() {
       {/* ====== Info cards row ====== */}
       <section className="info-grid">
         <div className="info-card">
-          <h3>How Fix@YourDoor works</h3>
+          <h3>How AtDoorFix works</h3>
           <ol>
             <li>Choose your phone, issue & preferred screen or battery option.</li>
             <li>Pick a time and enter your address.</li>
@@ -1029,7 +1029,7 @@ function App() {
         </div>
 
         <div className="info-card">
-          <h3>Why people love Fix@YourDoor</h3>
+          <h3>Why people love AtDoorFix</h3>
           <ul>
             <li>🚗 No driving, no waiting rooms – we come to you.</li>
             <li>💸 Upfront pricing with parts + labor included.</li>
@@ -1041,7 +1041,7 @@ function App() {
       {/* ====== Comparison: shop vs Fix@YourDoor ====== */}
       <section className="compare-section" id="compare">
         <div className="compare-card">
-          <h2>Typical repair shop vs Fix@YourDoor</h2>
+          <h2>Typical repair shop vs AtDoorFix</h2>
           <p className="compare-intro">
             Same goal – a working phone. But the experience is very different.
           </p>
@@ -1049,7 +1049,7 @@ function App() {
           <div className="compare-table">
             <div className="compare-header">What it&apos;s like</div>
             <div className="compare-header">Typical repair shop</div>
-            <div className="compare-header">Fix@YourDoor</div>
+            <div className="compare-header">AtDoorFix</div>
 
             <div className="compare-label">Getting there</div>
             <div className="compare-cell bad">
@@ -1202,7 +1202,7 @@ function App() {
     
 
       <footer className="footer">
-        © 2025 Fix@YourDoor. All rights reserved.
+        © 2025 AtDoorFix. All rights reserved.
       </footer>
     </div>
   );
