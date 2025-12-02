@@ -415,7 +415,7 @@ function App() {
     console.log("📦 Booking payload:", payload);
 
     const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbx2e886qfsmEzm_aAll-0LoZg9R9ubyBvqTRjOdGGM1RSbAbyN9MeSw8V4_aImloklyNg/exec";
+      "https://script.google.com/macros/s/AKfycbw0IlDkGcT9DLe8P6pxm3mtOXMwQGKJdRLyeS_K3P_RQ9-VkFrjFNtqnQfCGhGDJ_gNtg/exec";
 
     try {
       await fetch(WEB_APP_URL, {
