@@ -1,5 +1,10 @@
 // src/App.jsx
 import { useEffect, useRef, useState } from "react";
+import appleLogo from "./assets/brands/apple.svg";
+import samsungLogo from "./assets/brands/samsung.svg";
+import googleLogo from "./assets/brands/google.svg";
+import motorolaLogo from "./assets/brands/motorola.svg";
+
 import logo from "./assets/logo.svg";
 
 import tapSound from "./assets/audio/ui-tap.mp3";
@@ -15,42 +20,42 @@ const DEVICE_TYPES = [
   { id: "laptop", label: "LAPTOP", icon: "💻" },
   { id: "watch", label: "WATCH", icon: "⌚" },
 ];
-
-// Brand cards for smartphones
 const BRAND_CARDS = [
   {
     id: "apple",
     value: "Apple",
     label: "APPLE",
-    logoUrl: "https://logo.clearbit.com/apple.com",
+    logo: appleLogo,
   },
   {
     id: "samsung",
     value: "Samsung",
     label: "SAMSUNG",
-    logoUrl: "https://logo.clearbit.com/samsung.com",
+    logo: samsungLogo,
   },
   {
     id: "google",
     value: "Google",
     label: "GOOGLE",
-    logoUrl: "https://logo.clearbit.com/google.com",
+    logo: googleLogo,
   },
   {
     id: "motorola",
     value: "Motorola",
     label: "MOTOROLA",
-    logoUrl: "https://logo.clearbit.com/motorola.com",
+    logo: motorolaLogo,
   },
   {
     id: "other",
     value: "__otherBrand",
     label: "OTHER BRAND",
-    logoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/4/48/Markdown-mark.svg",
+    logo: null,
     isOther: true,
   },
 ];
+
+
+
 
 // Brand / model list for dropdown (only for smartphones we know)
 const PHONE_DATA = [
@@ -587,19 +592,15 @@ function App() {
                             scrollTo(modelRef);
                           }}
                         >
-                          <div className="brand-logo-wrapper">
-                            {b.logoUrl ? (
-                              <img
-                                src={b.logoUrl}
-                                alt={b.label}
-                                className="brand-logo"
-                              />
-                            ) : (
-                              <span className="brand-logo-text">
-                                {b.label[0]}
-                              </span>
-                            )}
-                          </div>
+                      <div className="brand-logo-wrapper">
+  {b.isOther ? (
+    <span className="brand-icon other">...</span>
+  ) : (
+    <img src={b.logo} alt={b.label} className="brand-logo" />
+  )}
+</div>
+
+
                           <div className="brand-label">{b.label}</div>
                         </button>
                       ))}
