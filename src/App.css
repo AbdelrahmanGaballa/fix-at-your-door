@@ -1814,7 +1814,7 @@ select:focus {
 
 .logo-row {
   padding-left: 0 !important;
-  margin-left: -50px !important;  /* adjust value */
+  margin-left: -40px !important;  /* adjust value */
 }
 
 .logo-image {
@@ -1837,4 +1837,81 @@ select:focus {
 .brand-card.active {
   border-color: #4da3ff;
   box-shadow: 0 0 20px rgba(77,163,255,0.25);
+}
+
+/* Push header content higher with minimal top padding */
+/* Push header content higher with minimal top padding */
+/* Push header content higher with minimal top padding */
+.header {
+  padding-top: 5px !important;  /* Reduced from 8px to 5px */
+  padding-left: 24px !important;
+  padding-bottom: 16px !important;
+}
+
+/* Remove extra spacing from header inner container */
+.header-inner {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Move logo row to the left and HIGHER */
+.logo-row {
+  margin-top: -15px !important;  /* Increased from -10px to -15px */
+  margin-bottom: 8px !important;
+  margin-left: -15px !important;
+  padding-top: 0 !important;
+  padding-left: 0 !important;
+  overflow: visible !important;
+}
+
+/* Make logo BIGGER and crisp */
+.logo-image {
+  height: 170px !important;
+  width: auto;
+  margin-top: 0 !important;
+  margin-left: 0 !important;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure header doesn't clip content */
+.header {
+  overflow: visible !important;
+}
+
+/* Reduce spacing below logo */
+.logo-text-group {
+  gap: 2px;
+}
+
+/* Tighten main heading spacing - move it up */
+.header h1 {
+  margin-top: 8px !important;
+  margin-bottom: 6px !important;
+}
+
+/* Reduce paragraph spacing */
+.header p {
+  margin-bottom: 6px !important;
+}
+
+/* Tighten service area spacing */
+.service-area {
+  margin-top: 4px !important;
+  margin-bottom: 6px !important;
+}
+
+/* Reduce hero tags spacing */
+.hero-tags {
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Tighten button row spacing */
+.hero-btn-row {
+  margin-top: 2px !important;
 }
