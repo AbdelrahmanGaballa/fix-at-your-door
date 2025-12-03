@@ -1822,7 +1822,7 @@ select:focus {
 }
 /* Brand label text */
 .brand-label {
-  font-family: "Times New Roman", serif !important;
+  font-family: "Tahoma", serif !important;
   font-size: 1rem;
   font-weight: 800;       /* makes text clean & readable */
   letter-spacing: 0.6px;
