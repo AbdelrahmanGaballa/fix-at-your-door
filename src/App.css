@@ -56,11 +56,12 @@ body {
 }
 
 /* ====== Left – Hero ====== */
+/* ====== Left – Hero ====== */
 
 .header {
   background: radial-gradient(circle at top left, #1d4ed8 0, #020617 40%, #000 100%);
   border-radius: var(--radius-lg);
-  padding: 28px 26px 26px;
+  padding: 20px 20px 26px 20px; /* Equal padding all around */
   box-shadow: var(--shadow-strong);
   position: relative;
   overflow: hidden;
@@ -78,6 +79,7 @@ body {
 .header-inner {
   position: relative;
   z-index: 1;
+  padding: 0; /* Remove any padding */
 }
 
 /* Top brand row */
@@ -86,19 +88,19 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 14px; /* was 18–20 before */
+  margin-bottom: 14px;
+  padding: 0; /* Remove padding */
+  justify-content: flex-start; /* Ensure left alignment */
 }
 
-/* NEW: logo sizing (desktop baseline) */
+/* Logo sizing */
 .logo-image {
-  height: 80px;        /* good size for desktop */
-  width: auto;         /* keep SVG ratio */
+  height: 80px;
+  width: auto;
   display: block;
   object-fit: contain;
-  margin-top: -8px;    /* nudge slightly up */
-  margin-left: -4px;   /* nudge slightly left */
+  margin: 0; /* Remove all margins */
 }
-
 .logo-text-group {
   display: flex;
   flex-direction: column;
@@ -1753,4 +1755,68 @@ select:focus {
   color: #e5e7eb;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+/* Make header stay flush at the top */
+.header {
+  padding-top: 20px !important;
+  padding-bottom: 0;
+}
+
+/* Put logo at top-left */
+.logo-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-left: 0;
+}
+
+/* Reduce the white space above logo */
+.header-inner {
+  padding-top: 0 !important;
+}
+
+/* Adjust logo size */
+.logo-image {
+  width: 160px;
+  height: auto;
+}
+/* Remove ALL unwanted left padding from hero containers */
+.shell,
+.header,
+.header-inner,
+.logo-row {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+/* Force hero to align to the very left */
+.header-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start !important;
+}
+
+/* Shrink unnecessary space on the left column container */
+.header {
+  padding-left: 15px !important; /* You can change to 0 if you want ABSOLUTE left */
+}
+
+/* Logo sizing (adjust if needed) */
+.logo-image {
+  width: 160px;
+  height: auto;
+}
+
+.logo-image {
+  width: 230px;
+}
+
+.logo-row {
+  padding-left: 0 !important;
+  margin-left: -50px !important;  /* adjust value */
+}
+
+.logo-image {
+  margin-left: 0 !important;
 }
