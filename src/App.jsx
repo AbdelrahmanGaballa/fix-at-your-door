@@ -5,7 +5,7 @@ import samsungLogo from "./assets/brands/samsung.svg";
 import googleLogo from "./assets/brands/google.svg";
 import motorolaLogo from "./assets/brands/motorola.svg";
 
-import logo from "./assets/logo.svg";
+import logo from "./assets/logo.png";
 
 import tapSound from "./assets/audio/ui-tap.mp3";
 import "./App.css";
