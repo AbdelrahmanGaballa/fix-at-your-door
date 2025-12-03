@@ -1,7 +1,7 @@
 // src/App.jsx
 import { useEffect, useRef, useState } from "react";
-import appleLogo from "./assets/brands/apple.svg";
-import samsungLogo from "./assets/brands/samsung.svg";
+import appleLogo from "./assets/brands/apple.jpg";
+import samsungLogo from "./assets/brands/samsung.jpg";
 import googleLogo from "./assets/brands/google.svg";
 import motorolaLogo from "./assets/brands/motorola.svg";
 

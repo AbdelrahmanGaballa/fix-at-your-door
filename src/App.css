@@ -1820,3 +1820,21 @@ select:focus {
 .logo-image {
   margin-left: 0 !important;
 }
+/* Brand label text */
+.brand-label {
+  font-family: "Times New Roman", serif !important;
+  font-size: 1rem;
+  font-weight: 800;       /* makes text clean & readable */
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color:  #FFFFFF;         /* light blue */
+  white-space: nowrap;    /* forces text to stay on ONE line */
+  text-align: center;
+}
+
+
+
+.brand-card.active {
+  border-color: #4da3ff;
+  box-shadow: 0 0 20px rgba(77,163,255,0.25);
+}
