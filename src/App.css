@@ -1915,3 +1915,314 @@ select:focus {
 .hero-btn-row {
   margin-top: 2px !important;
 }
+/* BRAND CARDS INTERACTIVE EFFECTS */
+.brand-card {
+  background: #0f172a;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-card:hover {
+  transform: scale(1.07);
+  border-color: #4fc3f7;
+  box-shadow: 0 0 18px rgba(79, 195, 247, 0.35);
+}
+
+.brand-card:active {
+  transform: scale(0.95);
+}
+
+/* SELECTED STATE */
+.brand-card.active {
+  border-color: #22e7ff;
+  box-shadow: 0 0 25px rgba(34, 231, 255, 0.55);
+  transform: scale(1.12);
+}
+
+/* LOGO IMAGE STYLE */
+.brand-logo {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+  transition: 0.25s ease;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
+}
+
+/* LOGO grows on hover */
+.brand-card:hover .brand-logo {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.45));
+}
+
+/* Selected logo highlight */
+.brand-card.active .brand-logo {
+  transform: scale(1.18);
+  filter: drop-shadow(0 0 14px rgba(34, 231, 255, 0.6));
+}
+
+/* Brand label */
+.brand-label {
+  margin-top: 8px;
+  font-family: "Tohamy", serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #e7ecf2; /* light blue */
+  text-align: center;
+  white-space: nowrap;
+}
+.brand-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-card::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: var(--y);
+  left: var(--x);
+  background: rgba(96, 212, 255, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+.brand-card.clicked::after {
+  width: 250px;
+  height: 250px;
+}
+/* ---- Entrance (staggered slide+fade) ---- */
+.brand-grid .brand-card {
+  opacity: 0;
+  transform: translateY(12px) scale(0.99);
+  transition: transform 420ms cubic-bezier(.2,.9,.3,1), opacity 420ms ease;
+  will-change: transform, opacity;
+}
+
+/* add class on mount to trigger */
+.brand-grid.entered .brand-card {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* small per-item delay using nth-child (stagger) */
+.brand-grid.entered .brand-card:nth-child(1) { transition-delay: 0.03s; }
+.brand-grid.entered .brand-card:nth-child(2) { transition-delay: 0.08s; }
+.brand-grid.entered .brand-card:nth-child(3) { transition-delay: 0.13s; }
+.brand-grid.entered .brand-card:nth-child(4) { transition-delay: 0.18s; }
+.brand-grid.entered .brand-card:nth-child(5) { transition-delay: 0.23s; }
+
+/* ---- Gentle floating animation (subtle) ---- */
+@keyframes floatY {
+  0% { transform: translateY(0) }
+  50% { transform: translateY(-6px) }
+  100% { transform: translateY(0) }
+}
+
+.brand-card.float {
+  animation: floatY 5.6s ease-in-out infinite;
+}
+
+/* Hover pop + glow (keeps previous hover, stronger) */
+.brand-card:hover {
+  transform: translateY(-6px) scale(1.08);
+  box-shadow: 0 18px 40px rgba(63, 146, 255, 0.18);
+  z-index: 3;
+}
+
+/* When hovered, reduce float intensity so transform doesn't fight animation */
+.brand-card.float:hover {
+  animation-play-state: paused;
+}
+
+/* ---- 3D tilt transforms (pointer) ---- */
+/* We apply inline transform from JS; provide transition for smoothness */
+.brand-card.tilt {
+  transition: transform 160ms cubic-bezier(.2,.85,.25,1), box-shadow 160ms;
+  will-change: transform;
+}
+
+/* ---- Ripple click styles (you may already have these) ---- */
+.brand-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-card::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: var(--y, 50%);
+  left: var(--x, 50%);
+  background: radial-gradient(circle, rgba(79,195,247,0.12) 0%, rgba(79,195,247,0.06) 50%, rgba(79,195,247,0) 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: width 420ms ease, height 420ms ease, opacity 420ms ease;
+  opacity: 0;
+}
+
+.brand-card.clicked::after {
+  width: 300px;
+  height: 300px;
+  opacity: 1;
+}
+
+/* ---- Small accessibility / performance tweaks ---- */
+@media (prefers-reduced-motion: reduce) {
+  .brand-card.float,
+  .brand-card,
+  .brand-grid .brand-card { animation: none !important; transition: none !important; }
+}
+
+/* ensure brand logos render reliably and have transparent background */
+.brand-logo-wrapper {
+  width: 64px;        /* tweak size */
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* important */
+  overflow: hidden;
+}
+
+.brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: transparent !important;
+  filter: none !important;       /* remove any destructive filters */
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+}
+
+/* fallback icon style for "Other" */
+.brand-icon.other {
+  font-size: 28px;
+  color: #60a5fa; /* match theme blue */
+  display: inline-block;
+  transform: translateY(-2px);
+}
+
+/* make sure brand label remains on the same row and is styled */
+.brand-label {
+  font-family: "Tohamy", Times, serif; /* per your request */
+  color: #ebf3f7; /* light blue to match theme — change to your preferred */
+  font-weight: 700; /* bold */
+  font-size: 0.88rem;
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+/* keep grid compact so "Other Brand" stays on same line */
+.brand-grid {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  justify-items: center;
+}
+/* Update the brand-grid entrance animation */
+.brand-grid .brand-card {
+  opacity: 0;
+  transform: translateY(12px) scale(0.99);
+  transition: transform 420ms cubic-bezier(.2,.9,.3,1), opacity 420ms ease;
+  will-change: transform, opacity;
+}
+
+/* When entered class is added */
+.brand-grid.entered .brand-card {
+  opacity: 1 !important; /* Add !important to ensure it applies */
+  transform: translateY(0) scale(1);
+}
+
+/* Ensure logos are always visible */
+.brand-logo, .brand-icon {
+  opacity: 1 !important;
+}
+/* ===== BRAND CARD ANIMATION - IMPROVED ===== */
+
+/* Initial state - KEEP LOGOS VISIBLE */
+.brand-grid .brand-card {
+  opacity: 1 !important; /* Always visible */
+  transform: translateY(12px) scale(0.98);
+  transition: transform 450ms cubic-bezier(.2,.9,.3,1), 
+              box-shadow 450ms ease,
+              border-color 300ms ease;
+}
+
+/* Logos always visible */
+.brand-logo, 
+.brand-logo-wrapper,
+.brand-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Animated entrance when entered class is added */
+.brand-grid.entered .brand-card {
+  transform: translateY(0) scale(1);
+}
+
+/* Staggered delays for each card */
+.brand-grid.entered .brand-card:nth-child(1) { 
+  transition-delay: 0.05s; 
+}
+.brand-grid.entered .brand-card:nth-child(2) { 
+  transition-delay: 0.10s; 
+}
+.brand-grid.entered .brand-card:nth-child(3) { 
+  transition-delay: 0.15s; 
+}
+.brand-grid.entered .brand-card:nth-child(4) { 
+  transition-delay: 0.20s; 
+}
+.brand-grid.entered .brand-card:nth-child(5) { 
+  transition-delay: 0.25s; 
+}
+
+/* Enhanced hover effect */
+.brand-card:hover {
+  transform: translateY(-4px) scale(1.05) !important;
+  border-color: #4fc3f7;
+  box-shadow: 0 0 20px rgba(79, 195, 247, 0.4),
+              0 20px 40px rgba(15, 23, 42, 0.9);
+  z-index: 10;
+}
+
+/* Active/selected state */
+.brand-card.active {
+  transform: translateY(-2px) scale(1.03) !important;
+  border-color: #22c55e;
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.5),
+              0 18px 45px rgba(15, 23, 42, 0.9);
+}
+
+/* Logo scale on hover */
+.brand-card:hover .brand-logo {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(79, 195, 247, 0.5));
+}
+
+/* Smooth transitions for logos */
+.brand-logo {
+  transition: transform 300ms ease, filter 300ms ease;
+}
+
+/* Prevent animation conflicts */
+@media (prefers-reduced-motion: reduce) {
+  .brand-grid .brand-card,
+  .brand-logo {
+    animation: none !important;
+    transition: none !important;
+  }
+}

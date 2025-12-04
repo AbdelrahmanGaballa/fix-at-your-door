@@ -1,9 +1,9 @@
 // src/App.jsx
 import { useEffect, useRef, useState } from "react";
-import appleLogo from "./assets/brands/apple.jpg";
-import samsungLogo from "./assets/brands/samsung.jpg";
+import appleLogo from "./assets/brands/apple.png";
+import samsungLogo from "./assets/brands/samsung.png";
 import googleLogo from "./assets/brands/google.svg";
-import motorolaLogo from "./assets/brands/motorola.svg";
+import motorolaLogo from "./assets/brands/motorola.png";
 
 import logo from "./assets/logo.png";
 
@@ -210,6 +210,69 @@ function App() {
       });
     }
   };
+  // inside your App() component, add:
+
+// pointer-tilt: small 3D tilt on pointer move
+function handleBrandPointerMove(e) {
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  const px = (e.clientX - rect.left) / rect.width; // 0..1
+  const py = (e.clientY - rect.top) / rect.height; // 0..1
+
+  const rotateY = (px - 0.5) * 10; // tilt left/right
+  const rotateX = (0.5 - py) * 8;  // tilt up/down
+  const scale = 1.02;
+
+  el.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+  el.classList.add("tilt");
+}
+
+// reset tilt
+function handleBrandPointerLeave(e) {
+  const el = e.currentTarget;
+  el.style.transform = "";
+  el.classList.remove("tilt");
+}
+
+// click ripple helper (already similar guidance earlier)
+function handleBrandClickRipple(e) {
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  el.style.setProperty("--x", e.clientX - rect.left + "px");
+  el.style.setProperty("--y", e.clientY - rect.top + "px");
+
+  el.classList.remove("clicked");
+  // force reflow to restart pseudo-element transition
+  void el.offsetWidth;
+  el.classList.add("clicked");
+  // remove clicked class after animation
+  setTimeout(() => el.classList.remove("clicked"), 500);
+}
+
+// mount: add 'entered' class to brand-grid for staggered entrance
+// Replace the existing useEffect for brand-grid animation with this:
+// Replace the existing brand-grid useEffect with this:
+useEffect(() => {
+  const grid = document.querySelector(".brand-grid");
+  if (!grid) return;
+  
+  // Remove entered class to reset animation
+  grid.classList.remove("entered");
+  
+  // Force browser reflow to ensure class removal is processed
+  void grid.offsetWidth;
+  
+  // Re-add entered class after a small delay
+  const timer = setTimeout(() => {
+    const gridCheck = document.querySelector(".brand-grid");
+    if (gridCheck) {
+      gridCheck.classList.add("entered");
+    }
+  }, 100);
+  
+  return () => clearTimeout(timer);
+}, [deviceType]); // Only trigger on deviceType change // Add dependencies so it re-runs when device type changes
+
 
   const handleHeroBook = () => {
     playTap();
@@ -580,17 +643,27 @@ function App() {
                               ? "brand-card active"
                               : "brand-card"
                           }
-                          onClick={() => {
-                            playTap();
-                            setSelectedBrand(b.value);
-                            setSelectedModel("");
-                            if (b.isOther) {
-                              setOtherBrandText("");
-                              setOtherModelText("");
-                            }
-                            // jump user down to model area
-                            scrollTo(modelRef);
-                          }}
+                        onClick={(e) => {
+  playTap();
+  setSelectedBrand(b.value);
+  setSelectedModel("");
+  if (b.isOther) {
+    setOtherBrandText("");
+    setOtherModelText("");
+  }
+
+  // ripple effect
+  const rect = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--x", e.clientX - rect.left + "px");
+  e.currentTarget.style.setProperty("--y", e.clientY - rect.top + "px");
+
+  e.currentTarget.classList.remove("clicked");
+  void e.currentTarget.offsetWidth; // restart animation
+  e.currentTarget.classList.add("clicked");
+
+  scrollTo(modelRef);
+}}
+
                         >
                       <div className="brand-logo-wrapper">
   {b.isOther ? (
