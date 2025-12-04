@@ -2226,3 +2226,16 @@ select:focus {
     transition: none !important;
   }
 }
+/* Add to your App.css */
+
+/* Ensure smooth scrolling on mobile */
+@media (max-width: 768px) {
+  .accordion-section {
+    scroll-margin-top: 20px;
+  }
+  
+  /* Add extra padding at top of step 2 for better visibility */
+  section[class*="accordion-section"] {
+    padding-top: 10px;
+  }
+}

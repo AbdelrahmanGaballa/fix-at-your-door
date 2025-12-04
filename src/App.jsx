@@ -202,14 +202,23 @@ function App() {
     audio.play().catch(() => {});
   };
 
-  const scrollTo = (ref) => {
-    if (ref && ref.current) {
-      ref.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
+ const scrollTo = (ref) => {
+  if (ref && ref.current) {
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest"
+    });
+    
+    // Extra scroll adjustment for mobile to account for fixed headers
+    setTimeout(() => {
+      const yOffset = -20; // Adjust this value if needed
+      const element = ref.current;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }, 100);
+  }
+};
   // inside your App() component, add:
 
 // pointer-tilt: small 3D tilt on pointer move
@@ -335,44 +344,48 @@ useEffect(() => {
   // ---------- step handlers ----------
 
   function handleNextFromStep1() {
-    playTap();
+  playTap();
 
-    if (isSmartphone) {
-      if (!selectedBrand) {
-        alert("Please select a brand.");
-        return;
-      }
-
-      if (isOtherBrand) {
-        if (!otherBrandText.trim() || !otherModelText.trim()) {
-          alert("Please type your phone brand and model.");
-          return;
-        }
-        setStep(2);
-        scrollTo(issueRef);
-        return;
-      }
-
-      if (!selectedModel) {
-        alert("Please select a model.");
-        return;
-      }
-
-      if (isOtherModel && !otherModelText.trim()) {
-        alert("Please type your phone model.");
-        return;
-      }
-    } else {
-      // tablet / laptop / watch – always custom
-      if (!otherBrandText.trim() || !otherModelText.trim()) {
-        alert("Please type your device brand and model.");
-        return;
-      }
+  if (isSmartphone) {
+    if (!selectedBrand) {
+      alert("Please select a brand.");
+      return;
     }
 
-    setStep(2);
-    scrollTo(issueRef);
+    if (isOtherBrand) {
+      if (!otherBrandText.trim() || !otherModelText.trim()) {
+        alert("Please type your phone brand and model.");
+        return;
+      }
+      setStep(2);
+      // Scroll to issue section after a small delay to ensure DOM is ready
+      setTimeout(() => scrollTo(issueRef), 150);
+      return;
+    }
+
+    if (!selectedModel) {
+      alert("Please select a model.");
+      return;
+    }
+
+    if (isOtherModel && !otherModelText.trim()) {
+      alert("Please type your phone model.");
+      return;
+    }
+  } else {
+    // tablet / laptop / watch – always custom
+    if (!otherBrandText.trim() || !otherModelText.trim()) {
+      alert("Please type your device brand and model.");
+      return;
+    }
   }
+
+  setStep(2);
+  // Add delay to ensure step 2 renders before scrolling
+  setTimeout(() => {
+    scrollTo(issueRef);
+  }, 150);
+}
 
   function handleNextFromStep2() {
     playTap();
