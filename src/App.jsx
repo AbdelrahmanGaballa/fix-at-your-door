@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import appleLogo from "./assets/brands/apple.png";
 import samsungLogo from "./assets/brands/samsung.png";
-import googleLogo from "./assets/brands/google.svg";
+import googleLogo from "./assets/brands/google.png";
 import motorolaLogo from "./assets/brands/motorola.png";
 
 import logo from "./assets/logo.png";
