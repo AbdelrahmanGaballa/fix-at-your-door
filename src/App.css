@@ -2239,3 +2239,30 @@ select:focus {
     padding-top: 10px;
   }
 }
+
+.header {
+  background: linear-gradient(180deg, 
+    rgba(0, 0, 0, 0.9) 0%,      /* Almost black at logo */
+    #0a1428 40%,                /* Dark transition */
+    #1d4ed8 85%,                /* Original blue */
+    #020617 100%                /* Bottom color */
+  ) !important;
+  border-radius: var(--radius-lg);
+  padding: 20px 20px 26px 20px;
+  box-shadow: var(--shadow-strong);
+  position: relative;
+  overflow: visible !important;
+}
+/* Remove the box/square around logo */
+.logo-row {
+  padding: 0 !important;
+  margin-left: -15px !important;
+  margin-top: -15px !important;
+  margin-bottom: 8px !important;
+  padding-top: 0 !important;
+  padding-left: 0 !important;
+  overflow: visible !important;
+  background: none !important; /* Remove any background */
+  border-radius: 0 !important; /* Remove border radius */
+  box-shadow: none !important; /* Remove shadow */
+}
