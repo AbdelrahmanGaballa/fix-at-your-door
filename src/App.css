@@ -2266,3 +2266,21 @@ select:focus {
   border-radius: 0 !important; /* Remove border radius */
   box-shadow: none !important; /* Remove shadow */
 }
+/* Style for Lucide React icons in device type cards */
+.device-type-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* Make icons brighter on hover */
+.device-type-card:hover .device-type-icon svg {
+  stroke: #60a5fa;
+}
+
+/* Active state - green tint */
+.device-type-card.active .device-type-icon svg {
+  stroke: #22c55e;
+}

@@ -6,6 +6,7 @@ import googleLogo from "./assets/brands/google.png";
 import motorolaLogo from "./assets/brands/motorola.png";
 
 import logo from "./assets/logo.png";
+import { Smartphone, Tablet, Laptop, Watch } from "lucide-react";
 
 import tapSound from "./assets/audio/ui-tap.mp3";
 import "./App.css";
@@ -15,10 +16,10 @@ import { SCREEN_PRICING, BATTERY_PRICING } from "./pricing";
 
 // Device type cards
 const DEVICE_TYPES = [
-  { id: "smartphone", label: "SMARTPHONE", icon: "📱" },
-  { id: "tablet", label: "TABLET / IPAD", icon: "📲" },
-  { id: "laptop", label: "LAPTOP", icon: "💻" },
-  { id: "watch", label: "WATCH", icon: "⌚" },
+  { id: "smartphone", label: "SMARTPHONE", icon: <Smartphone size={32} /> },
+  { id: "tablet", label: "TABLET / IPAD", icon: <Tablet size={32} /> },
+  { id: "laptop", label: "LAPTOP", icon: <Laptop size={32} /> },
+  { id: "watch", label: "WATCH", icon: <Watch size={32} /> },
 ];
 const BRAND_CARDS = [
   {
