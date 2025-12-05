@@ -2242,10 +2242,10 @@ select:focus {
 
 .header {
   background: linear-gradient(180deg, 
-    rgba(0, 0, 0, 0.9) 0%,      /* Almost black at logo */
-    #0a1428 40%,                /* Dark transition */
-    #1d4ed8 85%,                /* Original blue */
-    #020617 100%                /* Bottom color */
+    #081220 0%,           /* Very dark at logo */
+    #132847 30%,          /* Dark blue */
+    #1d4ed8 75%,          /* Original blue */
+    #0c2556 100%          /* Dark bottom */
   ) !important;
   border-radius: var(--radius-lg);
   padding: 20px 20px 26px 20px;
