@@ -1041,7 +1041,7 @@ useEffect(() => {
     console.log("📦 Booking payload:", payload);
 
     const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbw0IlDkGcT9DLe8P6pxm3mtOXMwQGKJdRLyeS_K3P_RQ9-VkFrjFNtqnQfCGhGDJ_gNtg/exec";
+      "https://script.google.com/macros/s/AKfycbzAJNDF6p_YnyyrwqwPsdjQTwKIwyImcNblt25Tc7Ve2FsGqNWEnJpFu5l_-JUdb9YfyQ/exec";
 
     try {
       await fetch(WEB_APP_URL, {
