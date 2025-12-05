@@ -151,9 +151,553 @@ const TIMELINE_STEPS = [
     icon: "🔧",
   },
 ];
+// Replace the ContactUsPage function (around line 141) with this complete version:
 
+function ContactUsPage({ onBack }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = () => {
+    if (formData.name && formData.email && formData.message) {
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({ name: '', email: '', phone: '', message: '' });
+      }, 3000);
+    }
+  };
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'radial-gradient(circle at top left, #1e293b 0, #020617 45%, #000 100%)',
+      color: '#e5e7eb',
+      overflowY: 'auto',
+      zIndex: 9999
+    }}>
+      {/* Header */}
+      <header style={{
+        borderBottom: '1px solid rgba(51, 65, 85, 0.9)',
+        background: 'rgba(2, 6, 23, 0.5)',
+        backdropFilter: 'blur(8px)'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <div style={{
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            background: 'linear-gradient(to right, #60a5fa, #22d3ee)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>
+            AtDoorFix
+          </div>
+          <button 
+            onClick={onBack}
+            style={{
+              fontSize: '0.875rem',
+              color: '#9ca3af',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '8px 16px'
+            }}
+            onMouseOver={(e) => e.target.style.color = '#fff'}
+            onMouseOut={(e) => e.target.style.color = '#9ca3af'}
+          >
+            ← Back to Home
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '64px 24px' }}>
+        {/* Hero */}
+        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+          <h1 style={{
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
+            marginBottom: '16px',
+            background: 'linear-gradient(to right, #60a5fa, #22d3ee, #14b8a6)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>
+            Get in Touch
+          </h1>
+          <p style={{
+            fontSize: '1.125rem',
+            color: '#9ca3af',
+            maxWidth: '768px',
+            margin: '0 auto'
+          }}>
+            Have questions about your repair? Need help booking an appointment? 
+            We're here to help you every step of the way.
+          </p>
+        </div>
+
+        {/* Two Column Layout */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '32px',
+          maxWidth: '1000px',
+          margin: '0 auto'
+        }}>
+          {/* Contact Info Column */}
+          <div>
+            <div style={{
+              background: 'radial-gradient(circle at top left, #020617, #020617 55%, #020617)',
+              borderRadius: '24px',
+              border: '1px solid rgba(37, 99, 235, 0.3)',
+              padding: '32px',
+              boxShadow: '0 18px 40px rgba(15, 23, 42, 0.8)'
+            }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '24px' }}>
+                Contact Information
+              </h2>
+
+              {/* Phone */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '999px',
+                  background: 'rgba(37, 99, 235, 0.1)',
+                  border: '1px solid rgba(37, 99, 235, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>📞</span>
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
+                    Phone Numbers
+                  </h3>
+                  <a 
+                    href="tel:3862860387"
+                    style={{
+                      display: 'block',
+                      color: '#60a5fa',
+                      textDecoration: 'none',
+                      marginBottom: '4px',
+                      fontSize: '1.125rem'
+                    }}
+                  >
+                    (386) 286-0387
+                  </a>
+                  <a 
+                    href="tel:6173880141"
+                    style={{
+                      display: 'block',
+                      color: '#60a5fa',
+                      textDecoration: 'none',
+                      fontSize: '1.125rem'
+                    }}
+                  >
+                    (617) 388-0141
+                  </a>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '999px',
+                  background: 'rgba(34, 211, 238, 0.1)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>✉️</span>
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
+                    Email
+                  </h3>
+                  <a 
+                    href="mailto:management@atdoorfix.com"
+                    style={{
+                      color: '#22d3ee',
+                      textDecoration: 'none',
+                      wordBreak: 'break-all'
+                    }}
+                  >
+                    management@atdoorfix.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Hours */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '999px',
+                  background: 'rgba(20, 184, 166, 0.1)',
+                  border: '1px solid rgba(20, 184, 166, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>🕒</span>
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
+                    Business Hours
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: '2px 0' }}>Monday - Saturday</p>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: '2px 0' }}>9:00 AM - 7:00 PM</p>
+                </div>
+              </div>
+
+              {/* Service Area */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '32px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '999px',
+                  background: 'rgba(34, 197, 94, 0.1)',
+                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>📍</span>
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
+                    Service Areas
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+                    Daytona Beach • Ormond Beach • DeLand • Deltona • New Smyrna • Port Orange, FL
+                  </p>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div style={{ borderTop: '1px solid rgba(51, 65, 85, 0.9)', paddingTop: '24px' }}>
+                <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '12px' }}>
+                  Why Choose Us?
+                </h3>
+                <div style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <span style={{ color: '#22c55e' }}>✓</span>
+                    <span>Same-day mobile repair service</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <span style={{ color: '#22c55e' }}>✓</span>
+                    <span>Pay after repair is complete</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <span style={{ color: '#22c55e' }}>✓</span>
+                    <span>90-day warranty included</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ color: '#22c55e' }}>✓</span>
+                    <span>Professional technicians</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form Column */}
+          <div>
+            <div style={{
+              background: 'radial-gradient(circle at top left, #020617, #020617 55%, #020617)',
+              borderRadius: '24px',
+              border: '1px solid rgba(51, 65, 85, 0.9)',
+              padding: '32px',
+              boxShadow: '0 18px 40px rgba(15, 23, 42, 0.8)'
+            }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '24px' }}>
+                Send Us a Message
+              </h2>
+
+              {submitted && (
+                <div style={{
+                  marginBottom: '24px',
+                  padding: '16px',
+                  background: 'rgba(34, 197, 94, 0.1)',
+                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  borderRadius: '12px',
+                  color: '#22c55e',
+                  fontSize: '0.875rem'
+                }}>
+                  ✓ Thank you! We'll get back to you soon.
+                </div>
+              )}
+
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#d1d5db',
+                  marginBottom: '8px'
+                }}>
+                  Your Name *
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="John Doe"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'rgba(15, 23, 42, 0.9)',
+                    border: '1px solid rgba(148, 163, 184, 0.18)',
+                    borderRadius: '12px',
+                    color: '#e5e7eb',
+                    fontSize: '0.9rem',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#d1d5db',
+                  marginBottom: '8px'
+                }}>
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'rgba(15, 23, 42, 0.9)',
+                    border: '1px solid rgba(148, 163, 184, 0.18)',
+                    borderRadius: '12px',
+                    color: '#e5e7eb',
+                    fontSize: '0.9rem',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#d1d5db',
+                  marginBottom: '8px'
+                }}>
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="(555) 123-4567"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'rgba(15, 23, 42, 0.9)',
+                    border: '1px solid rgba(148, 163, 184, 0.18)',
+                    borderRadius: '12px',
+                    color: '#e5e7eb',
+                    fontSize: '0.9rem',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#d1d5db',
+                  marginBottom: '8px'
+                }}>
+                  Message *
+                </label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows="5"
+                  placeholder="Tell us how we can help you..."
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'rgba(15, 23, 42, 0.9)',
+                    border: '1px solid rgba(148, 163, 184, 0.18)',
+                    borderRadius: '12px',
+                    color: '#e5e7eb',
+                    fontSize: '0.9rem',
+                    outline: 'none',
+                    resize: 'none'
+                  }}
+                ></textarea>
+              </div>
+
+              <button
+                onClick={handleSubmit}
+                style={{
+                  width: '100%',
+                  background: 'linear-gradient(to right, #2563eb, #0891b2)',
+                  color: '#fff',
+                  fontWeight: '600',
+                  padding: '12px 24px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  boxShadow: '0 16px 30px rgba(37, 99, 235, 0.45)',
+                  transition: 'transform 0.2s, box-shadow 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 20px 42px rgba(37, 99, 235, 0.6)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 16px 30px rgba(37, 99, 235, 0.45)';
+                }}
+              >
+                Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* FAQ Section */}
+        <div style={{ marginTop: '64px', maxWidth: '896px', margin: '64px auto 0' }}>
+          <h2 style={{
+            fontSize: '1.875rem',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            marginBottom: '32px',
+            color: '#fff'
+          }}>
+            Frequently Asked Questions
+          </h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '24px'
+          }}>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.9)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(51, 65, 85, 0.9)'
+            }}>
+              <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '8px' }}>
+                How quickly can you come?
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+                We offer same-day appointments! Call us to check availability for your preferred time.
+              </p>
+            </div>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.9)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(51, 65, 85, 0.9)'
+            }}>
+              <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '8px' }}>
+                Do I pay upfront?
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+                No! You only pay after the repair is complete and you're satisfied with the work.
+              </p>
+            </div>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.9)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(51, 65, 85, 0.9)'
+            }}>
+              <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '8px' }}>
+                What areas do you serve?
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+                We serve Daytona Beach, Ormond Beach, DeLand, Deltona, New Smyrna, and Port Orange in Florida.
+              </p>
+            </div>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.9)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(51, 65, 85, 0.9)'
+            }}>
+              <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '8px' }}>
+                Is there a warranty?
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+                Yes! All repairs come with a 90-day warranty on parts and labor.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer style={{ borderTop: '1px solid rgba(51, 65, 85, 0.9)', marginTop: '64px' }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '32px 24px',
+          textAlign: 'center',
+          color: '#6b7280',
+          fontSize: '0.875rem'
+        }}>
+          © 2025 AtDoorFix. All rights reserved.
+        </div>
+      </footer>
+    </div>
+  );
+}
 function App() {
   const [step, setStep] = useState(1);
+  const [showContact, setShowContact] = useState(false);
 
   const [deviceType, setDeviceType] = useState("smartphone");
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -536,7 +1080,9 @@ useEffect(() => {
   const progress = (step / 4) * 100;
 
   // ---------- JSX ----------
-
+ if (showContact) {
+    return <ContactUsPage onBack={() => setShowContact(false)} />;
+  }
   return (
     <div className="app">
       <div className="shell">
@@ -575,6 +1121,12 @@ useEffect(() => {
               <button className="btn primary" onClick={handleHeroBook}>
                 Book a repair
               </button>
+      <button 
+    className="btn secondary" 
+    onClick={() => setShowContact(true)}
+  >
+    Contact Us
+  </button>
               <span className="hero-note">No upfront payment required.</span>
             </div>
           </div>
