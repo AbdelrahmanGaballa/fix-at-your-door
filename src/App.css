@@ -47,24 +47,29 @@ body {
 
 .shell {
   width: 100%;
-  max-width: 1500px; /* wider container so it uses more of the page */
-  margin: 0 auto; /* perfectly centered */
+  max-width: 1500px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr); /* wider form card */
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
   gap: 28px;
   align-items: stretch;
 }
 
 /* ====== Left – Hero ====== */
-/* ====== Left – Hero ====== */
 
 .header {
-  background: radial-gradient(circle at top left, #1d4ed8 0, #020617 40%, #000 100%);
+  background: linear-gradient(
+    180deg,
+    #000000 0%,
+    #050b15 25%,
+    #0d1b2a 60%,
+    #1a2847 100%
+  );
   border-radius: var(--radius-lg);
-  padding: 20px 20px 26px 20px; /* Equal padding all around */
+  padding: 5px 24px 16px;
   box-shadow: var(--shadow-strong);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header::before {
@@ -79,32 +84,43 @@ body {
 .header-inner {
   position: relative;
   z-index: 1;
-  padding: 0; /* Remove any padding */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
 }
 
-/* Top brand row */
+/* Logo row */
 
 .logo-row {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 14px;
-  padding: 0; /* Remove padding */
-  justify-content: flex-start; /* Ensure left alignment */
+  margin-top: -15px;
+  margin-bottom: 8px;
+  margin-left: -15px;
+  padding: 0;
+  overflow: visible;
+  background: none;
+  box-shadow: none;
 }
 
-/* Logo sizing */
 .logo-image {
-  height: 80px;
+  height: 170px;
   width: auto;
   display: block;
   object-fit: contain;
-  margin: 0; /* Remove all margins */
+  margin: 0;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 .logo-text-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .logo-title {
@@ -123,7 +139,7 @@ body {
 /* Hero copy */
 
 .header h1 {
-  margin: 0 0 10px;
+  margin: 8px 0 6px;
   font-size: 2.2rem;
   line-height: 1.15;
   letter-spacing: -0.03em;
@@ -135,37 +151,37 @@ body {
 }
 
 .header p {
-  margin: 0;
+  margin: 0 0 6px;
   color: var(--text-muted);
   font-size: 0.95rem;
 }
 
 .service-area {
-  margin-top: 10px;
+  margin: 4px 0 6px;
   font-weight: 500;
   color: #e5e7eb;
 }
+
 .service-area .pin {
-  color: #f472b6; /* soft pink */
+  color: #f472b6;
   margin-right: 4px;
 }
 
 .service-area .label {
-  color: #f9fafb; /* white */
+  color: #f9fafb;
   font-weight: 600;
   margin-right: 6px;
 }
 
 .service-area .city {
-  color: #93c5fd; /* soft premium blue */
+  color: #93c5fd;
   font-weight: 500;
 }
-
 
 /* Hero tags & actions */
 
 .hero-tags {
-  margin: 18px 0 18px;
+  margin: 10px 0 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -200,7 +216,7 @@ body {
 }
 
 .hero-btn-row {
-  margin-top: 6px;
+  margin-top: 2px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -224,8 +240,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
-    background 0.12s ease-out, opacity 0.12s;
+  transition:
+    transform 0.12s ease-out,
+    box-shadow 0.12s ease-out,
+    background 0.12s ease-out,
+    opacity 0.12s;
   white-space: nowrap;
 }
 
@@ -250,7 +269,8 @@ body {
   background: rgba(15, 23, 42, 1);
 }
 
-/* CTA pulse effect for the main "Book a repair" button */
+/* CTA pulse effect */
+
 .cta-pulse {
   position: relative;
   overflow: visible;
@@ -280,6 +300,18 @@ body {
     opacity: 0;
     transform: scale(1.08);
   }
+}
+
+/* Arrow nudge on primary buttons */
+
+.next-arrow {
+  display: inline-block;
+  margin-left: 8px;
+  transition: transform 0.2s ease;
+}
+
+.btn.primary:hover .next-arrow {
+  transform: translateX(4px);
 }
 
 /* ====== Right – Card / Form ====== */
@@ -355,6 +387,17 @@ main p {
   font-size: 0.9rem;
 }
 
+/* Accordion animation */
+
+.accordion-section {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.accordion-section-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Fields */
 
 .field {
@@ -379,12 +422,13 @@ main p {
 
 .field-helper {
   font-size: 0.78rem;
-  margin-top: 4px;
-  color: #9ca3af;
+  margin-top: 6px;
+  color: #a5b4fc;
 }
 
 input,
-select {
+select,
+textarea {
   background: rgba(15, 23, 42, 0.9);
   border-radius: 12px;
   border: 1px solid var(--border-subtle);
@@ -392,22 +436,26 @@ select {
   color: var(--text-main);
   font-size: 0.9rem;
   outline: none;
-  transition: border 0.12s ease-out, box-shadow 0.12s ease-out,
+  transition:
+    border 0.12s ease-out,
+    box-shadow 0.12s ease-out,
     background 0.12s ease-out;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: rgba(148, 163, 184, 0.7);
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   border-color: rgba(59, 130, 246, 0.9);
   box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.7);
   background: rgba(15, 23, 42, 1);
 }
 
-/* Buttons row */
+/* Buttons row in form */
 
 .buttons {
   margin-top: 14px;
@@ -440,14 +488,6 @@ select:focus {
   width: 16px;
   height: 16px;
   accent-color: #3b82f6;
-}
-
-.quality-description {
-  font-size: 0.8rem;
-}
-
-.quality-price {
-  color: #a5b4fc;
 }
 
 /* Info box */
@@ -504,7 +544,7 @@ select:focus {
   color: #6b7280;
 }
 
-/* ====== Comparison section (shop vs Fix@YourDoor) ====== */
+/* ====== Comparison section ====== */
 
 .compare-section {
   width: 100%;
@@ -571,11 +611,6 @@ select:focus {
   color: #e5e7eb;
 }
 
-.compare-cell:nth-of-type(3n + 2),
-.compare-cell:nth-of-type(3n + 3) {
-  text-align: left;
-}
-
 .compare-cell.bad {
   background: linear-gradient(
     135deg,
@@ -635,19 +670,8 @@ select:focus {
   text-align: left;
 }
 
-/* (duplicate footer kept same, harmless) */
-.footer {
-  width: 100%;
-  max-width: 1500px;
-  margin: 22px auto 0;
-  font-size: 0.78rem;
-  color: var(--text-soft);
-  text-align: left;
-}
-
 /* ====== Responsive ====== */
 
-/* Large laptops – slightly narrower container */
 @media (max-width: 1280px) {
   .shell {
     max-width: 1200px;
@@ -666,7 +690,6 @@ select:focus {
   }
 }
 
-/* Medium laptops / tablets in landscape -> hero on top, form below */
 @media (max-width: 1100px) {
   .app {
     padding: 24px 20px 32px;
@@ -715,7 +738,6 @@ select:focus {
   }
 }
 
-/* Tablets & big phones (portrait) */
 @media (max-width: 768px) {
   .app {
     padding: 20px 14px 26px;
@@ -772,9 +794,16 @@ select:focus {
   .compare-table {
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr);
   }
+
+  .accordion-section {
+    scroll-margin-top: 20px;
+  }
+
+  section[class*="accordion-section"] {
+    padding-top: 10px;
+  }
 }
 
-/* Small phones */
 @media (max-width: 480px) {
   .app {
     padding: 16px 10px 22px;
@@ -786,14 +815,11 @@ select:focus {
 
   .logo-row {
     gap: 10px;
+    margin-left: -10px;
   }
 
-  /* IMPORTANT: bigger logo on phones, not smaller */
   .logo-image {
-    height: 90px;   /* larger on mobile so details show */
-    width: auto;
-    margin-top: -6px;
-    margin-left: -2px;
+    height: 140px;
   }
 
   .hero-btn-row {
@@ -811,7 +837,8 @@ select:focus {
   }
 
   input,
-  select {
+  select,
+  textarea {
     font-size: 0.85rem;
     padding: 8px 10px;
   }
@@ -825,7 +852,7 @@ select:focus {
   }
 }
 
-/* ====== Animated repair timeline (old version, still available if used) ====== */
+/* ====== Animated repair timeline (OLD – under the form) ====== */
 
 .timeline-section {
   width: 100%;
@@ -833,7 +860,7 @@ select:focus {
   margin: 28px auto 0;
 }
 
-.timeline-card {
+.timeline-section .timeline-card {
   background: radial-gradient(circle at top left, #020617, #020617 55%, #020617);
   border-radius: 20px;
   border: 1px solid rgba(37, 99, 235, 0.5);
@@ -841,7 +868,7 @@ select:focus {
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.8);
 }
 
-.timeline-card h2 {
+.timeline-section .timeline-card h2 {
   margin: 0 0 4px;
   font-size: 1.3rem;
 }
@@ -859,9 +886,7 @@ select:focus {
   gap: 14px;
 }
 
-/* Each step */
-
-.timeline-step {
+.timeline-section .timeline-step {
   position: relative;
   padding-left: 44px;
   padding-right: 8px;
@@ -870,7 +895,7 @@ select:focus {
   animation-delay: calc(var(--i) * 0.09s);
 }
 
-.timeline-dot {
+.timeline-section .timeline-dot {
   position: absolute;
   left: 14px;
   top: 6px;
@@ -882,7 +907,7 @@ select:focus {
   animation: timeline-pulse 1.6s ease-out infinite;
 }
 
-.timeline-line {
+.timeline-section .timeline-line {
   position: absolute;
   left: 19px;
   top: 18px;
@@ -895,18 +920,18 @@ select:focus {
   );
 }
 
-.timeline-step:last-child .timeline-line {
+.timeline-section .timeline-step:last-child .timeline-line {
   display: none;
 }
 
-.timeline-icon {
+.timeline-section .timeline-icon {
   position: absolute;
   left: 34px;
   top: -2px;
   font-size: 1.1rem;
 }
 
-.timeline-content {
+.timeline-section .timeline-content {
   background: rgba(15, 23, 42, 0.9);
   border-radius: 14px;
   border: 1px solid rgba(51, 65, 85, 0.85);
@@ -933,7 +958,7 @@ select:focus {
   color: #9ca3af;
 }
 
-/* Animations */
+/* Animations for old timeline */
 
 @keyframes timeline-slide-up {
   from {
@@ -958,22 +983,20 @@ select:focus {
   }
 }
 
-/* Responsive tweaks for timeline */
-
 @media (max-width: 768px) {
-  .timeline-card {
+  .timeline-section .timeline-card {
     padding: 16px 14px 18px;
   }
 
-  .timeline-step {
+  .timeline-section .timeline-step {
     padding-left: 40px;
   }
 
-  .timeline-content {
+  .timeline-section .timeline-content {
     padding-left: 26px;
   }
 
-  .timeline-icon {
+  .timeline-section .timeline-icon {
     left: 30px;
   }
 }
@@ -1022,7 +1045,7 @@ select:focus {
   color: #9ca3af;
 }
 
-/* Visual "map" bubble */
+/* Visual map bubble */
 
 .map-visual {
   position: relative;
@@ -1050,7 +1073,7 @@ select:focus {
   overflow: hidden;
 }
 
-/* Rings that pulse outward */
+/* Rings */
 
 .map-ring {
   position: absolute;
@@ -1109,8 +1132,6 @@ select:focus {
   animation: map-main-pulse 2.2s ease-out infinite;
 }
 
-/* Small pins placed around */
-
 .map-pin-1 {
   top: 24%;
   left: 26%;
@@ -1131,7 +1152,7 @@ select:focus {
   right: 26%;
 }
 
-/* Animations */
+/* Map animations */
 
 @keyframes map-ring-ping {
   0% {
@@ -1172,8 +1193,6 @@ select:focus {
   }
 }
 
-/* Responsive layout for map */
-
 @media (max-width: 900px) {
   .map-card {
     grid-template-columns: minmax(0, 1fr);
@@ -1196,7 +1215,7 @@ select:focus {
   }
 }
 
-/* ====== Animated Repair Timeline (new layout) ====== */
+/* ====== Repair timeline (NEW layout further down) ====== */
 
 .repair-timeline {
   width: 100%;
@@ -1204,7 +1223,7 @@ select:focus {
   margin: 26px auto 0;
 }
 
-.timeline-card {
+.repair-timeline .timeline-card {
   background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), #020617 55%);
   border-radius: 22px;
   border: 1px solid rgba(37, 99, 235, 0.55);
@@ -1212,18 +1231,12 @@ select:focus {
   box-shadow: 0 18px 34px rgba(15, 23, 42, 0.9);
 }
 
-.timeline-card h2 {
+.repair-timeline .timeline-card h2 {
   margin: 0 0 6px;
   font-size: 1.25rem;
 }
 
-.timeline-intro {
-  margin: 0 0 16px;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.timeline-steps {
+.repair-timeline .timeline-steps {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1232,7 +1245,7 @@ select:focus {
 }
 
 /* vertical line */
-.timeline-steps::before {
+.repair-timeline .timeline-steps::before {
   content: "";
   position: absolute;
   left: 18px;
@@ -1247,7 +1260,7 @@ select:focus {
   opacity: 0.7;
 }
 
-.timeline-step {
+.repair-timeline .timeline-step {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -1262,21 +1275,20 @@ select:focus {
   animation: timelineFadeUp 0.5s ease forwards;
 }
 
-/* small staggered delays for animation */
-.timeline-step:nth-child(1) {
+.repair-timeline .timeline-step:nth-child(1) {
   animation-delay: 0.05s;
 }
-.timeline-step:nth-child(2) {
+.repair-timeline .timeline-step:nth-child(2) {
   animation-delay: 0.15s;
 }
-.timeline-step:nth-child(3) {
+.repair-timeline .timeline-step:nth-child(3) {
   animation-delay: 0.25s;
 }
-.timeline-step:nth-child(4) {
+.repair-timeline .timeline-step:nth-child(4) {
   animation-delay: 0.35s;
 }
 
-.timeline-step:hover {
+.repair-timeline .timeline-step:hover {
   border-color: rgba(59, 130, 246, 0.9);
   box-shadow: 0 14px 30px rgba(37, 99, 235, 0.65);
   transform: translateY(0);
@@ -1342,7 +1354,6 @@ select:focus {
   overflow: hidden;
 }
 
-/* soft glow edge */
 .guarantee-card::before {
   content: "";
   position: absolute;
@@ -1434,8 +1445,6 @@ select:focus {
   color: var(--text-muted);
 }
 
-/* responsive layout */
-
 @media (max-width: 900px) {
   .guarantee-card {
     padding: 16px 14px 18px;
@@ -1452,208 +1461,133 @@ select:focus {
   }
 }
 
-/* ========== DEVICE TYPE TILES (phone / tablet / laptop / watch) ========== */
+/* ====== DEVICE TYPE TILES (phone / tablet / laptop / watch) ====== */
 
 .device-type-row {
   margin-top: 12px;
   margin-bottom: 24px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 16px;
 }
 
 .device-type-card {
   position: relative;
-  border-radius: 16px;
-  padding: 16px 14px 14px;
-  background: radial-gradient(circle at top left, #0b1220 0%, #020617 55%, #000 100%);
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  color: #e5e7eb;
-  text-align: left;
-  cursor: pointer;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
+
+  padding: 18px 18px 16px;
+  border-radius: 26px;
+
+  background: radial-gradient(circle at 10% 0%, #020617 0%, #020617 45%, #000 100%);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
+
+  cursor: pointer;
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
     border-color 0.18s ease,
     background 0.18s ease;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.5);
 }
 
-.device-type-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(59, 130, 246, 0.8);
-  box-shadow:
-    0 0 0 1px rgba(59, 130, 246, 0.4),
-    0 18px 45px rgba(15, 23, 42, 0.95);
+.device-type-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18), transparent 55%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
 
-.device-type-card.active {
-  background: radial-gradient(circle at top left, #0f172a 0%, #020617 40%, #020617 100%);
-  border-color: #22c55e;
-  box-shadow:
-    0 0 0 1px rgba(45, 212, 191, 0.9),
-    0 20px 60px rgba(6, 95, 70, 0.6);
+.device-type-card > * {
+  position: relative;
+  z-index: 1;
 }
 
-.device-type-icon {
-  font-size: 1.6rem;
+/* FULL-CARD 3D ICON MODE */
+.device-type-card .device-type-icon {
+  position: relative;
+  width: 100%;
+  height: 170px;            /* a bit shorter so the image sits nicer */
+  margin-bottom: 8px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 0, rgba(56, 189, 248, 0.35), #020617 60%);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 1);
 }
 
-.device-type-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #cbd5f5;
-}
+/* actual 3D PNG */
+.device-type-card .device-3d-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1.55);  /* was 2.2 */
+  transform-origin: center;
 
-/* ========== BRAND CARDS (Apple / Samsung / Google / Other) ========== */
+  width: 110%;              /* slight overshoot to hide transparent edges */
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
 
-.brand-card-grid {
-  margin-top: 10px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
-  gap: 12px;
-}
-
-.brand-card {
-  border-radius: 14px;
-  padding: 12px 10px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #e5e7eb;
-  cursor: pointer;
-  text-align: center;
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  text-transform: capitalize;
+  filter: brightness(1.5) drop-shadow(0 0 20px rgba(56, 189, 248, 0.8));
   transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease,
-    border-color 0.16s ease,
-    background 0.16s ease;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.6);
+    transform 0.25s ease,
+    filter 0.25s ease;
 }
 
-.brand-card:hover {
-  transform: translateY(-1px);
-  border-color: rgba(59, 130, 246, 0.85);
-  box-shadow:
-    0 0 0 1px rgba(59, 130, 246, 0.5),
-    0 16px 40px rgba(15, 23, 42, 0.95);
+/* Hover: small pop */
+.device-type-card:hover .device-3d-icon {
+  transform: translate(-50%, -50%) scale(1.68);
+  filter: brightness(1.8) drop-shadow(0 0 26px rgba(56, 189, 248, 1));
 }
 
-.brand-card.active {
-  background: linear-gradient(135deg, #0f172a 0%, #0b1120 45%, #022c22 100%);
-  border-color: #22c55e;
-  box-shadow:
-    0 0 0 1px rgba(45, 212, 191, 0.85),
-    0 18px 48px rgba(6, 95, 70, 0.75);
+/* Active: a bit more emphasis, but not cropped */
+.device-type-card.active .device-3d-icon {
+  transform: translate(-50%, -50%) scale(1.78);
+  filter: brightness(2) drop-shadow(0 0 30px rgba(34, 197, 94, 0.98));
 }
 
-.brand-name {
-  color: #e5e7eb;
+
+@media (max-width: 640px) {
+  .device-type-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .device-type-card {
+    padding: 14px 14px 12px;
+    border-radius: 22px;
+  }
+
+  .device-type-card .device-type-icon {
+    height: 160px;
+  }
 }
 
-/* Small helper text under options (used for protector total) */
-.field-helper {
-  font-size: 0.78rem;
-  margin-top: 6px;
-  color: #a5b4fc;
-}
-/* ===== Device type + brand card grids ===== */
+/* ====== BRAND CARDS (Apple / Samsung / Google / Other) ====== */
 
-.device-type-grid,
 .brand-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.device-type-card,
-.brand-card {
-  border: none;
-  border-radius: 18px;
-  background: radial-gradient(circle at top left, #020617, #020617 60%);
-  border: 1px solid rgba(51, 65, 85, 0.9);
-  padding: 10px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.75);
-  transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out,
-    transform 0.12s ease-out, background 0.15s ease-out;
-  text-align: left;
-}
-
-.device-type-card:hover,
-.brand-card:hover {
-  transform: translateY(-1px);
-  border-color: rgba(59, 130, 246, 0.9);
-  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.6);
-}
-
-.device-type-card.active,
-.brand-card.active {
-  border-color: rgba(34, 197, 94, 0.9);
-  box-shadow: 0 16px 32px rgba(34, 197, 94, 0.45);
-  background: radial-gradient(
-    circle at top left,
-    rgba(34, 197, 94, 0.2),
-    #020617 65%
-  );
-}
-
-.device-type-emoji {
-  font-size: 1.4rem;
-}
-
-.device-type-label,
-.brand-label {
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #e5e7eb;
-}
-
-/* brand icon circle */
-/* ===== Brand cards ===== */
-.brand-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 cards on one row */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 12px;
+  margin-top: 10px;
   justify-items: center;
 }
 
-
-
-@media (max-width: 980px) {
-  .brand-grid {
-    grid-template-columns: repeat(3, 1fr); /* mobile-friendly */
-  }
-}
-
-@media (max-width: 640px) {
-  .brand-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-
 .brand-card {
-  width: 140px;       /* smaller width */
-  height: 170px;      /* shorter height */
+  position: relative;
+  width: 140px;
+  height: 170px;
   border-radius: 16px;
-  background: radial-gradient(circle at top, #060816, #020412);
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: #0f172a;
+  border: 2px solid transparent;
   padding: 14px 12px;
   display: flex;
   flex-direction: column;
@@ -1661,112 +1595,155 @@ select:focus {
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.6);
+  overflow: hidden;
 }
 
+/* Entrance animation (staggered) */
+.brand-grid .brand-card {
+  opacity: 1;
+  transform: translateY(12px) scale(0.98);
+  transition:
+    transform 450ms cubic-bezier(.2,.9,.3,1),
+    box-shadow 450ms ease,
+    border-color 300ms ease;
+  will-change: transform, opacity;
+}
 
+.brand-grid.entered .brand-card {
+  transform: translateY(0) scale(1);
+}
+
+.brand-grid.entered .brand-card:nth-child(1) { transition-delay: 0.05s; }
+.brand-grid.entered .brand-card:nth-child(2) { transition-delay: 0.10s; }
+.brand-grid.entered .brand-card:nth-child(3) { transition-delay: 0.15s; }
+.brand-grid.entered .brand-card:nth-child(4) { transition-delay: 0.20s; }
+.brand-grid.entered .brand-card:nth-child(5) { transition-delay: 0.25s; }
+
+/* Hover & active */
 
 .brand-card:hover {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4),
-    0 18px 45px rgba(15, 23, 42, 0.9);
-  transform: translateY(-1px);
+  transform: translateY(-4px) scale(1.05);
+  border-color: #4fc3f7;
+  box-shadow:
+    0 0 20px rgba(79, 195, 247, 0.4),
+    0 20px 40px rgba(15, 23, 42, 0.9);
+  z-index: 10;
+}
+
+.brand-card:active {
+  transform: scale(0.95);
 }
 
 .brand-card.active {
   border-color: #22c55e;
-  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5),
+  box-shadow:
+    0 0 25px rgba(34, 197, 94, 0.5),
     0 18px 45px rgba(15, 23, 42, 0.9);
+  transform: translateY(-2px) scale(1.03);
 }
 
-/* 🔹 JUST THE LOGO, NO CIRCLE */
-.brand-icon-wrap {
-   width: 70px;
-  height: 70px;
+/* Ripple click */
+
+.brand-card::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: var(--y, 50%);
+  left: var(--x, 50%);
+  background: radial-gradient(
+    circle,
+    rgba(79, 195, 247, 0.12) 0%,
+    rgba(79, 195, 247, 0.06) 50%,
+    rgba(79, 195, 247, 0) 100%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition:
+    width 420ms ease,
+    height 420ms ease,
+    opacity 420ms ease;
+  opacity: 0;
+}
+
+.brand-card.clicked::after {
+  width: 300px;
+  height: 300px;
+  opacity: 1;
+}
+
+/* Logo area */
+
+.brand-logo-wrapper {
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  overflow: hidden;
 }
 
-.brand-icon {
-  max-width: 100%;
-  max-height: 100%;
+.brand-logo {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.9;
+  display: block;
+  background: transparent !important;
+  filter: none !important;
+  opacity: 1 !important;
+  transition: transform 300ms ease, filter 300ms ease;
 }
 
-/* "Other brand" simple dot – no filled blue circle */
+.brand-card:hover .brand-logo {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(79, 195, 247, 0.5));
+}
+
+.brand-card.active .brand-logo {
+  transform: scale(1.18);
+  filter: drop-shadow(0 0 14px rgba(34, 231, 255, 0.6));
+}
+
+/* "Other" brand text icon */
+
 .brand-icon.other {
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: 8px;
-  color: #e5e7eb;
+  font-size: 28px;
+  color: #60a5fa;
+  display: inline-block;
+  transform: translateY(-2px);
 }
 
+/* Brand label text */
 
 .brand-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  margin-top: 6px;
+  font-family: "Tohamy", Times, serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: #e5e7eb;
+  color: #ebf3f7;
+  text-align: center;
+  white-space: nowrap;
 }
 
+/* Focus ring accessibility */
 
-/* accessibility focus */
 .device-type-card:focus-visible,
 .brand-card:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
 
-@media (max-width: 480px) {
-  .device-type-grid,
-  .brand-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-.brand-logo {
-  width: 70px;
-  height: 70px;
+/* ====== Booking progress bar (bottom) ====== */
 
-  object-fit: contain;
-  display: block;
-
-  /* Don't invert or color-filter SVGs by default */
-  filter: none;
-  opacity: 1;
-}
-
-
-.device-type-card,
-.brand-card {
-  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
-}
-
-.device-type-card.active,
-.brand-card.active {
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 1px #22c55e, 0 10px 30px rgba(0, 0, 0, 0.6);
-}
-.next-arrow {
-  display: inline-block;
-  margin-left: 8px;
-  transition: transform 0.2s ease;
-}
-
-.btn.primary:hover .next-arrow {
-  transform: translateX(4px);
-}
-.accordion-section {
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.accordion-section-active {
-  opacity: 1;
-  transform: translateY(0);
-}
 .booking-progress {
   position: fixed;
   left: 0;
@@ -1802,605 +1779,41 @@ select:focus {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-/* Make header stay flush at the top */
-.header {
-  padding-top: 20px !important;
-  padding-bottom: 0;
-}
 
-/* Put logo at top-left */
-.logo-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 10px;
-  padding-left: 0;
-}
+/* ====== Reduced motion ====== */
 
-/* Reduce the white space above logo */
-.header-inner {
-  padding-top: 0 !important;
-}
-
-/* Adjust logo size */
-.logo-image {
-  width: 160px;
-  height: auto;
-}
-/* Remove ALL unwanted left padding from hero containers */
-.shell,
-.header,
-.header-inner,
-.logo-row {
-  padding-left: 0 !important;
-  margin-left: 0 !important;
-}
-
-/* Force hero to align to the very left */
-.header-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start !important;
-}
-
-/* Shrink unnecessary space on the left column container */
-.header {
-  padding-left: 15px !important; /* You can change to 0 if you want ABSOLUTE left */
-}
-
-/* Logo sizing (adjust if needed) */
-.logo-image {
-  width: 160px;
-  height: auto;
-}
-
-.logo-image {
-  width: 230px;
-}
-
-.logo-row {
-  padding-left: 0 !important;
-  margin-left: -40px !important;  /* adjust value */
-}
-
-.logo-image {
-  margin-left: 0 !important;
-}
-/* Brand label text */
-.brand-label {
-  font-family: "Tahoma", serif !important;
-  font-size: 1rem;
-  font-weight: 800;       /* makes text clean & readable */
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color:  #FFFFFF;         /* light blue */
-  white-space: nowrap;    /* forces text to stay on ONE line */
-  text-align: center;
-}
-
-
-
-.brand-card.active {
-  border-color: #4da3ff;
-  box-shadow: 0 0 20px rgba(77,163,255,0.25);
-}
-
-/* Push header content higher with minimal top padding */
-/* Push header content higher with minimal top padding */
-/* Push header content higher with minimal top padding */
-.header {
-  padding-top: 5px !important;  /* Reduced from 8px to 5px */
-  padding-left: 24px !important;
-  padding-bottom: 16px !important;
-}
-
-/* Remove extra spacing from header inner container */
-.header-inner {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  padding-left: 0 !important;
-}
-
-/* Move logo row to the left and HIGHER */
-.logo-row {
-  margin-top: -15px !important;  /* Increased from -10px to -15px */
-  margin-bottom: 8px !important;
-  margin-left: -15px !important;
-  padding-top: 0 !important;
-  padding-left: 0 !important;
-  overflow: visible !important;
-}
-
-/* Make logo BIGGER and crisp */
-.logo-image {
-  height: 170px !important;
-  width: auto;
-  margin-top: 0 !important;
-  margin-left: 0 !important;
-  display: block;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Ensure header doesn't clip content */
-.header {
-  overflow: visible !important;
-}
-
-/* Reduce spacing below logo */
-.logo-text-group {
-  gap: 2px;
-}
-
-/* Tighten main heading spacing - move it up */
-.header h1 {
-  margin-top: 8px !important;
-  margin-bottom: 6px !important;
-}
-
-/* Reduce paragraph spacing */
-.header p {
-  margin-bottom: 6px !important;
-}
-
-/* Tighten service area spacing */
-.service-area {
-  margin-top: 4px !important;
-  margin-bottom: 6px !important;
-}
-
-/* Reduce hero tags spacing */
-.hero-tags {
-  margin-top: 10px !important;
-  margin-bottom: 10px !important;
-}
-
-/* Tighten button row spacing */
-.hero-btn-row {
-  margin-top: 2px !important;
-}
-/* BRAND CARDS INTERACTIVE EFFECTS */
-.brand-card {
-  background: #0f172a;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  padding: 14px;
-  cursor: pointer;
-  transition: 0.25s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.brand-card:hover {
-  transform: scale(1.07);
-  border-color: #4fc3f7;
-  box-shadow: 0 0 18px rgba(79, 195, 247, 0.35);
-}
-
-.brand-card:active {
-  transform: scale(0.95);
-}
-
-/* SELECTED STATE */
-.brand-card.active {
-  border-color: #22e7ff;
-  box-shadow: 0 0 25px rgba(34, 231, 255, 0.55);
-  transform: scale(1.12);
-}
-
-/* LOGO IMAGE STYLE */
-.brand-logo {
-  width: 65px;
-  height: 65px;
-  object-fit: contain;
-  transition: 0.25s ease;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
-}
-
-/* LOGO grows on hover */
-.brand-card:hover .brand-logo {
-  transform: scale(1.15);
-  filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.45));
-}
-
-/* Selected logo highlight */
-.brand-card.active .brand-logo {
-  transform: scale(1.18);
-  filter: drop-shadow(0 0 14px rgba(34, 231, 255, 0.6));
-}
-
-/* Brand label */
-.brand-label {
-  margin-top: 8px;
-  font-family: "Tohamy", serif;
-  font-weight: 800;
-  font-size: 1rem;
-  color: #e7ecf2; /* light blue */
-  text-align: center;
-  white-space: nowrap;
-}
-.brand-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.brand-card::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  top: var(--y);
-  left: var(--x);
-  background: rgba(96, 212, 255, 0.4);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.4s ease, height 0.4s ease;
-}
-
-.brand-card.clicked::after {
-  width: 250px;
-  height: 250px;
-}
-/* ---- Entrance (staggered slide+fade) ---- */
-.brand-grid .brand-card {
-  opacity: 0;
-  transform: translateY(12px) scale(0.99);
-  transition: transform 420ms cubic-bezier(.2,.9,.3,1), opacity 420ms ease;
-  will-change: transform, opacity;
-}
-
-/* add class on mount to trigger */
-.brand-grid.entered .brand-card {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-/* small per-item delay using nth-child (stagger) */
-.brand-grid.entered .brand-card:nth-child(1) { transition-delay: 0.03s; }
-.brand-grid.entered .brand-card:nth-child(2) { transition-delay: 0.08s; }
-.brand-grid.entered .brand-card:nth-child(3) { transition-delay: 0.13s; }
-.brand-grid.entered .brand-card:nth-child(4) { transition-delay: 0.18s; }
-.brand-grid.entered .brand-card:nth-child(5) { transition-delay: 0.23s; }
-
-/* ---- Gentle floating animation (subtle) ---- */
-@keyframes floatY {
-  0% { transform: translateY(0) }
-  50% { transform: translateY(-6px) }
-  100% { transform: translateY(0) }
-}
-
-.brand-card.float {
-  animation: floatY 5.6s ease-in-out infinite;
-}
-
-/* Hover pop + glow (keeps previous hover, stronger) */
-.brand-card:hover {
-  transform: translateY(-6px) scale(1.08);
-  box-shadow: 0 18px 40px rgba(63, 146, 255, 0.18);
-  z-index: 3;
-}
-
-/* When hovered, reduce float intensity so transform doesn't fight animation */
-.brand-card.float:hover {
-  animation-play-state: paused;
-}
-
-/* ---- 3D tilt transforms (pointer) ---- */
-/* We apply inline transform from JS; provide transition for smoothness */
-.brand-card.tilt {
-  transition: transform 160ms cubic-bezier(.2,.85,.25,1), box-shadow 160ms;
-  will-change: transform;
-}
-
-/* ---- Ripple click styles (you may already have these) ---- */
-.brand-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.brand-card::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  top: var(--y, 50%);
-  left: var(--x, 50%);
-  background: radial-gradient(circle, rgba(79,195,247,0.12) 0%, rgba(79,195,247,0.06) 50%, rgba(79,195,247,0) 100%);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  transition: width 420ms ease, height 420ms ease, opacity 420ms ease;
-  opacity: 0;
-}
-
-.brand-card.clicked::after {
-  width: 300px;
-  height: 300px;
-  opacity: 1;
-}
-
-/* ---- Small accessibility / performance tweaks ---- */
-@media (prefers-reduced-motion: reduce) {
-  .brand-card.float,
-  .brand-card,
-  .brand-grid .brand-card { animation: none !important; transition: none !important; }
-}
-
-/* ensure brand logos render reliably and have transparent background */
-.brand-logo-wrapper {
-  width: 64px;        /* tweak size */
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent; /* important */
-  overflow: hidden;
-}
-
-.brand-logo {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  background: transparent !important;
-  filter: none !important;       /* remove any destructive filters */
-  -webkit-filter: none !important;
-  opacity: 1 !important;
-}
-
-/* fallback icon style for "Other" */
-.brand-icon.other {
-  font-size: 28px;
-  color: #60a5fa; /* match theme blue */
-  display: inline-block;
-  transform: translateY(-2px);
-}
-
-/* make sure brand label remains on the same row and is styled */
-.brand-label {
-  font-family: "Tohamy", Times, serif; /* per your request */
-  color: #ebf3f7; /* light blue to match theme — change to your preferred */
-  font-weight: 700; /* bold */
-  font-size: 0.88rem;
-  margin-top: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  text-align: center;
-}
-
-/* keep grid compact so "Other Brand" stays on same line */
-.brand-grid {
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
-  justify-items: center;
-}
-/* Update the brand-grid entrance animation */
-.brand-grid .brand-card {
-  opacity: 0;
-  transform: translateY(12px) scale(0.99);
-  transition: transform 420ms cubic-bezier(.2,.9,.3,1), opacity 420ms ease;
-  will-change: transform, opacity;
-}
-
-/* When entered class is added */
-.brand-grid.entered .brand-card {
-  opacity: 1 !important; /* Add !important to ensure it applies */
-  transform: translateY(0) scale(1);
-}
-
-/* Ensure logos are always visible */
-.brand-logo, .brand-icon {
-  opacity: 1 !important;
-}
-/* ===== BRAND CARD ANIMATION - IMPROVED ===== */
-
-/* Initial state - KEEP LOGOS VISIBLE */
-.brand-grid .brand-card {
-  opacity: 1 !important; /* Always visible */
-  transform: translateY(12px) scale(0.98);
-  transition: transform 450ms cubic-bezier(.2,.9,.3,1), 
-              box-shadow 450ms ease,
-              border-color 300ms ease;
-}
-
-/* Logos always visible */
-.brand-logo, 
-.brand-logo-wrapper,
-.brand-icon {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* Animated entrance when entered class is added */
-.brand-grid.entered .brand-card {
-  transform: translateY(0) scale(1);
-}
-
-/* Staggered delays for each card */
-.brand-grid.entered .brand-card:nth-child(1) { 
-  transition-delay: 0.05s; 
-}
-.brand-grid.entered .brand-card:nth-child(2) { 
-  transition-delay: 0.10s; 
-}
-.brand-grid.entered .brand-card:nth-child(3) { 
-  transition-delay: 0.15s; 
-}
-.brand-grid.entered .brand-card:nth-child(4) { 
-  transition-delay: 0.20s; 
-}
-.brand-grid.entered .brand-card:nth-child(5) { 
-  transition-delay: 0.25s; 
-}
-
-/* Enhanced hover effect */
-.brand-card:hover {
-  transform: translateY(-4px) scale(1.05) !important;
-  border-color: #4fc3f7;
-  box-shadow: 0 0 20px rgba(79, 195, 247, 0.4),
-              0 20px 40px rgba(15, 23, 42, 0.9);
-  z-index: 10;
-}
-
-/* Active/selected state */
-.brand-card.active {
-  transform: translateY(-2px) scale(1.03) !important;
-  border-color: #22c55e;
-  box-shadow: 0 0 25px rgba(34, 197, 94, 0.5),
-              0 18px 45px rgba(15, 23, 42, 0.9);
-}
-
-/* Logo scale on hover */
-.brand-card:hover .brand-logo {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 12px rgba(79, 195, 247, 0.5));
-}
-
-/* Smooth transitions for logos */
-.brand-logo {
-  transition: transform 300ms ease, filter 300ms ease;
-}
-
-/* Prevent animation conflicts */
 @media (prefers-reduced-motion: reduce) {
   .brand-grid .brand-card,
-  .brand-logo {
+  .brand-logo,
+  .timeline-section .timeline-step,
+  .repair-timeline .timeline-step {
     animation: none !important;
     transition: none !important;
   }
 }
-/* Add to your App.css */
-
-/* Ensure smooth scrolling on mobile */
-@media (max-width: 768px) {
-  .accordion-section {
-    scroll-margin-top: 20px;
-  }
-  
-  /* Add extra padding at top of step 2 for better visibility */
-  section[class*="accordion-section"] {
-    padding-top: 10px;
-  }
-}
-
-.header {
-  background: linear-gradient(180deg, 
-    #000000 0%,           /* Black at logo */
-    #050b15 25%,          /* Very dark navy */
-    #0d1b2a 60%,          /* Dark blue */
-    #1a2847 100%          /* Darker bottom */
-  ) !important;
-  border-radius: var(--radius-lg);
-  padding: 20px 20px 26px 20px;
-  box-shadow: var(--shadow-strong);
-  position: relative;
-  overflow: visible !important;
-}
-/* Remove the box/square around logo */
-.logo-row {
-  padding: 0 !important;
-  margin-left: -15px !important;
-  margin-top: -15px !important;
-  margin-bottom: 8px !important;
-  padding-top: 0 !important;
-  padding-left: 0 !important;
-  overflow: visible !important;
-  background: none !important; /* Remove any background */
-  border-radius: 0 !important; /* Remove border radius */
-  box-shadow: none !important; /* Remove shadow */
-}
-/* Style for Lucide React icons in device type cards */
-.device-type-icon svg {
-  width: 32px;
-  height: 32px;
-  stroke: currentColor;
-  stroke-width: 2;
-  fill: none;
-}
-
-/* Make icons brighter on hover */
-.device-type-card:hover .device-type-icon svg {
-  stroke: #60a5fa;
-}
-
-/* Active state - green tint */
-.device-type-card.active .device-type-icon svg {
-  stroke: #22c55e;
-}
-/* === 3D device icons === */
-
-.device-type-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: radial-gradient(circle at 25% 0%, #22c55e22 0, #020617 45%, #000 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-/* glow when selected */
-.device-type-card.active .device-type-icon {
-  box-shadow: 0 0 24px rgba(34, 197, 94, 0.5);
-}
-
-/* the PNGs themselves */
-.device-3d-icon {
-  width: 40px;          /* tweak this if you want them bigger/smaller */
-  max-height: 40px;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.8));
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-/* small pop-up effect when the card is active/hovered */
-.device-type-card.active .device-3d-icon,
-.device-type-card:hover .device-3d-icon {
-  transform: translateY(-2px) scale(1.03);
-  filter: drop-shadow(0 6px 16px rgba(34, 197, 94, 0.9));
-}
-.device-type-card .device-3d-icon {
-  filter: brightness(1.3) drop-shadow(0 4px 10px rgba(0, 180, 255, 0.2));
-}
-
-.device-type-card.active .device-3d-icon {
-  filter: brightness(1.7) drop-shadow(0 6px 16px rgba(0, 255, 180, 0.55));
-}
-.device-type-card:hover .device-type-icon {
-  box-shadow: 0 0 22px rgba(0, 255, 180, 0.28);
-}
-.device-3d-icon {
-  width: 44px;
-  height: 44px;
-}
-/* ========= 3D DEVICE CARD UPGRADE ========= */
+/* === FINAL DEVICE TYPE ICON STYLE (compact, not cropped) === */
 
 /* Layout for the four cards */
 .device-type-row {
   margin-top: 12px;
   margin-bottom: 24px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
 }
 
-/* Card base */
+/* Card container */
 .device-type-card {
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-end;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 10px;
 
-  padding: 18px 18px 16px;
-  border-radius: 26px;
+  padding: 16px 16px 14px;
+  border-radius: 24px;
 
   background: radial-gradient(circle at 10% 0%, #020617 0%, #020617 45%, #000 100%);
   border: 1px solid rgba(148, 163, 184, 0.35);
@@ -2414,73 +1827,12 @@ select:focus {
     background 0.18s ease;
 }
 
-/* Soft glow overlay */
-.device-type-card::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18), transparent 55%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-
-.device-type-card > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Icon container (the little glowing square behind the 3D PNG) */
-.device-type-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  background: radial-gradient(circle at 30% 0%, rgba(56, 189, 248, 0.4), rgba(15, 23, 42, 0.96));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.95);
-}
-
-/* The 3D PNG itself */
-.device-3d-icon {
-  width: 42px;
-  height: 42px;
-  object-fit: contain;
-  pointer-events: none;
-
-  filter: brightness(1.35) drop-shadow(0 0 12px rgba(56, 189, 248, 0.55));
-  transition:
-    transform 0.2s ease,
-    filter 0.2s ease;
-}
-
-/* Label under icon */
-.device-type-label {
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #e5e7eb;
-}
-
-/* Hover state – subtle lift + glow */
 .device-type-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: rgba(56, 189, 248, 0.9);
   box-shadow: 0 22px 55px rgba(15, 23, 42, 0.95);
 }
 
-.device-type-card:hover::before {
-  opacity: 1;
-}
-
-.device-type-card:hover .device-3d-icon {
-  transform: translateY(-2px) scale(1.06);
-  filter: brightness(1.7) drop-shadow(0 0 16px rgba(56, 189, 248, 0.85));
-}
-
-/* Active (selected) state – green halo & stronger neon */
 .device-type-card.active {
   border-color: #22c55e;
   background: radial-gradient(circle at 10% 0%, rgba(16, 185, 129, 0.26), #020617 55%);
@@ -2489,12 +1841,55 @@ select:focus {
     0 24px 60px rgba(6, 95, 70, 0.7);
 }
 
-.device-type-card.active::before {
-  opacity: 1;
+/* Small glowing tile behind the icon */
+.device-type-card .device-type-icon {
+  width: 72px !important;
+  height: 72px !important;
+  margin-bottom: 6px;
+  border-radius: 22px;
+  background: radial-gradient(circle at 30% 0%, rgba(56, 189, 248, 0.4), rgba(15, 23, 42, 0.96));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.95);
+  overflow: hidden;
+}
+
+/* The 3D PNG itself – back to a normal size */
+.device-type-card .device-3d-icon {
+  position: static !important;
+  width: 44px !important;
+  height: 44px !important;
+  object-fit: contain;
+  pointer-events: none;
+
+  transform: none !important;
+  filter: brightness(1.4)
+          drop-shadow(0 0 12px rgba(56, 189, 248, 0.6));
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+/* Hover / active effects – small pop + glow, no cropping */
+.device-type-card:hover .device-3d-icon {
+  transform: translateY(-2px) scale(1.06) !important;
+  filter: brightness(1.7)
+          drop-shadow(0 0 20px rgba(56, 189, 248, 0.9));
 }
 
 .device-type-card.active .device-3d-icon {
-  filter: brightness(1.9) drop-shadow(0 0 20px rgba(34, 197, 94, 0.95));
+  transform: translateY(-2px) scale(1.1) !important;
+  filter: brightness(2)
+          drop-shadow(0 0 24px rgba(34, 197, 94, 0.98));
+}
+
+/* Label under the icon */
+.device-type-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #e5e7eb;
 }
 
 /* Mobile tweaks */
@@ -2509,13 +1904,265 @@ select:focus {
     border-radius: 22px;
   }
 
+  .device-type-card .device-type-icon {
+    width: 64px !important;
+    height: 64px !important;
+  }
+
+  .device-type-card .device-3d-icon {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+/* === tiny polish for device cards === */
+
+/* center content + label under icon */
+.device-type-card {
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+}
+
+/* make the glowing tile and icon a bit bigger */
+.device-type-card .device-type-icon {
+  width: 82px !important;
+  height: 82px !important;
+}
+
+.device-type-card .device-3d-icon {
+  width: 52px !important;
+  height: 52px !important;
+}
+/* ===== DEVICE TYPE CARDS – SMALLER CARD + BIGGER ICON ===== */
+
+.device-type-row {
+  margin-top: 12px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+/* Card itself – tighter height, centered content */
+.device-type-card {
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 14px 14px 12px;
+  min-height: 170px;              /* smaller card */
+  max-width: 260px;               /* keep them from getting huge */
+  margin: 0 auto;
+
+  border-radius: 22px;
+  background: radial-gradient(circle at 20% 0%, #020617 0%, #020617 55%, #000 100%);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.85);
+
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+/* subtle glow overlay */
+.device-type-card::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.24), transparent 55%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.device-type-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Icon background box */
+.device-type-icon {
+  width: 82px;                    /* small square */
+  height: 82px;
+  border-radius: 24px;
+  background: radial-gradient(circle at 30% 0%, rgba(56, 189, 248, 0.5), rgba(15, 23, 42, 0.96));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.95);
+  margin-bottom: 10px;
+}
+
+/* 3D PNG – ~40% larger than the older tiny one */
+.device-3d-icon {
+  width: 60px;                    /* <- make this bigger/smaller if you want */
+  height: 60px;
+  object-fit: contain;
+  pointer-events: none;
+
+  filter: brightness(1.4) drop-shadow(0 0 14px rgba(56, 189, 248, 0.65));
+  transition:
+    transform 0.22s ease,
+    filter 0.22s ease;
+}
+
+/* label */
+.device-type-label {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #e5e7eb;
+  text-align: center;
+}
+
+/* hover effects */
+.device-type-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.9);
+  box-shadow: 0 20px 46px rgba(15, 23, 42, 0.95);
+}
+
+.device-type-card:hover::before {
+  opacity: 1;
+}
+
+.device-type-card:hover .device-3d-icon {
+  transform: translateY(-2px) scale(1.06);
+  filter: brightness(1.8) drop-shadow(0 0 18px rgba(56, 189, 248, 1));
+}
+
+/* active state */
+.device-type-card.active {
+  border-color: #22c55e;
+  background: radial-gradient(circle at 20% 0%, rgba(16, 185, 129, 0.25), #020617 55%);
+  box-shadow:
+    0 0 0 1px rgba(34, 197, 94, 0.6),
+    0 24px 60px rgba(6, 95, 70, 0.75);
+}
+
+.device-type-card.active .device-3d-icon {
+  transform: translateY(-2px) scale(1.08);
+  filter: brightness(2) drop-shadow(0 0 24px rgba(34, 197, 94, 0.95));
+}
+
+/* mobile tweaks */
+@media (max-width: 640px) {
+  .device-type-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .device-type-card {
+    min-height: 150px;
+    padding: 12px 10px 10px;
+  }
+
   .device-type-icon {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
   }
 
   .device-3d-icon {
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
+  }
+}
+/* ==== FORCE 4 EQUAL DEVICE CARDS (DESKTOP) ==== */
+
+.device-type-row {
+  margin-top: 12px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));  /* 4 in one line */
+  gap: 18px;
+}
+
+/* All cards = same height & width in the grid */
+.device-type-card {
+  height: 15px;                  /* fixed height so they match */
+  max-width: none;                /* let the grid control width */
+  margin: 0;                      /* remove auto-centering margin */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Icon container (same for all) */
+.device-type-icon {
+  width: 88px;
+  height: 88px;
+  border-radius: 24px;
+  background: radial-gradient(circle at 30% 0%, rgba(56, 189, 248, 0.5), rgba(15, 23, 42, 0.96));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.95);
+  margin-bottom: 10px;
+}
+
+/* Bigger 3D icons (same size for all four) */
+.device-3d-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: brightness(1.4) drop-shadow(0 0 14px rgba(56, 189, 248, 0.65));
+  transition: transform 0.22s ease, filter 0.22s ease;
+}
+
+/* Label under icon */
+.device-type-label {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #e5e7eb;
+  text-align: center;
+}
+
+/* Hover + active states still work with these sizes */
+.device-type-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Active card keeps glow but same height */
+.device-type-card.active {
+  border-color: #22c55e;
+}
+
+/* ===== RESPONSIVE: ALLOW WRAP ON SMALLER SCREENS ===== */
+
+@media (max-width: 900px) {
+  .device-type-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 per row on tablets */
+  }
+}
+
+@media (max-width: 600px) {
+  .device-type-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* still 2 per row on phones */
+    gap: 14px;
+  }
+
+  .device-type-card {
+    height: 190px;
+  }
+
+  .device-type-icon {
+    width: 76px;
+    height: 76px;
+  }
+
+  .device-3d-icon {
+    width: 56px;
+    height: 56px;
   }
 }
