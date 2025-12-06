@@ -6,7 +6,10 @@ import googleLogo from "./assets/brands/google.png";
 import motorolaLogo from "./assets/brands/motorola.png";
 
 import logo from "./assets/logo.png";
-import { Smartphone, Tablet, Laptop, Watch } from "lucide-react";
+import phoneImg from "./phone.png";
+import tabletImg from "./ipad.png";
+import laptopImg from "./laptop.png";
+import watchImg from "./watch.png";
 
 import tapSound from "./assets/audio/ui-tap.mp3";
 import "./App.css";
@@ -14,13 +17,14 @@ import { SCREEN_PRICING, BATTERY_PRICING } from "./pricing";
 
 // ---------- static data ----------
 
-// Device type cards
+// Device type cards – now using your 3D images
 const DEVICE_TYPES = [
-  { id: "smartphone", label: "SMARTPHONE", icon: <Smartphone size={32} /> },
-  { id: "tablet", label: "TABLET / IPAD", icon: <Tablet size={32} /> },
-  { id: "laptop", label: "LAPTOP", icon: <Laptop size={32} /> },
-  { id: "watch", label: "WATCH", icon: <Watch size={32} /> },
+  { id: "smartphone", label: "SMARTPHONE", image: phoneImg },
+  { id: "tablet", label: "TABLET / IPAD", image: tabletImg },
+  { id: "laptop", label: "LAPTOP", image: laptopImg },
+  { id: "watch", label: "WATCH", image: watchImg },
 ];
+
 const BRAND_CARDS = [
   {
     id: "apple",
@@ -54,9 +58,6 @@ const BRAND_CARDS = [
     isOther: true,
   },
 ];
-
-
-
 
 // Brand / model list for dropdown (only for smartphones we know)
 const PHONE_DATA = [
@@ -152,21 +153,22 @@ const TIMELINE_STEPS = [
     icon: "🔧",
   },
 ];
-// Replace the ContactUsPage function (around line 141) with this complete version:
+
+// ---------- Contact Us Overlay ----------
 
 function ContactUsPage({ onBack }) {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
   });
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -175,57 +177,64 @@ function ContactUsPage({ onBack }) {
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);
-        setFormData({ name: '', email: '', phone: '', message: '' });
+        setFormData({ name: "", email: "", phone: "", message: "" });
       }, 3000);
     }
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'radial-gradient(circle at top left, #1e293b 0, #020617 45%, #000 100%)',
-      color: '#e5e7eb',
-      overflowY: 'auto',
-      zIndex: 9999
-    }}>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background:
+          "radial-gradient(circle at top left, #1e293b 0, #020617 45%, #000 100%)",
+        color: "#e5e7eb",
+        overflowY: "auto",
+        zIndex: 9999,
+      }}
+    >
       {/* Header */}
-      <header style={{
-        borderBottom: '1px solid rgba(51, 65, 85, 0.9)',
-        background: 'rgba(2, 6, 23, 0.5)',
-        backdropFilter: 'blur(8px)'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '20px 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-         <img 
-            src={logo} 
-            alt="AtDoorFix logo" 
+      <header
+        style={{
+          borderBottom: "1px solid rgba(51, 65, 85, 0.9)",
+          background: "rgba(2, 6, 23, 0.5)",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <img
+            src={logo}
+            alt="AtDoorFix logo"
             style={{
-              height: '140px',
-              width: 'auto'
-            }} 
+              height: "140px",
+              width: "auto",
+            }}
           />
-          <button 
+          <button
             onClick={onBack}
             style={{
-              fontSize: '0.875rem',
-              color: '#9ca3af',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '8px 16px'
+              fontSize: "0.875rem",
+              color: "#9ca3af",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "8px 16px",
             }}
-            onMouseOver={(e) => e.target.style.color = '#fff'}
-            onMouseOut={(e) => e.target.style.color = '#9ca3af'}
+            onMouseOver={(e) => (e.target.style.color = "#fff")}
+            onMouseOut={(e) => (e.target.style.color = "#9ca3af")}
           >
             ← Back to Home
           </button>
@@ -233,128 +242,178 @@ function ContactUsPage({ onBack }) {
       </header>
 
       {/* Main Content */}
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '64px 24px' }}>
+      <main
+        style={{ maxWidth: "1200px", margin: "0 auto", padding: "64px 24px" }}
+      >
         {/* Hero */}
-        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <h1 style={{
-            fontSize: '2.5rem',
-            fontWeight: 'bold',
-            marginBottom: '16px',
-            background: 'linear-gradient(to right, #60a5fa, #22d3ee, #14b8a6)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
+        <div style={{ textAlign: "center", marginBottom: "64px" }}>
+          <h1
+            style={{
+              fontSize: "2.5rem",
+              fontWeight: "bold",
+              marginBottom: "16px",
+              background:
+                "linear-gradient(to right, #60a5fa, #22d3ee, #14b8a6)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
             Get in Touch
           </h1>
-          <p style={{
-            fontSize: '1.125rem',
-            color: '#9ca3af',
-            maxWidth: '768px',
-            margin: '0 auto'
-          }}>
-            Have questions about your repair? Need help booking an appointment? 
-            We're here to help you every step of the way.
+          <p
+            style={{
+              fontSize: "1.125rem",
+              color: "#9ca3af",
+              maxWidth: "768px",
+              margin: "0 auto",
+            }}
+          >
+            Have questions about your repair? Need help booking an appointment?
+            We&apos;re here to help you every step of the way.
           </p>
         </div>
 
         {/* Two Column Layout */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '32px',
-          maxWidth: '1000px',
-          margin: '0 auto'
-        }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: "32px",
+            maxWidth: "1000px",
+            margin: "0 auto",
+          }}
+        >
           {/* Contact Info Column */}
           <div>
-            <div style={{
-              background: 'radial-gradient(circle at top left, #020617, #020617 55%, #020617)',
-              borderRadius: '24px',
-              border: '1px solid rgba(37, 99, 235, 0.3)',
-              padding: '32px',
-              boxShadow: '0 18px 40px rgba(15, 23, 42, 0.8)'
-            }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '24px' }}>
+            <div
+              style={{
+                background:
+                  "radial-gradient(circle at top left, #020617, #020617 55%, #020617)",
+                borderRadius: "24px",
+                border: "1px solid rgba(37, 99, 235, 0.3)",
+                padding: "32px",
+                boxShadow: "0 18px 40px rgba(15, 23, 42, 0.8)",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: "600",
+                  marginBottom: "24px",
+                }}
+              >
                 Contact Information
               </h2>
 
-             {/* WhatsApp */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '999px',
-                  background: 'rgba(37, 211, 102, 0.1)',
-                  border: '1px solid rgba(37, 211, 102, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <span style={{ fontSize: '1.5rem' }}>💬</span>
+              {/* WhatsApp */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "16px",
+                  marginBottom: "24px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "999px",
+                    background: "rgba(37, 211, 102, 0.1)",
+                    border: "1px solid rgba(37, 211, 102, 0.3)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <span style={{ fontSize: "1.5rem" }}>💬</span>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
+                  <h3
+                    style={{
+                      fontSize: "0.875rem",
+                      fontWeight: "600",
+                      color: "#d1d5db",
+                      marginBottom: "8px",
+                    }}
+                  >
                     WhatsApp Business
                   </h3>
-                  <a 
+                  <a
                     href="https://wa.me/message/7G2GRUQFGC3JN1"
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      color: '#25d366',
-                      textDecoration: 'none',
-                      fontSize: '1rem',
-                      padding: '8px 16px',
-                      background: 'rgba(37, 211, 102, 0.1)',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(37, 211, 102, 0.3)',
-                      transition: 'all 0.2s'
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      color: "#25d366",
+                      textDecoration: "none",
+                      fontSize: "1rem",
+                      padding: "8px 16px",
+                      background: "rgba(37, 211, 102, 0.1)",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(37, 211, 102, 0.3)",
+                      transition: "all 0.2s",
                     }}
                     onMouseOver={(e) => {
-                      e.target.style.background = 'rgba(37, 211, 102, 0.2)';
-                      e.target.style.transform = 'translateY(-1px)';
+                      e.target.style.background = "rgba(37, 211, 102, 0.2)";
+                      e.target.style.transform = "translateY(-1px)";
                     }}
                     onMouseOut={(e) => {
-                      e.target.style.background = 'rgba(37, 211, 102, 0.1)';
-                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.background = "rgba(37, 211, 102, 0.1)";
+                      e.target.style.transform = "translateY(0)";
                     }}
                   >
                     <span>Chat with us on WhatsApp</span>
-                    <span style={{ fontSize: '1.2rem' }}>→</span>
+                    <span style={{ fontSize: "1.2rem" }}>→</span>
                   </a>
                 </div>
               </div>
 
               {/* Email */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '999px',
-                  background: 'rgba(34, 211, 238, 0.1)',
-                  border: '1px solid rgba(34, 211, 238, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <span style={{ fontSize: '1.5rem' }}>✉️</span>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "16px",
+                  marginBottom: "24px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "999px",
+                    background: "rgba(34, 211, 238, 0.1)",
+                    border: "1px solid rgba(34, 211, 238, 0.3)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <span style={{ fontSize: "1.5rem" }}>✉️</span>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
+                  <h3
+                    style={{
+                      fontSize: "0.875rem",
+                      fontWeight: "600",
+                      color: "#d1d5db",
+                      marginBottom: "8px",
+                    }}
+                  >
                     Email
                   </h3>
-                  <a 
+                  <a
                     href="mailto:management@atdoorfix.com"
                     style={{
-                      color: '#22d3ee',
-                      textDecoration: 'none',
-                      wordBreak: 'break-all'
+                      color: "#22d3ee",
+                      textDecoration: "none",
+                      wordBreak: "break-all",
                     }}
                   >
                     management@atdoorfix.com
@@ -363,74 +422,162 @@ function ContactUsPage({ onBack }) {
               </div>
 
               {/* Hours */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '999px',
-                  background: 'rgba(20, 184, 166, 0.1)',
-                  border: '1px solid rgba(20, 184, 166, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <span style={{ fontSize: '1.5rem' }}>🕒</span>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "16px",
+                  marginBottom: "24px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "999px",
+                    background: "rgba(20, 184, 166, 0.1)",
+                    border: "1px solid rgba(20, 184, 166, 0.3)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <span style={{ fontSize: "1.5rem" }}>🕒</span>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
+                  <h3
+                    style={{
+                      fontSize: "0.875rem",
+                      fontWeight: "600",
+                      color: "#d1d5db",
+                      marginBottom: "8px",
+                    }}
+                  >
                     Business Hours
                   </h3>
-                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: '2px 0' }}>Monday - Saturday</p>
-                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: '2px 0' }}>9:00 AM - 7:00 PM</p>
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "#9ca3af",
+                      margin: "2px 0",
+                    }}
+                  >
+                    Monday - Saturday
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "#9ca3af",
+                      margin: "2px 0",
+                    }}
+                  >
+                    9:00 AM - 7:00 PM
+                  </p>
                 </div>
               </div>
 
               {/* Service Area */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '32px' }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '999px',
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <span style={{ fontSize: '1.5rem' }}>📍</span>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "16px",
+                  marginBottom: "32px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "999px",
+                    background: "rgba(34, 197, 94, 0.1)",
+                    border: "1px solid rgba(34, 197, 94, 0.3)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <span style={{ fontSize: "1.5rem" }}>📍</span>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
+                  <h3
+                    style={{
+                      fontSize: "0.875rem",
+                      fontWeight: "600",
+                      color: "#d1d5db",
+                      marginBottom: "8px",
+                    }}
+                  >
                     Service Areas
                   </h3>
-                  <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                    Daytona Beach • Ormond Beach • DeLand • Deltona • New Smyrna • Port Orange, FL
+                  <p style={{ fontSize: "0.875rem", color: "#9ca3af" }}>
+                    Daytona Beach • Ormond Beach • DeLand • Deltona • New Smyrna
+                    • Port Orange, FL
                   </p>
                 </div>
               </div>
 
               {/* Features */}
-              <div style={{ borderTop: '1px solid rgba(51, 65, 85, 0.9)', paddingTop: '24px' }}>
-                <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '12px' }}>
+              <div
+                style={{
+                  borderTop: "1px solid rgba(51, 65, 85, 0.9)",
+                  paddingTop: "24px",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "0.875rem",
+                    fontWeight: "600",
+                    color: "#d1d5db",
+                    marginBottom: "12px",
+                  }}
+                >
                   Why Choose Us?
                 </h3>
-                <div style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <span style={{ color: '#22c55e' }}>✓</span>
+                <div style={{ fontSize: "0.875rem", color: "#9ca3af" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <span style={{ color: "#22c55e" }}>✓</span>
                     <span>Same-day mobile repair service</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <span style={{ color: '#22c55e' }}>✓</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <span style={{ color: "#22c55e" }}>✓</span>
                     <span>Pay after repair is complete</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <span style={{ color: '#22c55e' }}>✓</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <span style={{ color: "#22c55e" }}>✓</span>
                     <span>90-day warranty included</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ color: '#22c55e' }}>✓</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <span style={{ color: "#22c55e" }}>✓</span>
                     <span>Professional technicians</span>
                   </div>
                 </div>
@@ -440,39 +587,52 @@ function ContactUsPage({ onBack }) {
 
           {/* Contact Form Column */}
           <div>
-            <div style={{
-              background: 'radial-gradient(circle at top left, #020617, #020617 55%, #020617)',
-              borderRadius: '24px',
-              border: '1px solid rgba(51, 65, 85, 0.9)',
-              padding: '32px',
-              boxShadow: '0 18px 40px rgba(15, 23, 42, 0.8)'
-            }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '24px' }}>
+            <div
+              style={{
+                background:
+                  "radial-gradient(circle at top left, #020617, #020617 55%, #020617)",
+                borderRadius: "24px",
+                border: "1px solid rgba(51, 65, 85, 0.9)",
+                padding: "32px",
+                boxShadow: "0 18px 40px rgba(15, 23, 42, 0.8)",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: "600",
+                  marginBottom: "24px",
+                }}
+              >
                 Send Us a Message
               </h2>
 
               {submitted && (
-                <div style={{
-                  marginBottom: '24px',
-                  padding: '16px',
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.3)',
-                  borderRadius: '12px',
-                  color: '#22c55e',
-                  fontSize: '0.875rem'
-                }}>
-                  ✓ Thank you! We'll get back to you soon.
+                <div
+                  style={{
+                    marginBottom: "24px",
+                    padding: "16px",
+                    background: "rgba(34, 197, 94, 0.1)",
+                    border: "1px solid rgba(34, 197, 94, 0.3)",
+                    borderRadius: "12px",
+                    color: "#22c55e",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  ✓ Thank you! We&apos;ll get back to you soon.
                 </div>
               )}
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: '#d1d5db',
-                  marginBottom: '8px'
-                }}>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.875rem",
+                    fontWeight: "500",
+                    color: "#d1d5db",
+                    marginBottom: "8px",
+                  }}
+                >
                   Your Name *
                 </label>
                 <input
@@ -482,26 +642,28 @@ function ContactUsPage({ onBack }) {
                   onChange={handleChange}
                   placeholder="John Doe"
                   style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid rgba(148, 163, 184, 0.18)',
-                    borderRadius: '12px',
-                    color: '#e5e7eb',
-                    fontSize: '0.9rem',
-                    outline: 'none'
+                    width: "100%",
+                    padding: "12px 16px",
+                    background: "rgba(15, 23, 42, 0.9)",
+                    border: "1px solid rgba(148, 163, 184, 0.18)",
+                    borderRadius: "12px",
+                    color: "#e5e7eb",
+                    fontSize: "0.9rem",
+                    outline: "none",
                   }}
                 />
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: '#d1d5db',
-                  marginBottom: '8px'
-                }}>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.875rem",
+                    fontWeight: "500",
+                    color: "#d1d5db",
+                    marginBottom: "8px",
+                  }}
+                >
                   Email Address *
                 </label>
                 <input
@@ -511,26 +673,28 @@ function ContactUsPage({ onBack }) {
                   onChange={handleChange}
                   placeholder="you@example.com"
                   style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid rgba(148, 163, 184, 0.18)',
-                    borderRadius: '12px',
-                    color: '#e5e7eb',
-                    fontSize: '0.9rem',
-                    outline: 'none'
+                    width: "100%",
+                    padding: "12px 16px",
+                    background: "rgba(15, 23, 42, 0.9)",
+                    border: "1px solid rgba(148, 163, 184, 0.18)",
+                    borderRadius: "12px",
+                    color: "#e5e7eb",
+                    fontSize: "0.9rem",
+                    outline: "none",
                   }}
                 />
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: '#d1d5db',
-                  marginBottom: '8px'
-                }}>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.875rem",
+                    fontWeight: "500",
+                    color: "#d1d5db",
+                    marginBottom: "8px",
+                  }}
+                >
                   Phone Number
                 </label>
                 <input
@@ -540,26 +704,28 @@ function ContactUsPage({ onBack }) {
                   onChange={handleChange}
                   placeholder="(555) 123-4567"
                   style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid rgba(148, 163, 184, 0.18)',
-                    borderRadius: '12px',
-                    color: '#e5e7eb',
-                    fontSize: '0.9rem',
-                    outline: 'none'
+                    width: "100%",
+                    padding: "12px 16px",
+                    background: "rgba(15, 23, 42, 0.9)",
+                    border: "1px solid rgba(148, 163, 184, 0.18)",
+                    borderRadius: "12px",
+                    color: "#e5e7eb",
+                    fontSize: "0.9rem",
+                    outline: "none",
                   }}
                 />
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: '#d1d5db',
-                  marginBottom: '8px'
-                }}>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.875rem",
+                    fontWeight: "500",
+                    color: "#d1d5db",
+                    marginBottom: "8px",
+                  }}
+                >
                   Message *
                 </label>
                 <textarea
@@ -569,15 +735,15 @@ function ContactUsPage({ onBack }) {
                   rows="5"
                   placeholder="Tell us how we can help you..."
                   style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid rgba(148, 163, 184, 0.18)',
-                    borderRadius: '12px',
-                    color: '#e5e7eb',
-                    fontSize: '0.9rem',
-                    outline: 'none',
-                    resize: 'none'
+                    width: "100%",
+                    padding: "12px 16px",
+                    background: "rgba(15, 23, 42, 0.9)",
+                    border: "1px solid rgba(148, 163, 184, 0.18)",
+                    borderRadius: "12px",
+                    color: "#e5e7eb",
+                    fontSize: "0.9rem",
+                    outline: "none",
+                    resize: "none",
                   }}
                 ></textarea>
               </div>
@@ -585,25 +751,27 @@ function ContactUsPage({ onBack }) {
               <button
                 onClick={handleSubmit}
                 style={{
-                  width: '100%',
-                  background: 'linear-gradient(to right, #2563eb, #0891b2)',
-                  color: '#fff',
-                  fontWeight: '600',
-                  padding: '12px 24px',
-                  borderRadius: '12px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                  boxShadow: '0 16px 30px rgba(37, 99, 235, 0.45)',
-                  transition: 'transform 0.2s, box-shadow 0.2s'
+                  width: "100%",
+                  background: "linear-gradient(to right, #2563eb, #0891b2)",
+                  color: "#fff",
+                  fontWeight: "600",
+                  padding: "12px 24px",
+                  borderRadius: "12px",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "0.9rem",
+                  boxShadow: "0 16px 30px rgba(37, 99, 235, 0.45)",
+                  transition: "transform 0.2s, box-shadow 0.2s",
                 }}
                 onMouseOver={(e) => {
-                  e.target.style.transform = 'translateY(-1px)';
-                  e.target.style.boxShadow = '0 20px 42px rgba(37, 99, 235, 0.6)';
+                  e.target.style.transform = "translateY(-1px)";
+                  e.target.style.boxShadow =
+                    "0 20px 42px rgba(37, 99, 235, 0.6)";
                 }}
                 onMouseOut={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 16px 30px rgba(37, 99, 235, 0.45)';
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow =
+                    "0 16px 30px rgba(37, 99, 235, 0.45)";
                 }}
               >
                 Send Message
@@ -613,70 +781,115 @@ function ContactUsPage({ onBack }) {
         </div>
 
         {/* FAQ Section */}
-        <div style={{ marginTop: '64px', maxWidth: '896px', margin: '64px auto 0' }}>
-          <h2 style={{
-            fontSize: '1.875rem',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            marginBottom: '32px',
-            color: '#fff'
-          }}>
+        <div
+          style={{
+            marginTop: "64px",
+            maxWidth: "896px",
+            margin: "64px auto 0",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "1.875rem",
+              fontWeight: "bold",
+              textAlign: "center",
+              marginBottom: "32px",
+              color: "#fff",
+            }}
+          >
             Frequently Asked Questions
           </h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '24px'
-          }}>
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.9)',
-              borderRadius: '16px',
-              padding: '24px',
-              border: '1px solid rgba(51, 65, 85, 0.9)'
-            }}>
-              <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '8px' }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: "24px",
+            }}
+          >
+            <div
+              style={{
+                background: "rgba(15, 23, 42, 0.9)",
+                borderRadius: "16px",
+                padding: "24px",
+                border: "1px solid rgba(51, 65, 85, 0.9)",
+              }}
+            >
+              <h3
+                style={{
+                  fontWeight: "600",
+                  color: "#fff",
+                  marginBottom: "8px",
+                }}
+              >
                 How quickly can you come?
               </h3>
-              <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                We offer same-day appointments! Call us to check availability for your preferred time.
+              <p style={{ fontSize: "0.875rem", color: "#9ca3af" }}>
+                We offer same-day appointments! Call us to check availability
+                for your preferred time.
               </p>
             </div>
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.9)',
-              borderRadius: '16px',
-              padding: '24px',
-              border: '1px solid rgba(51, 65, 85, 0.9)'
-            }}>
-              <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '8px' }}>
+            <div
+              style={{
+                background: "rgba(15, 23, 42, 0.9)",
+                borderRadius: "16px",
+                padding: "24px",
+                border: "1px solid rgba(51, 65, 85, 0.9)",
+              }}
+            >
+              <h3
+                style={{
+                  fontWeight: "600",
+                  color: "#fff",
+                  marginBottom: "8px",
+                }}
+              >
                 Do I pay upfront?
               </h3>
-              <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                No! You only pay after the repair is complete and you're satisfied with the work.
+              <p style={{ fontSize: "0.875rem", color: "#9ca3af" }}>
+                No! You only pay after the repair is complete and you&apos;re
+                satisfied with the work.
               </p>
             </div>
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.9)',
-              borderRadius: '16px',
-              padding: '24px',
-              border: '1px solid rgba(51, 65, 85, 0.9)'
-            }}>
-              <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '8px' }}>
+            <div
+              style={{
+                background: "rgba(15, 23, 42, 0.9)",
+                borderRadius: "16px",
+                padding: "24px",
+                border: "1px solid rgba(51, 65, 85, 0.9)",
+              }}
+            >
+              <h3
+                style={{
+                  fontWeight: "600",
+                  color: "#fff",
+                  marginBottom: "8px",
+                }}
+              >
                 What areas do you serve?
               </h3>
-              <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                We serve Daytona Beach, Ormond Beach, DeLand, Deltona, New Smyrna, and Port Orange in Florida.
+              <p style={{ fontSize: "0.875rem", color: "#9ca3af" }}>
+                We serve Daytona Beach, Ormond Beach, DeLand, Deltona, New
+                Smyrna, and Port Orange in Florida.
               </p>
             </div>
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.9)',
-              borderRadius: '16px',
-              padding: '24px',
-              border: '1px solid rgba(51, 65, 85, 0.9)'
-            }}>
-              <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '8px' }}>
+            <div
+              style={{
+                background: "rgba(15, 23, 42, 0.9)",
+                borderRadius: "16px",
+                padding: "24px",
+                border: "1px solid rgba(51, 65, 85, 0.9)",
+              }}
+            >
+              <h3
+                style={{
+                  fontWeight: "600",
+                  color: "#fff",
+                  marginBottom: "8px",
+                }}
+              >
                 Is there a warranty?
               </h3>
-              <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+              <p style={{ fontSize: "0.875rem", color: "#9ca3af" }}>
                 Yes! All repairs come with a 90-day warranty on parts and labor.
               </p>
             </div>
@@ -685,21 +898,31 @@ function ContactUsPage({ onBack }) {
       </main>
 
       {/* Footer */}
-      <footer style={{ borderTop: '1px solid rgba(51, 65, 85, 0.9)', marginTop: '64px' }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '32px 24px',
-          textAlign: 'center',
-          color: '#6b7280',
-          fontSize: '0.875rem'
-        }}>
+      <footer
+        style={{
+          borderTop: "1px solid rgba(51, 65, 85, 0.9)",
+          marginTop: "64px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "32px 24px",
+            textAlign: "center",
+            color: "#6b7280",
+            fontSize: "0.875rem",
+          }}
+        >
           © 2025 AtDoorFix. All rights reserved.
         </div>
       </footer>
     </div>
   );
 }
+
+// ---------- Main App ----------
+
 function App() {
   const [step, setStep] = useState(1);
   const [showContact, setShowContact] = useState(false);
@@ -751,86 +974,79 @@ function App() {
     audio.play().catch(() => {});
   };
 
- const scrollTo = (ref) => {
-  if (ref && ref.current) {
-    ref.current.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-      inline: "nearest"
-    });
-    
-    // Extra scroll adjustment for mobile to account for fixed headers
-    setTimeout(() => {
-      const yOffset = -20; // Adjust this value if needed
-      const element = ref.current;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }, 100);
-  }
-};
-  // inside your App() component, add:
+  const scrollTo = (ref) => {
+    if (ref && ref.current) {
+      ref.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
 
-// pointer-tilt: small 3D tilt on pointer move
-function handleBrandPointerMove(e) {
-  const el = e.currentTarget;
-  const rect = el.getBoundingClientRect();
-  const px = (e.clientX - rect.left) / rect.width; // 0..1
-  const py = (e.clientY - rect.top) / rect.height; // 0..1
-
-  const rotateY = (px - 0.5) * 10; // tilt left/right
-  const rotateX = (0.5 - py) * 8;  // tilt up/down
-  const scale = 1.02;
-
-  el.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
-  el.classList.add("tilt");
-}
-
-// reset tilt
-function handleBrandPointerLeave(e) {
-  const el = e.currentTarget;
-  el.style.transform = "";
-  el.classList.remove("tilt");
-}
-
-// click ripple helper (already similar guidance earlier)
-function handleBrandClickRipple(e) {
-  const el = e.currentTarget;
-  const rect = el.getBoundingClientRect();
-  el.style.setProperty("--x", e.clientX - rect.left + "px");
-  el.style.setProperty("--y", e.clientY - rect.top + "px");
-
-  el.classList.remove("clicked");
-  // force reflow to restart pseudo-element transition
-  void el.offsetWidth;
-  el.classList.add("clicked");
-  // remove clicked class after animation
-  setTimeout(() => el.classList.remove("clicked"), 500);
-}
-
-// mount: add 'entered' class to brand-grid for staggered entrance
-// Replace the existing useEffect for brand-grid animation with this:
-// Replace the existing brand-grid useEffect with this:
-useEffect(() => {
-  const grid = document.querySelector(".brand-grid");
-  if (!grid) return;
-  
-  // Remove entered class to reset animation
-  grid.classList.remove("entered");
-  
-  // Force browser reflow to ensure class removal is processed
-  void grid.offsetWidth;
-  
-  // Re-add entered class after a small delay
-  const timer = setTimeout(() => {
-    const gridCheck = document.querySelector(".brand-grid");
-    if (gridCheck) {
-      gridCheck.classList.add("entered");
+      // Extra scroll adjustment for mobile to account for fixed headers
+      setTimeout(() => {
+        const yOffset = -20;
+        const element = ref.current;
+        const y =
+          element.getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }, 100);
     }
-  }, 100);
-  
-  return () => clearTimeout(timer);
-}, [deviceType]); // Only trigger on deviceType change // Add dependencies so it re-runs when device type changes
+  };
 
+  // pointer-tilt: small 3D tilt on pointer move
+  function handleBrandPointerMove(e) {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width; // 0..1
+    const py = (e.clientY - rect.top) / rect.height; // 0..1
+
+    const rotateY = (px - 0.5) * 10; // tilt left/right
+    const rotateX = (0.5 - py) * 8; // tilt up/down
+    const scale = 1.02;
+
+    el.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+    el.classList.add("tilt");
+  }
+
+  // reset tilt
+  function handleBrandPointerLeave(e) {
+    const el = e.currentTarget;
+    el.style.transform = "";
+    el.classList.remove("tilt");
+  }
+
+  // click ripple helper
+  function handleBrandClickRipple(e) {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty("--x", e.clientX - rect.left + "px");
+    el.style.setProperty("--y", e.clientY - rect.top + "px");
+
+    el.classList.remove("clicked");
+    void el.offsetWidth; // restart animation
+    el.classList.add("clicked");
+    setTimeout(() => el.classList.remove("clicked"), 500);
+  }
+
+  // brand-grid entrance animation
+  useEffect(() => {
+    const grid = document.querySelector(".brand-grid");
+    if (!grid) return;
+
+    grid.classList.remove("entered");
+    void grid.offsetWidth;
+
+    const timer = setTimeout(() => {
+      const gridCheck = document.querySelector(".brand-grid");
+      if (gridCheck) {
+        gridCheck.classList.add("entered");
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [deviceType]);
 
   const handleHeroBook = () => {
     playTap();
@@ -842,7 +1058,6 @@ useEffect(() => {
         block: "start",
       });
     }
-    // focus the device section after a tiny delay
     setTimeout(() => scrollTo(deviceRef), 350);
   };
 
@@ -882,8 +1097,7 @@ useEffect(() => {
       }
     } else if (issue === "Battery Replacement") {
       const batteryPricing = BATTERY_PRICING[selectedBrand]?.[selectedModel];
-      rawPrice =
-        typeof batteryPricing === "number" ? batteryPricing : null;
+      rawPrice = typeof batteryPricing === "number" ? batteryPricing : null;
     }
   }
 
@@ -893,48 +1107,46 @@ useEffect(() => {
   // ---------- step handlers ----------
 
   function handleNextFromStep1() {
-  playTap();
+    playTap();
 
-  if (isSmartphone) {
-    if (!selectedBrand) {
-      alert("Please select a brand.");
-      return;
-    }
-
-    if (isOtherBrand) {
-      if (!otherBrandText.trim() || !otherModelText.trim()) {
-        alert("Please type your phone brand and model.");
+    if (isSmartphone) {
+      if (!selectedBrand) {
+        alert("Please select a brand.");
         return;
       }
-      setStep(2);
-      // Scroll to issue section after a small delay to ensure DOM is ready
-      setTimeout(() => scrollTo(issueRef), 150);
-      return;
+
+      if (isOtherBrand) {
+        if (!otherBrandText.trim() || !otherModelText.trim()) {
+          alert("Please type your phone brand and model.");
+          return;
+        }
+        setStep(2);
+        setTimeout(() => scrollTo(issueRef), 150);
+        return;
+      }
+
+      if (!selectedModel) {
+        alert("Please select a model.");
+        return;
+      }
+
+      if (isOtherModel && !otherModelText.trim()) {
+        alert("Please type your phone model.");
+        return;
+      }
+    } else {
+      // tablet / laptop / watch – always custom
+      if (!otherBrandText.trim() || !otherModelText.trim()) {
+        alert("Please type your device brand and model.");
+        return;
+      }
     }
 
-    if (!selectedModel) {
-      alert("Please select a model.");
-      return;
-    }
-
-    if (isOtherModel && !otherModelText.trim()) {
-      alert("Please type your phone model.");
-      return;
-    }
-  } else {
-    // tablet / laptop / watch – always custom
-    if (!otherBrandText.trim() || !otherModelText.trim()) {
-      alert("Please type your device brand and model.");
-      return;
-    }
+    setStep(2);
+    setTimeout(() => {
+      scrollTo(issueRef);
+    }, 150);
   }
-
-  setStep(2);
-  // Add delay to ensure step 2 renders before scrolling
-  setTimeout(() => {
-    scrollTo(issueRef);
-  }, 150);
-}
 
   function handleNextFromStep2() {
     playTap();
@@ -996,7 +1208,6 @@ useEffect(() => {
     const effectiveScreenQuality =
       issue === "Screen Replacement" ? screenQuality : "";
 
-    // use same computed price for both screen & battery when known
     let estPrice = "";
 
     if (
@@ -1081,13 +1292,12 @@ useEffect(() => {
       ? selectedModel
       : otherModelText || "Custom model";
 
-  // progress for sticky bar
   const progress = (step / 4) * 100;
 
-  // ---------- JSX ----------
- if (showContact) {
+  if (showContact) {
     return <ContactUsPage onBack={() => setShowContact(false)} />;
   }
+
   return (
     <div className="app">
       <div className="shell">
@@ -1126,12 +1336,12 @@ useEffect(() => {
               <button className="btn primary" onClick={handleHeroBook}>
                 Book a repair
               </button>
-      <button 
-    className="btn secondary" 
-    onClick={() => setShowContact(true)}
-  >
-    Contact Us
-  </button>
+              <button
+                className="btn secondary"
+                onClick={() => setShowContact(true)}
+              >
+                Contact Us
+              </button>
               <span className="hero-note">No upfront payment required.</span>
             </div>
           </div>
@@ -1191,7 +1401,13 @@ useEffect(() => {
                         scrollTo(brandRef);
                       }}
                     >
-                      <span className="device-type-icon">{t.icon}</span>
+                      <span className="device-type-icon">
+                        <img
+                          src={t.image}
+                          alt={t.label}
+                          className="device-3d-icon"
+                        />
+                      </span>
                       <span className="device-type-label">{t.label}</span>
                     </button>
                   ))}
@@ -1213,37 +1429,31 @@ useEffect(() => {
                               ? "brand-card active"
                               : "brand-card"
                           }
-                        onClick={(e) => {
-  playTap();
-  setSelectedBrand(b.value);
-  setSelectedModel("");
-  if (b.isOther) {
-    setOtherBrandText("");
-    setOtherModelText("");
-  }
-
-  // ripple effect
-  const rect = e.currentTarget.getBoundingClientRect();
-  e.currentTarget.style.setProperty("--x", e.clientX - rect.left + "px");
-  e.currentTarget.style.setProperty("--y", e.clientY - rect.top + "px");
-
-  e.currentTarget.classList.remove("clicked");
-  void e.currentTarget.offsetWidth; // restart animation
-  e.currentTarget.classList.add("clicked");
-
-  scrollTo(modelRef);
-}}
-
+                          onClick={(e) => {
+                            playTap();
+                            setSelectedBrand(b.value);
+                            setSelectedModel("");
+                            if (b.isOther) {
+                              setOtherBrandText("");
+                              setOtherModelText("");
+                            }
+                            handleBrandClickRipple(e);
+                            scrollTo(modelRef);
+                          }}
+                          onPointerMove={handleBrandPointerMove}
+                          onPointerLeave={handleBrandPointerLeave}
                         >
-                      <div className="brand-logo-wrapper">
-  {b.isOther ? (
-    <span className="brand-icon other">...</span>
-  ) : (
-    <img src={b.logo} alt={b.label} className="brand-logo" />
-  )}
-</div>
-
-
+                          <div className="brand-logo-wrapper">
+                            {b.isOther ? (
+                              <span className="brand-icon other">...</span>
+                            ) : (
+                              <img
+                                src={b.logo}
+                                alt={b.label}
+                                className="brand-logo"
+                              />
+                            )}
+                          </div>
                           <div className="brand-label">{b.label}</div>
                         </button>
                       ))}
@@ -1287,9 +1497,7 @@ useEffect(() => {
                         <input
                           type="text"
                           value={otherBrandText}
-                          onChange={(e) =>
-                            setOtherBrandText(e.target.value)
-                          }
+                          onChange={(e) => setOtherBrandText(e.target.value)}
                           placeholder="Example: Huawei, OnePlus, Xiaomi..."
                         />
                       </div>
@@ -1299,9 +1507,7 @@ useEffect(() => {
                         <input
                           type="text"
                           value={otherModelText}
-                          onChange={(e) =>
-                            setOtherModelText(e.target.value)
-                          }
+                          onChange={(e) => setOtherModelText(e.target.value)}
                           placeholder="Example: P40 Pro, OnePlus 11R..."
                         />
                       </div>
@@ -1315,9 +1521,7 @@ useEffect(() => {
                       <input
                         type="text"
                         value={otherModelText}
-                        onChange={(e) =>
-                          setOtherModelText(e.target.value)
-                        }
+                        onChange={(e) => setOtherModelText(e.target.value)}
                         placeholder="Type your exact model (e.g. iPhone SE 2022)"
                       />
                     </div>
@@ -1407,9 +1611,7 @@ useEffect(() => {
                             name="screenQuality"
                             value={q.key}
                             checked={screenQuality === q.key}
-                            onChange={(e) =>
-                              setScreenQuality(e.target.value)
-                            }
+                            onChange={(e) => setScreenQuality(e.target.value)}
                           />
                           <span>
                             <strong>
@@ -2024,47 +2226,77 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* ====== Guarantee & safety badges ====== */}
+      {/* ====== Price & Service Guarantees ====== */}
       <section className="guarantee-strip" id="guarantees">
         <div className="guarantee-card">
-          <h3>Every repair comes with:</h3>
+          <div className="guarantee-header">
+            <span className="guarantee-pill">
+              Price &amp; Service Guarantees
+            </span>
+            <h2>You&apos;re fully covered with AtDoorFix</h2>
+            <p>
+              Clear upfront pricing, no surprise fees, and you only pay after
+              the repair is done and you&apos;re happy.
+            </p>
+          </div>
+
           <div className="guarantee-badges">
+            {/* Pay After Repair */}
+            <div className="guarantee-badge">
+              <span className="badge-icon">🤝</span>
+              <div>
+                <div className="badge-title">Pay After Repair</div>
+                <div className="badge-text">
+                  No deposits, no pre-payment. You pay once your phone is fixed
+                  and tested on-site.
+                </div>
+              </div>
+            </div>
+
+            {/* 90-Day Warranty */}
             <div className="guarantee-badge">
               <span className="badge-icon">🛡️</span>
               <div>
-                <div className="badge-title">90-day warranty</div>
+                <div className="badge-title">90-Day Warranty</div>
                 <div className="badge-text">
-                  Coverage on parts & labor for your repair.
+                  Every repair is backed by a 90-day warranty on both parts and
+                  labor.
                 </div>
               </div>
             </div>
 
+            {/* Certified Technician */}
             <div className="guarantee-badge">
               <span className="badge-icon">👨‍🔧</span>
               <div>
-                <div className="badge-title">Pro technician</div>
+                <div className="badge-title">Certified Technician</div>
                 <div className="badge-text">
-                  Experienced tech focused on quality & safety.
+                  Experienced mobile repair techs focused on quality, safety,
+                  and clean installs.
                 </div>
               </div>
             </div>
 
+            {/* OEM & Premium Parts */}
             <div className="guarantee-badge">
-              <span className="badge-icon">✅</span>
+              <span className="badge-icon">📦</span>
               <div>
-                <div className="badge-title">Pay after repair</div>
+                <div className="badge-title">OEM &amp; Premium Parts</div>
                 <div className="badge-text">
-                  No deposits or pre-payment. You pay when the job is done.
+                  We use trusted aftermarket &amp; premium parts we&apos;re
+                  confident enough to warranty.
                 </div>
               </div>
             </div>
 
+            {/* We Come To You */}
             <div className="guarantee-badge">
-              <span className="badge-icon">📱</span>
+              <span className="badge-icon">🚗</span>
               <div>
-                <div className="badge-title">Quality parts</div>
+                <div className="badge-title">We Come To You</div>
                 <div className="badge-text">
-                  We source trusted parts that we&apos;re happy to warranty.
+                  Mobile service to your home, office, or local spot in Daytona
+                  Beach &amp; nearby cities.
                 </div>
               </div>
             </div>
@@ -2072,9 +2304,7 @@ useEffect(() => {
         </div>
       </section>
 
-      <footer className="footer">
-        © 2025 AtDoorFix. All rights reserved.
-      </footer>
+      <footer className="footer">© 2025 AtDoorFix. All rights reserved.</footer>
     </div>
   );
 }
