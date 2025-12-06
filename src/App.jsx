@@ -206,16 +206,14 @@ function ContactUsPage({ onBack }) {
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
-          <div style={{
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            background: 'linear-gradient(to right, #60a5fa, #22d3ee)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
-            AtDoorFix
-          </div>
+         <img 
+            src={logo} 
+            alt="AtDoorFix logo" 
+            style={{
+              height: '140px',
+              width: 'auto'
+            }} 
+          />
           <button 
             onClick={onBack}
             style={{
@@ -281,47 +279,53 @@ function ContactUsPage({ onBack }) {
                 Contact Information
               </h2>
 
-              {/* Phone */}
+             {/* WhatsApp */}
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
                 <div style={{
                   width: '48px',
                   height: '48px',
                   borderRadius: '999px',
-                  background: 'rgba(37, 99, 235, 0.1)',
-                  border: '1px solid rgba(37, 99, 235, 0.3)',
+                  background: 'rgba(37, 211, 102, 0.1)',
+                  border: '1px solid rgba(37, 211, 102, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0
                 }}>
-                  <span style={{ fontSize: '1.5rem' }}>📞</span>
+                  <span style={{ fontSize: '1.5rem' }}>💬</span>
                 </div>
                 <div>
                   <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d1d5db', marginBottom: '8px' }}>
-                    Phone Numbers
+                    WhatsApp Business
                   </h3>
                   <a 
-                    href="tel:3862860387"
+                    href="https://wa.me/message/7G2GRUQFGC3JN1"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{
-                      display: 'block',
-                      color: '#60a5fa',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      color: '#25d366',
                       textDecoration: 'none',
-                      marginBottom: '4px',
-                      fontSize: '1.125rem'
+                      fontSize: '1rem',
+                      padding: '8px 16px',
+                      background: 'rgba(37, 211, 102, 0.1)',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(37, 211, 102, 0.3)',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.background = 'rgba(37, 211, 102, 0.2)';
+                      e.target.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.background = 'rgba(37, 211, 102, 0.1)';
+                      e.target.style.transform = 'translateY(0)';
                     }}
                   >
-                    (386) 286-0387
-                  </a>
-                  <a 
-                    href="tel:6173880141"
-                    style={{
-                      display: 'block',
-                      color: '#60a5fa',
-                      textDecoration: 'none',
-                      fontSize: '1.125rem'
-                    }}
-                  >
-                    (617) 388-0141
+                    <span>Chat with us on WhatsApp</span>
+                    <span style={{ fontSize: '1.2rem' }}>→</span>
                   </a>
                 </div>
               </div>
