@@ -3200,3 +3200,151 @@ select:hover {
   padding: 8px 10px;
   margin-top: 8px;
 }
+/* =========================================================
+   🚐 FINAL NUCLEAR OVERRIDE — Progress Van ALWAYS WORKS
+   Paste at the VERY BOTTOM of App.css
+   ========================================================= */
+
+/* 1) Reset any older car/van pseudo-elements & random car classes */
+.booking-progress *[class*="car"],
+.booking-progress *[class*="van"],
+.booking-progress .booking-progress-car,
+.booking-progress .progress-car,
+.booking-progress .car,
+.booking-progress .car-icon{
+  display: none !important;
+}
+
+/* 2) Track must allow overflow */
+.booking-progress-track{
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* 3) Fill bar stays normal */
+.booking-progress-bar{
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  border-radius: inherit !important;
+  overflow: visible !important;
+}
+
+/* 4) Create ONE van tied to the end of the filled bar */
+.booking-progress-bar::after{
+  content: "🚐" !important;
+
+  position: absolute !important;
+  right: -18px !important;               /* sits at the end of fill */
+  top: 50% !important;
+  transform: translateY(-50%) scaleX(-1) !important;
+
+  font-size: 30px !important;
+  line-height: 1 !important;
+  z-index: 99999 !important;
+  pointer-events: none !important;
+
+  filter:
+    drop-shadow(0 0 10px rgba(255,255,255,.75))
+    drop-shadow(0 10px 18px rgba(0,0,0,.75)) !important;
+  animation: vanFloat 2s ease-in-out infinite !important;
+}
+
+/* 5) Soft badge behind van so it always shows */
+.booking-progress-bar::before{
+  content: "" !important;
+
+  position: absolute !important;
+  right: -26px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 999px !important;
+
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  backdrop-filter: blur(6px) !important;
+
+  z-index: 99998 !important;
+  pointer-events: none !important;
+}
+
+@keyframes vanFloat{
+  0%,100%{ transform: translateY(-50%) scaleX(-1) translateY(0); }
+  50%    { transform: translateY(-50%) scaleX(-1) translateY(-2px); }
+}
+/* ✅ Fix map animations (works with your JSX divs) */
+.map-circle { position: relative !important; overflow: visible !important; }
+
+.map-circle .map-ring{
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  opacity: 1 !important;
+  animation: map-ring-ping 2.6s linear infinite !important;
+  pointer-events: none !important;
+}
+
+.map-circle .map-ring.ring-1{ width: 40% !important; height: 40% !important; animation-delay: 0s !important; }
+.map-circle .map-ring.ring-2{ width: 65% !important; height: 65% !important; animation-delay: .4s !important; }
+.map-circle .map-ring.ring-3{ width: 90% !important; height: 90% !important; animation-delay: .8s !important; }
+
+.map-circle .map-pin{
+  position: absolute !important;
+  animation: map-pin-pulse 2s ease-out infinite !important;
+}
+
+.map-circle .map-pin-main{
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  animation: map-main-pulse 2.2s ease-out infinite !important;
+}
+/* 📍 Animate the "Now serving" cities (works with your current JSX) */
+/* ✅ HARD RESET so cities can NEVER disappear */
+
+/* 📍 Cities light glow (staggered correctly) */
+.service-area .city{
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline !important;
+
+  animation: cityShine 2.6s ease-in-out infinite !important;
+  will-change: color, text-shadow, filter;
+}
+
+/* Because there are 2 spans before the cities (pin + label),
+   the FIRST city is span:nth-of-type(3) */
+.service-area span.city:nth-of-type(3){ animation-delay: 0s !important; }
+.service-area span.city:nth-of-type(4){ animation-delay: .35s !important; }
+.service-area span.city:nth-of-type(5){ animation-delay: .70s !important; }
+.service-area span.city:nth-of-type(6){ animation-delay: 1.05s !important; }
+.service-area span.city:nth-of-type(7){ animation-delay: 1.40s !important; }
+.service-area span.city:nth-of-type(8){ animation-delay: 1.75s !important; }
+
+@keyframes cityShine{
+  0%,100%{
+    color:#93c5fd;
+    text-shadow:
+      0 0 6px rgba(59,130,246,.25),
+      0 0 14px rgba(56,189,248,.15);
+    filter: none;
+  }
+  50%{
+    color:#e0f2fe;
+    text-shadow:
+      0 0 10px rgba(56,189,248,.95),
+      0 0 26px rgba(59,130,246,.75),
+      0 0 42px rgba(37,99,235,.35);
+    filter: saturate(1.2);
+  }
+}
+
+/* If user has reduced motion on, keep it readable (no animation) */
+@media (prefers-reduced-motion: reduce){
+  .service-area .city{ animation: none !important; }
+}

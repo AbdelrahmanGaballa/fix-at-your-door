@@ -938,6 +938,14 @@ function App() {
   const [otherModelText, setOtherModelText] = useState("");
     const [autoDetecting, setAutoDetecting] = useState(false);
   const [autoGuess, setAutoGuess] = useState(null);
+  const [stepBlink, setStepBlink] = useState(false);
+
+useEffect(() => {
+  setStepBlink(true);
+  const t = setTimeout(() => setStepBlink(false), 600);
+  return () => clearTimeout(t);
+}, [step]);
+
 
 
   const [customer, setCustomer] = useState({
@@ -2041,12 +2049,14 @@ function App() {
     />
 
     {/* 🚗 Little car that moves along the bar */}
-    <div
-      className="booking-progress-car"
-      style={{ left: `${progress}%` }}
-    >
-      🚐
-    </div>
+   <div
+  className={`booking-progress-car ${stepBlink ? "blink" : ""}`}
+  style={{ left: `${progress}%` }}
+  title="We’re on the way 🚐"
+>
+  🚐
+</div>
+
   </div>
 
   <div className="booking-progress-text">
