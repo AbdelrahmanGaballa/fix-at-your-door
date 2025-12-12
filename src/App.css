@@ -2628,35 +2628,38 @@ textarea:focus {
   pointer-events: none !important;
 }
 /* ================================
-   🔘 Bigger "Choose model" button
+   🔽 Bigger, premium select boxes
    ================================ */
 
-.choose-model-btn,
-button.choose-model,
-button[data-action="choose-model"] {
+select {
   font-size: 18px !important;
-  padding: 18px 32px !important;
-  min-height: 60px !important;
+  padding: 16px 18px !important;
+  min-height: 62px !important;
   border-radius: 14px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.4px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.3px !important;
+
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  color: #ffffff !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
 }
 
-/* If it's a generic primary button */
-button.primary,
-button.next-step,
-button[type="button"] {
-  font-size: 18px !important;
-  padding: 18px 34px !important;
-  min-height: 60px !important;
-  border-radius: 14px !important;
-}
-button:hover {
-  transform: scale(1.04);
-  box-shadow: 0 14px 40px rgba(0, 120, 255, 0.45);
-  transition: all 0.25s ease;
+/* Placeholder / default option */
+select option {
+  font-size: 17px;
+  padding: 12px;
 }
 
-button {
-  transition: all 0.25s ease;
+/* Focus (when user clicks) */
+select:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.25);
+}
+select:hover {
+  border-color: rgba(59,130,246,0.6);
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
 }
