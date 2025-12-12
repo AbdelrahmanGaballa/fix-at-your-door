@@ -2012,7 +2012,7 @@ function App() {
       className="booking-progress-car"
       style={{ left: `${progress}%` }}
     >
-      🚗
+      🚐
     </div>
   </div>
 

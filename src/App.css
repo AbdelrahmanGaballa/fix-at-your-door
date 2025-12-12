@@ -2663,3 +2663,252 @@ select:hover {
   transform: translateY(-1px);
   transition: all 0.2s ease;
 }
+/* =========================================
+   🚗 STEP PROGRESS BAR – MAKE IT TALLER
+   ========================================= */
+
+/* Main progress bar container */
+.step-progress,
+.progress-bar,
+.progress-track {
+  height: 26px !important;   /* was too thin */
+  border-radius: 999px !important;
+  overflow: visible !important;
+}
+
+/* Filled gradient bar */
+.step-progress-fill,
+.progress-fill {
+  height: 100% !important;
+  border-radius: 999px !important;
+}
+
+/* 🚗 Car icon */
+.step-progress-car,
+.progress-car,
+.car-icon {
+  width: 42px !important;
+  height: 42px !important;
+  top: -8px !important;      /* lifts car so it's fully visible */
+  z-index: 5 !important;
+}
+/* Allow car to overflow safely */
+.step-progress-wrapper,
+.progress-wrapper {
+  overflow: visible !important;
+  padding-top: 10px;
+}
+/* =========================================
+   🚗 STEP BAR — MAKE BAR + CAR BIGGER
+   ========================================= */
+
+/* Outer wrapper */
+.step-progress-wrapper,
+.progress-wrapper {
+  height: 48px !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  overflow: visible !important;
+}
+
+/* Background track */
+.step-progress,
+.progress-bar,
+.progress-track {
+  height: 20px !important;     /* BAR THICKNESS */
+  border-radius: 999px !important;
+  background: rgba(255,255,255,0.08) !important;
+  overflow: visible !important;
+}
+
+/* Filled gradient */
+.step-progress-fill,
+.progress-fill {
+  height: 100% !important;
+  border-radius: 999px !important;
+}
+
+/* 🚗 Car */
+.step-progress-car,
+.progress-car,
+.car-icon {
+  width: 44px !important;
+  height: 44px !important;
+  top: -14px !important;       /* centers car vertically */
+  z-index: 10 !important;
+}
+/* ================================
+   🚗 BOOKING PROGRESS — BIGGER + CAR
+   Paste at the VERY bottom of App.css
+   ================================ */
+
+.booking-progress{
+  padding: 18px 16px !important;
+}
+
+.booking-progress-track{
+  height: 22px !important;          /* bar thickness */
+  border-radius: 999px !important;
+  overflow: visible !important;      /* allow car to show */
+  position: relative !important;
+}
+
+.booking-progress-bar{
+  height: 100% !important;
+  border-radius: 999px !important;
+  position: relative !important;
+  overflow: visible !important;
+  box-shadow: 0 0 14px rgba(59,130,246,.55) !important;
+}
+
+/* 🚗 Car icon that rides on the filled bar (no JSX changes needed) */
+.booking-progress-bar::after{
+  content: "🚗" !important;
+  position: absolute !important;
+  right: -18px !important;          /* sits at the end of the fill */
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 28px !important;       /* car size */
+  line-height: 1 !important;
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,.6)) !important;
+  z-index: 50 !important;
+  pointer-events: none !important;
+}
+
+/* Optional: make the Step text align nicer */
+.booking-progress-text{
+  margin-top: 10px !important;
+  font-size: 0.95rem !important;
+  letter-spacing: .12em !important;
+  opacity: .9 !important;
+}
+
+/* Subtle floating animation */
+@keyframes carFloat {
+  0%,100% { transform: translateY(-50%) translateY(0); }
+  50%     { transform: translateY(-50%) translateY(-2px); }
+}
+.booking-progress-bar::after{
+  animation: carFloat 2s ease-in-out infinite !important;
+}
+
+/* Hide any old "car" element/icon you previously added */
+.booking-progress img,
+.booking-progress .car,
+.booking-progress .car-icon,
+.booking-progress .progress-car,
+.booking-progress [class*="car"]{
+  display: none !important;
+}
+/* ONE high-contrast car on the bar */
+.booking-progress-bar::after{
+  content: "🚗" !important;
+  position: absolute !important;
+  right: -18px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+
+  font-size: 30px !important;
+  line-height: 1 !important;
+
+  /* Make it visible on blue/green */
+  filter:
+    drop-shadow(0 0 10px rgba(255,255,255,.85))
+    drop-shadow(0 10px 18px rgba(0,0,0,.75)) !important;
+
+  z-index: 999 !important;
+  pointer-events: none !important;
+}
+
+/* Add a white circle "badge" behind the car so it pops */
+.booking-progress-bar::before{
+  content: "" !important;
+  position: absolute !important;
+  right: -26px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.12) !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
+  backdrop-filter: blur(6px) !important;
+  z-index: 998 !important;
+}
+/* Flip the car to face the other direction */
+.booking-progress-bar::after{
+  transform: translateY(-50%) scaleX(-1) !important;
+}
+/* Replace progress car with service van, bigger + flipped */
+/* Replace progress car with service van, bigger + flipped */
+.booking-progress-bar::after {
+  content: "🚐";
+  font-size: 28px !important;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) scaleX(-1) !important;
+  filter: drop-shadow(0 0 8px rgba(0, 180, 255, 0.8));
+  pointer-events: none;
+}
+/* ================================
+   FORCE OVERRIDE PROGRESS VEHICLE
+   ================================ */
+
+/* Hide ANY existing vehicle/icon */
+.booking-progress-bar *,
+.booking-progress-bar::before,
+.booking-progress-bar::after {
+  content: none !important;
+  background: none !important;
+}
+
+/* Re-inject ONLY our service van */
+.booking-progress-bar {
+  position: relative !important;
+}
+
+.booking-progress-bar::after {
+  content: "🚐" !important;
+  position: absolute !important;
+  left: var(--progress, 50%) !important; /* uses existing progress */
+  top: 50% !important;
+
+  transform: translate(-50%, -50%) scaleX(-1) !important;
+
+  font-size: 30px !important;
+  line-height: 1 !important;
+
+  z-index: 9999 !important;
+  pointer-events: none !important;
+
+  filter:
+    drop-shadow(0 0 6px rgba(28, 169, 127, 0.9))
+    drop-shadow(0 0 14px rgba(5, 48, 97, 0.8));
+}
+.booking-progress-bar::after {
+  top: 30% !important; /* move car UP (was 50%) */
+}
+/* === AtDoorFix Premium Progress Bar Color Override === */
+.booking-progress-fill {
+  background: linear-gradient(
+    90deg,
+    #1fd97c 0%,     /* AtDoorFix green */
+    #22d3ee 35%,    /* cyan */
+    #3b82f6 70%,    /* electric blue */
+    #2563eb 100%    /* deep blue */
+  ) !important;
+
+  box-shadow:
+    0 0 12px rgba(34, 211, 238, 0.45),
+    0 0 28px rgba(59, 130, 246, 0.35),
+    inset 0 0 6px rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Make the empty bar darker & cleaner */
+.booking-progress-bar {
+  background: linear-gradient(
+    180deg,
+    #0242c2,
+    #0324b5
+  ) !important;
+}
