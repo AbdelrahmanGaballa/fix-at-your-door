@@ -4,6 +4,8 @@ import appleLogo from "./assets/brands/apple.png";
 import samsungLogo from "./assets/brands/samsung.png";
 import googleLogo from "./assets/brands/google.png";
 import motorolaLogo from "./assets/brands/motorola.png";
+import React from "react";
+
 
 import logo from "./assets/logo.png";
 import phoneImg from "./phone.png";
@@ -153,6 +155,271 @@ const TIMELINE_STEPS = [
     icon: "🔧",
   },
 ];
+function RepairQuizModal({ open, onClose, onApply }) {
+  const [step, setStep] = React.useState(0);
+  const [answers, setAnswers] = React.useState({
+    symptom: "",
+    screenType: "",
+    batteryType: "",
+    chargeType: "",
+    audioType: "",
+    unsureType: "",
+  });
+
+  React.useEffect(() => {
+    if (!open) {
+      setStep(0);
+      setAnswers({
+        symptom: "",
+        screenType: "",
+        batteryType: "",
+        chargeType: "",
+        audioType: "",
+        unsureType: "",
+      });
+    }
+  }, [open]);
+
+  if (!open) return null;
+
+  const pick = (key, value) => setAnswers((a) => ({ ...a, [key]: value }));
+
+  // Build a recommended "issue" from the answers
+  const buildResult = () => {
+    const { symptom, screenType, batteryType, chargeType, audioType, unsureType } = answers;
+
+    if (symptom === "screen") {
+      if (screenType === "cracked") return { issue: "Screen Replacement", note: "Cracked screen" };
+      if (screenType === "touch") return { issue: "Screen / Touch Diagnostic", note: "Touch not responding" };
+      if (screenType === "black") return { issue: "Display Diagnostic", note: "Black screen / no display" };
+      return { issue: "Screen Diagnostic", note: "Screen issue" };
+    }
+
+    if (symptom === "battery") {
+      if (batteryType === "diesfast") return { issue: "Battery Replacement", note: "Battery drains fast" };
+      if (batteryType === "randomshutdown") return { issue: "Battery Diagnostic", note: "Random shutdown" };
+      if (batteryType === "hot") return { issue: "Battery / Overheating Diagnostic", note: "Gets hot" };
+      return { issue: "Battery Diagnostic", note: "Battery issue" };
+    }
+
+    if (symptom === "charging") {
+      if (chargeType === "loose") return { issue: "Charging Port Repair", note: "Cable loose / only works at angle" };
+      if (chargeType === "notcharging") return { issue: "Charging Diagnostic", note: "Not charging" };
+      if (chargeType === "slow") return { issue: "Charging Diagnostic", note: "Slow charging" };
+      return { issue: "Charging Diagnostic", note: "Charging issue" };
+    }
+
+    if (symptom === "audio") {
+      if (audioType === "speaker") return { issue: "Speaker Repair", note: "No/low speaker sound" };
+      if (audioType === "mic") return { issue: "Microphone Repair", note: "People can’t hear me" };
+      if (audioType === "earpiece") return { issue: "Earpiece Repair", note: "Can’t hear calls" };
+      return { issue: "Audio Diagnostic", note: "Audio issue" };
+    }
+
+    // Not sure path
+    if (symptom === "unsure") {
+      if (unsureType === "water") return { issue: "Water Damage Diagnostic", note: "Possible liquid damage" };
+      if (unsureType === "software") return { issue: "Software Diagnostic", note: "Glitching / apps crashing" };
+      if (unsureType === "drops") return { issue: "General Diagnostic", note: "Dropped phone / unknown issue" };
+      return { issue: "General Diagnostic", note: "Not sure what’s wrong" };
+    }
+
+    return { issue: "General Diagnostic", note: "Not sure what’s wrong" };
+  };
+
+  const result = buildResult();
+
+  const next = () => setStep((s) => s + 1);
+  const back = () => setStep((s) => Math.max(0, s - 1));
+
+  const closeOnBackdrop = (e) => {
+    if (e.target.classList.contains("quiz-modal-backdrop")) onClose();
+  };
+
+  return (
+    <div className="quiz-modal-backdrop" onMouseDown={closeOnBackdrop}>
+      <div className="quiz-modal" role="dialog" aria-modal="true" aria-label="Repair quiz">
+        <div className="quiz-modal-header">
+          <div>
+            <div className="quiz-pill">30-second repair quiz</div>
+            <h3 className="quiz-title">Let’s figure out what’s wrong</h3>
+          </div>
+          <button className="quiz-close" onClick={onClose} aria-label="Close">✕</button>
+        </div>
+
+        {/* STEP 0 */}
+        {step === 0 && (
+          <div className="quiz-body">
+            <p className="quiz-sub">What problem are you having?</p>
+
+            <div className="quiz-grid">
+              <button className={`quiz-choice ${answers.symptom==="screen"?"active":""}`} onClick={() => { pick("symptom","screen"); next(); }}>
+                📱 Screen issue
+                <span>Cracked / touch / black screen</span>
+              </button>
+
+              <button className={`quiz-choice ${answers.symptom==="battery"?"active":""}`} onClick={() => { pick("symptom","battery"); next(); }}>
+                🔋 Battery issue
+                <span>Dies fast / shuts down / hot</span>
+              </button>
+
+              <button className={`quiz-choice ${answers.symptom==="charging"?"active":""}`} onClick={() => { pick("symptom","charging"); next(); }}>
+                🔌 Charging issue
+                <span>Not charging / loose / slow</span>
+              </button>
+
+              <button className={`quiz-choice ${answers.symptom==="audio"?"active":""}`} onClick={() => { pick("symptom","audio"); next(); }}>
+                🔊 Sound / mic issue
+                <span>Speaker / mic / earpiece</span>
+              </button>
+
+              <button className={`quiz-choice ${answers.symptom==="unsure"?"active":""}`} onClick={() => { pick("symptom","unsure"); next(); }}>
+                ❓ Not sure
+                <span>We’ll diagnose on-site first</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 1 - Conditional */}
+        {step === 1 && answers.symptom === "screen" && (
+          <div className="quiz-body">
+            <p className="quiz-sub">Which best describes it?</p>
+            <div className="quiz-grid">
+              <button className={`quiz-choice ${answers.screenType==="cracked"?"active":""}`} onClick={() => { pick("screenType","cracked"); next(); }}>
+                💥 Cracked screen <span>Visible cracks</span>
+              </button>
+              <button className={`quiz-choice ${answers.screenType==="touch"?"active":""}`} onClick={() => { pick("screenType","touch"); next(); }}>
+                ✋ Touch not working <span>Ghost touches / unresponsive</span>
+              </button>
+              <button className={`quiz-choice ${answers.screenType==="black"?"active":""}`} onClick={() => { pick("screenType","black"); next(); }}>
+                ⚫ Black screen <span>Phone on, screen dark</span>
+              </button>
+            </div>
+
+            <div className="quiz-nav">
+              <button className="quiz-btn secondary" onClick={back}>Back</button>
+            </div>
+          </div>
+        )}
+
+        {step === 1 && answers.symptom === "battery" && (
+          <div className="quiz-body">
+            <p className="quiz-sub">Which best describes it?</p>
+            <div className="quiz-grid">
+              <button className={`quiz-choice ${answers.batteryType==="diesfast"?"active":""}`} onClick={() => { pick("batteryType","diesfast"); next(); }}>
+                ⏳ Dies fast <span>Drains quickly</span>
+              </button>
+              <button className={`quiz-choice ${answers.batteryType==="randomshutdown"?"active":""}`} onClick={() => { pick("batteryType","randomshutdown"); next(); }}>
+                🔁 Random shutdown <span>Turns off unexpectedly</span>
+              </button>
+              <button className={`quiz-choice ${answers.batteryType==="hot"?"active":""}`} onClick={() => { pick("batteryType","hot"); next(); }}>
+                ♨️ Gets hot <span>Warm/hot during use</span>
+              </button>
+            </div>
+
+            <div className="quiz-nav">
+              <button className="quiz-btn secondary" onClick={back}>Back</button>
+            </div>
+          </div>
+        )}
+
+        {step === 1 && answers.symptom === "charging" && (
+          <div className="quiz-body">
+            <p className="quiz-sub">What happens when you charge?</p>
+            <div className="quiz-grid">
+              <button className={`quiz-choice ${answers.chargeType==="notcharging"?"active":""}`} onClick={() => { pick("chargeType","notcharging"); next(); }}>
+                ❌ Not charging <span>No lightning / no % increase</span>
+              </button>
+              <button className={`quiz-choice ${answers.chargeType==="loose"?"active":""}`} onClick={() => { pick("chargeType","loose"); next(); }}>
+                🧷 Loose port <span>Only works at an angle</span>
+              </button>
+              <button className={`quiz-choice ${answers.chargeType==="slow"?"active":""}`} onClick={() => { pick("chargeType","slow"); next(); }}>
+                🐢 Slow charging <span>Takes forever</span>
+              </button>
+            </div>
+
+            <div className="quiz-nav">
+              <button className="quiz-btn secondary" onClick={back}>Back</button>
+            </div>
+          </div>
+        )}
+
+        {step === 1 && answers.symptom === "audio" && (
+          <div className="quiz-body">
+            <p className="quiz-sub">Which audio problem?</p>
+            <div className="quiz-grid">
+              <button className={`quiz-choice ${answers.audioType==="speaker"?"active":""}`} onClick={() => { pick("audioType","speaker"); next(); }}>
+                🔊 Speaker <span>No/low sound from media</span>
+              </button>
+              <button className={`quiz-choice ${answers.audioType==="mic"?"active":""}`} onClick={() => { pick("audioType","mic"); next(); }}>
+                🎙️ Microphone <span>People can’t hear you</span>
+              </button>
+              <button className={`quiz-choice ${answers.audioType==="earpiece"?"active":""}`} onClick={() => { pick("audioType","earpiece"); next(); }}>
+                ☎️ Earpiece <span>Can’t hear calls</span>
+              </button>
+            </div>
+
+            <div className="quiz-nav">
+              <button className="quiz-btn secondary" onClick={back}>Back</button>
+            </div>
+          </div>
+        )}
+
+        {step === 1 && answers.symptom === "unsure" && (
+          <div className="quiz-body">
+            <p className="quiz-sub">Pick the closest match:</p>
+            <div className="quiz-grid">
+              <button className={`quiz-choice ${answers.unsureType==="drops"?"active":""}`} onClick={() => { pick("unsureType","drops"); next(); }}>
+                📉 Dropped / impact <span>Issue started after a drop</span>
+              </button>
+              <button className={`quiz-choice ${answers.unsureType==="water"?"active":""}`} onClick={() => { pick("unsureType","water"); next(); }}>
+                💧 Water exposure <span>Rain / spill / pool</span>
+              </button>
+              <button className={`quiz-choice ${answers.unsureType==="software"?"active":""}`} onClick={() => { pick("unsureType","software"); next(); }}>
+                🧩 Glitching / apps <span>Freezes / crashes</span>
+              </button>
+            </div>
+
+            <div className="quiz-nav">
+              <button className="quiz-btn secondary" onClick={back}>Back</button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2 - Result */}
+        {step >= 2 && (
+          <div className="quiz-body">
+            <div className="quiz-result">
+              <div className="quiz-result-badge">Recommended</div>
+              <h4 className="quiz-result-title">{result.issue}</h4>
+              <p className="quiz-result-note">{result.note}</p>
+
+              <div className="quiz-result-meta">
+                <div className="quiz-meta-item">⏱️ Typical time: 30–60 min</div>
+                <div className="quiz-meta-item">🛡️ Warranty: included</div>
+                <div className="quiz-meta-item">✅ We confirm on-site before work</div>
+              </div>
+            </div>
+
+            <div className="quiz-nav">
+              <button className="quiz-btn secondary" onClick={back}>Back</button>
+              <button
+                className="quiz-btn primary"
+                onClick={() => {
+                  onApply(result);   // <-- this is how we prefill your form
+                  onClose();
+                }}
+              >
+                Use this result →
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ---------- Contact Us Overlay ----------
 
@@ -939,6 +1206,9 @@ function App() {
     const [autoDetecting, setAutoDetecting] = useState(false);
   const [autoGuess, setAutoGuess] = useState(null);
   const [stepBlink, setStepBlink] = useState(false);
+  const [quizOpen, setQuizOpen] = useState(false);
+
+
 
 useEffect(() => {
   setStepBlink(true);
@@ -1353,9 +1623,23 @@ useEffect(() => {
               >
                 Contact Us
               </button>
-              <span className="hero-note">No upfront payment required.</span>
+      <button
+  className="btn secondary quiz-trigger premium-quiz"
+  onClick={() => setQuizOpen(true)}
+>
+  <span className="quiz-dot" />
+  <span className="quiz-text">
+    Not sure what’s wrong?
+    <span className="quiz-sub">take a quiz</span>
+  </span>
+</button>
+
+
+             
             </div>
+            <p className="hero-note">No upfront payment required.</p>
           </div>
+
         </header>
 
         {/* RIGHT – FORM CARD */}
@@ -2362,7 +2646,19 @@ useEffect(() => {
         </div>
       </section>
 
-      <footer className="footer">© 2025 AtDoorFix. All rights reserved.</footer>
+        <footer className="footer">
+        © 2025 AtDoorFix. All rights reserved.
+      </footer>
+
+      <RepairQuizModal
+        open={quizOpen}
+        onClose={() => setQuizOpen(false)}
+        onApply={(result) => {
+          setIssue(result.issue);
+          setStep(2);
+          setTimeout(() => issueRef.current?.scrollIntoView({ behavior: "smooth" }), 200);
+        }}
+      />
     </div>
   );
 }
