@@ -1491,6 +1491,39 @@ function App() {
                       </select>
                     </div>
                   )}
+                  {/* ❓ Don't know your phone model helper */}
+<details className="model-help">
+  <summary>Don&apos;t know your phone model?</summary>
+
+  <div className="model-help-body">
+    <div className="model-help-grid">
+      <div className="model-help-card">
+        <div className="model-help-title">🍎 iPhone (iOS)</div>
+        <ol className="model-help-steps">
+          <li>Open <b>Settings</b></li>
+          <li>Tap <b>General</b> → <b>About</b></li>
+          <li>Look for <b>Model Name</b></li>
+          <li>Example: <b>iPhone 13 Pro</b></li>
+        </ol>
+      </div>
+
+      <div className="model-help-card">
+        <div className="model-help-title">🤖 Android</div>
+        <ol className="model-help-steps">
+          <li>Open <b>Settings</b></li>
+          <li>Scroll to <b>About phone</b></li>
+          <li>Find <b>Model</b> or <b>Model name</b></li>
+          <li>Example: <b>SM-S918U</b></li>
+        </ol>
+      </div>
+    </div>
+
+    <p className="model-help-tip">
+      Tip: If you only see a code (like <b>SM-G991U</b>), just type it — we&apos;ll match it for you.
+    </p>
+  </div>
+</details>
+
 
                   {/* FIELDS WHEN SMARTPHONE OTHER BRAND */}
                   {isOtherBrand && (
