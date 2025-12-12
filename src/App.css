@@ -2627,3 +2627,36 @@ textarea:focus {
   z-index: 9998 !important;
   pointer-events: none !important;
 }
+/* ================================
+   🔘 Bigger "Choose model" button
+   ================================ */
+
+.choose-model-btn,
+button.choose-model,
+button[data-action="choose-model"] {
+  font-size: 18px !important;
+  padding: 18px 32px !important;
+  min-height: 60px !important;
+  border-radius: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.4px !important;
+}
+
+/* If it's a generic primary button */
+button.primary,
+button.next-step,
+button[type="button"] {
+  font-size: 18px !important;
+  padding: 18px 34px !important;
+  min-height: 60px !important;
+  border-radius: 14px !important;
+}
+button:hover {
+  transform: scale(1.04);
+  box-shadow: 0 14px 40px rgba(0, 120, 255, 0.45);
+  transition: all 0.25s ease;
+}
+
+button {
+  transition: all 0.25s ease;
+}
