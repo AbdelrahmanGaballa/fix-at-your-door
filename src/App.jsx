@@ -936,11 +936,8 @@ function App() {
 
   const [otherBrandText, setOtherBrandText] = useState("");
   const [otherModelText, setOtherModelText] = useState("");
-
-  // ⬇️ ADD THESE
-  const [photoUploading, setPhotoUploading] = useState(false);
-  const [photoError, setPhotoError] = useState("");
-  const [photoPreview, setPhotoPreview] = useState(null);
+    const [autoDetecting, setAutoDetecting] = useState(false);
+  const [autoGuess, setAutoGuess] = useState(null);
 
 
   const [customer, setCustomer] = useState({
@@ -1072,85 +1069,9 @@ function App() {
   const isOtherModel = isSmartphone && selectedModel === "__other";
 
   const modelsForBrand =
-  isSmartphone && !isOtherBrand
-    ? PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || []
-    : [];
-
-// ✅ ADD THIS FUNCTION DIRECTLY BELOW
-function applyAutoGuess(guess) {
-  if (!guess) return;
-
-  // Ensure it's treated as smartphone
-  setDeviceType("smartphone");
-
-  // Brand
-  if (["Apple", "Samsung", "Google", "Motorola"].includes(guess.brand)) {
-    setSelectedBrand(guess.brand);
-  } else {
-    setSelectedBrand("__otherBrand");
-    setOtherBrandText(guess.brand || "Other");
-  }
-
-  // Model
-  const modelForBrand =
-    PHONE_DATA.find((p) => p.brand === guess.brand)?.models || [];
-
-  if (modelForBrand.includes(guess.model)) {
-    setSelectedModel(guess.model);
-    setOtherModelText("");
-  } else {
-    setSelectedModel("__other");
-    setOtherModelText(guess.model || "Other model");
-  }
-}
-async function handleImageUpload(e) {
-  const file = e.target.files?.[0];
-  if (!file) return;
-
-  setPhotoError("");
-  setPhotoUploading(true);
-
-  // show preview
-  const reader = new FileReader();
-  reader.onloadend = () => setPhotoPreview(reader.result);
-  reader.readAsDataURL(file);
-
-  try {
-    const formData = new FormData();
-    formData.append("photo", file);
-
-    const resp = await fetch("http://localhost:5001/api/detect-device", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!resp.ok) {
-      const text = await resp.text();
-      console.error("Server returned error status", resp.status, text);
-      throw new Error("Server error");
-    }
-
-    const data = await resp.json();
-    console.log("Device guess from backend:", data);
-
-    if (!data.success || !data.guess) {
-      throw new Error(data.error || "Could not detect device");
-    }
-
-    // 🔮 apply ONLY the { brand, model, ... } part
-    applyAutoGuess(data.guess);
-  } catch (err) {
-    console.error("Image upload error:", err);
-    setPhotoError(
-      "We couldn't auto-detect your device from the photo. Please choose it manually."
-    );
-  } finally {
-    setPhotoUploading(false);
-  }
-}
-
-
-
+    isSmartphone && !isOtherBrand
+      ? PHONE_DATA.find((p) => p.brand === selectedBrand)?.models || []
+      : [];
 
   // ---------- pricing helpers (screens + battery) ----------
 
@@ -1633,62 +1554,6 @@ async function handleImageUpload(e) {
                   </div>
                 </>
               )}
-{/* 🔍 Auto-recognize from photo (beta) */}
-<div className="field auto-detect-field">
-  <div className="photo-card">
-    <div className="photo-card-icon">📷</div>
-
-    <div className="photo-card-main">
-      <div className="photo-card-header">
-        <span className="photo-badge">Beta</span>
-        <h3>Let us auto-detect your phone</h3>
-      </div>
-
-      <p className="photo-card-text">
-        Snap or upload a clear photo of the front or back of your phone.
-        We&apos;ll try to guess the brand &amp; model for you. If we&apos;re not
-        sure, you can still choose it manually.
-      </p>
-
-      <div className="photo-upload-row">
-        {/* Hidden real input */}
-        <input
-          id="device-photo-input"
-          className="file-input-hidden"
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          disabled={photoUploading}
-        />
-        {/* Pretty button that triggers the hidden input */}
-        <label
-          htmlFor="device-photo-input"
-          className={`file-trigger ${photoUploading ? "file-trigger-disabled" : ""}`}
-        >
-          {photoUploading ? "Analyzing photo…" : "Upload a photo"}
-        </label>
-
-        {photoUploading && (
-          <span className="photo-status">Working our magic…</span>
-        )}
-      </div>
-
-      {/* Preview + result / error */}
-      {(photoPreview || photoError) && (
-        <div className="photo-feedback-row">
-          {photoPreview && (
-            <div className="photo-preview">
-              <img src={photoPreview} alt="Uploaded device" />
-            </div>
-          )}
-
-          {photoError && <p className="error-text">{photoError}</p>}
-        </div>
-      )}
-    </div>
-  </div>
-</div>
-
 
               <div className="buttons">
                 <button className="btn primary" onClick={handleNextFromStep1}>
@@ -2135,15 +2000,27 @@ async function handleImageUpload(e) {
       </div>
 
       {/* Bottom sticky progress bar */}
-      <div className="booking-progress">
-        <div className="booking-progress-track">
-          <div
-            className="booking-progress-bar"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <div className="booking-progress-text">Step {step} of 4</div>
-      </div>
+     <div className="booking-progress">
+  <div className="booking-progress-track">
+    <div
+      className="booking-progress-bar"
+      style={{ width: `${progress}%` }}
+    />
+
+    {/* 🚗 Little car that moves along the bar */}
+    <div
+      className="booking-progress-car"
+      style={{ left: `${progress}%` }}
+    >
+      🚗
+    </div>
+  </div>
+
+  <div className="booking-progress-text">
+    STEP {step} OF 4
+  </div>
+</div>
+
 
       {/* ====== Animated repair timeline ====== */}
       <section className="timeline-section">
