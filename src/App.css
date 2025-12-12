@@ -3146,3 +3146,57 @@ select:hover {
     grid-template-columns: 1fr;
   }
 }
+/* ===== Compact model help (smaller height) ===== */
+
+.model-help {
+  border-radius: 14px;
+}
+
+.model-help > summary {
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* smaller icon */
+.model-help > summary::before {
+  width: 26px;
+  height: 26px;
+  font-size: 14px;
+  box-shadow: 0 6px 14px rgba(37,99,235,.25);
+}
+
+/* body spacing */
+.model-help-body {
+  padding: 10px 12px 12px;
+}
+
+/* tighter grid */
+.model-help-grid {
+  gap: 8px;
+}
+
+/* cards smaller */
+.model-help-card {
+  padding: 8px 10px;
+  border-radius: 12px;
+}
+
+/* title smaller */
+.model-help-title {
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+
+/* steps text smaller */
+.model-help-steps {
+  font-size: 0.78rem;
+  padding-left: 16px;
+}
+
+/* tip line smaller */
+.model-help-tip {
+  font-size: 0.75rem;
+  padding: 8px 10px;
+  margin-top: 8px;
+}
