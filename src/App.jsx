@@ -1539,27 +1539,27 @@ useEffect(() => {
     const WEB_APP_URL =
       "https://script.google.com/macros/s/AKfycbzAJNDF6p_YnyyrwqwPsdjQTwKIwyImcNblt25Tc7Ve2FsGqNWEnJpFu5l_-JUdb9YfyQ/exec";
 
-    try {
-      await fetch(WEB_APP_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      console.log("✅ Sent to Google Sheets");
-    } catch (err) {
-      console.error("❌ Error sending to Google Sheets:", err);
-      alert(
-        "We submitted your booking on the site, but had an issue logging it to our sheet."
-      );
-    }
-
+   // Show success immediately - send to sheets in background
     setSubmitted(true);
     setStep(4);
     scrollTo(bookingRef);
+
+    // Send to Google Sheets in background (non-blocking)
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(() => {
+        console.log("✅ Sent to Google Sheets");
+      })
+      .catch((err) => {
+        console.error("❌ Error sending to Google Sheets:", err);
+        // Silently fail - user already sees success
+      });
   }
 
   const displayBrand = isSmartphone
