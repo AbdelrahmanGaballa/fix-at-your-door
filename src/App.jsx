@@ -2107,7 +2107,7 @@ useEffect(() => {
                 </div>
 
                 <div className="field">
-                  <label>Email (optional)</label>
+                  <label>Email *</label>
                   <input
                     type="email"
                     name="email"
