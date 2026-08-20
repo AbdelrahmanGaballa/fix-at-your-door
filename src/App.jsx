@@ -2554,7 +2554,7 @@ useEffect(() => {
     STEP {step} OF 4
   </div>
 </div>
-
+<BeforeAfterSection />
 
       {/* ====== Animated repair timeline ====== */}
       <section className="timeline-section">
@@ -2661,8 +2661,7 @@ useEffect(() => {
           </ul>
         </div>
       </section>
-{/* ====== PROOF OF QUALITY: BEFORE & AFTER SECTION ====== */}
-      <BeforeAfterSection />
+
       {/* ====== Comparison: shop vs AtDoorFix ====== */}
       <section className="compare-section" id="compare">
         <div className="compare-card">
