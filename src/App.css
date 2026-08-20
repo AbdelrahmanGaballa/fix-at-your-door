@@ -3659,3 +3659,193 @@ select:hover {
   flex-direction:column;
   line-height:1.1;
 }
+/* =========================================
+   BEFORE & AFTER SECTION STYLES
+========================================= */
+.ba-section {
+  max-width: 1200px;
+  margin: 64px auto;
+  padding: 0 24px;
+}
+
+.ba-section-inner {
+  background: radial-gradient(circle at top left, #0f172a, #020617 70%);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  border-radius: 28px;
+  padding: 48px 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.ba-header-block {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 40px auto;
+}
+
+.ba-header-block h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin: 12px 0 8px;
+  font-weight: 700;
+}
+
+.ba-header-block p {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.ba-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+  justify-content: center;
+}
+
+.ba-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.ba-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4; /* Fits vertical smartphone repair photos cleanly */
+  overflow: hidden;
+  cursor: ew-resize;
+  user-select: none;
+  background: #020617;
+  touch-action: pan-y;
+}
+
+.ba-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.ba-before-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.ba-before-wrapper .ba-img-before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.ba-handle-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #22d3ee;
+  box-shadow: 0 0 12px #22d3ee;
+  z-index: 3;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ba-handle-thumb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background: #020617;
+  border: 2px solid #22d3ee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.7);
+}
+
+.ba-arrows {
+  color: #22d3ee;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: -1px;
+}
+
+.ba-tag {
+  position: absolute;
+  top: 14px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(8px);
+  z-index: 4;
+}
+
+.ba-tag-before {
+  left: 14px;
+  background: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.ba-tag-after {
+  right: 14px;
+  background: rgba(34, 197, 94, 0.3);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.ba-meta {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ba-meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ba-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.ba-time {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.ba-title {
+  color: #f1f5f9;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}

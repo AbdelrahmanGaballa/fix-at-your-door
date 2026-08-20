@@ -6,6 +6,31 @@ import googleLogo from "./assets/brands/google.png";
 import motorolaLogo from "./assets/brands/motorola.png";
 import React from "react";
 
+import iphone13Before from "./assets/repairs/iphone13-before.jpeg"; // or .jpg depending on your file extension
+import iphone13After from "./assets/repairs/iphone13-after.jpeg";   // or .jpg
+// Before & After repair assets
+import iphone12Before from "./assets/repairs/iphone12-before.jpeg";
+import iphone12After from "./assets/repairs/iphone12-after.jpeg";
+
+import iphone12ProMaxBefore from "./assets/repairs/iphone12promax-before.jpeg";
+import iphone12ProMaxAfter from "./assets/repairs/iphone12promax-after.jpeg";
+
+import iphone12ScreenBefore from "./assets/repairs/iphone12screen-before.jpeg";
+import iphone12ScreenAfter from "./assets/repairs/iphone12screen-after.jpeg";
+
+
+
+import iphone13ScreenBefore from "./assets/repairs/iphone13screen-before.jpeg";
+import iphone13ScreenAfter from "./assets/repairs/iphone13screen-after.jpeg";
+
+import iphone14ProMaxBefore from "./assets/repairs/before-iphone14promax.jpg";
+import iphone14ProMaxAfter from "./assets/repairs/iphone14promax-after.jpg";
+
+import iphone15ProMaxBefore from "./assets/repairs/iphone15promax-before.jpeg";
+import iphone15ProMaxAfter from "./assets/repairs/iphone15promax-after.jpg";
+
+import iphone15ProMax2Before from "./assets/repairs/iphone15promax2-before.jpg";
+import iphone15ProMax2After from "./assets/repairs/iphone15promax2-after.jpeg";
 
 import logo from "./assets/logo.png";
 import phoneImg from "./phone.png";
@@ -1187,7 +1212,166 @@ function ContactUsPage({ onBack }) {
     </div>
   );
 }
+const REPAIR_SHOWCASE = [
+  {
+    id: 1,
+    title: "iPhone 13 — Back Glass Replacement",
+    time: "45 mins on-site",
+    beforeImg: iphone13Before,
+    afterImg: iphone13After,
+    badge: "Back Glass",
+  },
+  {
+    id: 2,
+    title: "iPhone 13 — OLED Screen Replacement",
+    time: "35 mins on-site",
+    beforeImg: iphone13ScreenBefore,
+    afterImg: iphone13ScreenAfter,
+    badge: "Screen Repair",
+  },
+  {
+    id: 3,
+    title: "iPhone 14 Pro Max — Display Restoration",
+    time: "40 mins on-site",
+    beforeImg: iphone14ProMaxBefore,
+    afterImg: iphone14ProMaxAfter,
+    badge: "Screen Repair",
+  },
+  {
+    id: 4,
+    title: "iPhone 15 Pro Max — Back Glass Repair",
+    time: "45 mins on-site",
+    beforeImg: iphone15ProMaxBefore,
+    afterImg: iphone15ProMaxAfter,
+    badge: "Back Glass",
+  },
+  {
+    id: 5,
+    title: "iPhone 15 Pro Max — Full Frame & Glass Fix",
+    time: "50 mins on-site",
+    beforeImg: iphone15ProMax2Before,
+    afterImg: iphone15ProMax2After,
+    badge: "Full Restoration",
+  },
+  {
+    id: 6,
+    title: "iPhone 12 — Screen & Digitizer Replacement",
+    time: "30 mins on-site",
+    beforeImg: iphone12ScreenBefore,
+    afterImg: iphone12ScreenAfter,
+    badge: "Screen Repair",
+  },
+  {
+    id: 7,
+    title: "iPhone 12 Pro Max — Back Housing Fix",
+    time: "45 mins on-site",
+    beforeImg: iphone12ProMaxBefore,
+    afterImg: iphone12ProMaxAfter,
+    badge: "Back Glass",
+  },
+  {
+    id: 8,
+    title: "iPhone 12 — Back Glass Restoration",
+    time: "40 mins on-site",
+    beforeImg: iphone12Before,
+    afterImg: iphone12After,
+    badge: "Back Glass",
+  },
+];
 
+// Slider Card Component
+function BeforeAfterCard({ item }) {
+  const [sliderPos, setSliderPos] = useState(50);
+  const [isDragging, setIsDragging] = useState(false);
+  const containerRef = useRef(null);
+
+  const updatePosition = (clientX) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    setSliderPos((x / rect.width) * 100);
+  };
+
+  const handlePointerDown = (e) => {
+    setIsDragging(true);
+    updatePosition(e.clientX || (e.touches && e.touches[0].clientX));
+  };
+
+  const handlePointerMove = (e) => {
+    if (!isDragging && e.type !== "touchmove") return;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    updatePosition(clientX);
+  };
+
+  const handlePointerUp = () => setIsDragging(false);
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener("mouseup", handlePointerUp);
+      window.addEventListener("touchend", handlePointerUp);
+    }
+    return () => {
+      window.removeEventListener("mouseup", handlePointerUp);
+      window.removeEventListener("touchend", handlePointerUp);
+    };
+  }, [isDragging]);
+
+  return (
+    <div className="ba-card">
+      <div
+        className="ba-image-container"
+        ref={containerRef}
+        onMouseDown={handlePointerDown}
+        onTouchStart={handlePointerDown}
+        onMouseMove={handlePointerMove}
+        onTouchMove={handlePointerMove}
+      >
+        <img src={item.afterImg} alt="After repair" className="ba-img ba-img-after" draggable="false" />
+        <span className="ba-tag ba-tag-after">AFTER</span>
+
+        <div className="ba-before-wrapper" style={{ width: `${sliderPos}%` }}>
+          <img src={item.beforeImg} alt="Before repair" className="ba-img ba-img-before" draggable="false" />
+          <span className="ba-tag ba-tag-before">BEFORE</span>
+        </div>
+
+        <div className="ba-handle-line" style={{ left: `${sliderPos}%` }}>
+          <div className="ba-handle-thumb">
+            <span className="ba-arrows">◂ ▸</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="ba-meta">
+        <div className="ba-meta-header">
+          <span className="ba-pill">{item.badge}</span>
+          <span className="ba-time">⏱️ {item.time}</span>
+        </div>
+        <h4 className="ba-title">{item.title}</h4>
+      </div>
+    </div>
+  );
+}
+
+// Showcase Section Component
+function BeforeAfterSection() {
+  return (
+    <section className="ba-section" id="repairs-showcase">
+      <div className="ba-section-inner">
+        <div className="ba-header-block">
+          <span className="guarantee-pill">Proof of Quality</span>
+          <h2>Real Repairs, Right at Your Door</h2>
+          <p>Drag the slider across the screen to see how we restore damaged devices back to factory condition on-site.</p>
+        </div>
+
+        <div className="ba-grid">
+          {REPAIR_SHOWCASE.map((item) => (
+            <BeforeAfterCard key={item.id} item={item} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 // ---------- Main App ----------
 
 function App() {
@@ -2454,7 +2638,8 @@ useEffect(() => {
           </ul>
         </div>
       </section>
-
+{/* ====== PROOF OF QUALITY: BEFORE & AFTER SECTION ====== */}
+      <BeforeAfterSection />
       {/* ====== Comparison: shop vs AtDoorFix ====== */}
       <section className="compare-section" id="compare">
         <div className="compare-card">
