@@ -1231,11 +1231,11 @@ const REPAIR_SHOWCASE = [
   },
   {
     id: 3,
-    title: "iPhone 14 Pro Max — Display Restoration",
+    title: "iPhone14 Pro Max — Back Glass Repair",
     time: "40 mins on-site",
     beforeImg: iphone14ProMaxBefore,
     afterImg: iphone14ProMaxAfter,
-    badge: "Screen Repair",
+    badge: "Backglass",
   },
   {
     id: 4,
@@ -1351,21 +1351,44 @@ function BeforeAfterCard({ item }) {
     </div>
   );
 }
-
-// Showcase Section Component
 function BeforeAfterSection() {
+  const scrollRef = useRef(null);
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 380;
+      scrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <section className="ba-section" id="repairs-showcase">
       <div className="ba-section-inner">
-        <div className="ba-header-block">
-          <span className="guarantee-pill">Proof of Quality</span>
-          <h2>Real Repairs, Right at Your Door</h2>
-          <p>Drag the slider across the screen to see how we restore damaged devices back to factory condition on-site.</p>
+        <div className="ba-header-row">
+          <div>
+            <span className="guarantee-pill">Proof of Quality</span>
+            <h2>Real Repairs, Right at Your Door</h2>
+            <p>Drag any slider to inspect our on-site work.</p>
+          </div>
+
+          <div className="ba-carousel-controls">
+            <button className="ba-nav-btn" onClick={() => scroll("left")} aria-label="Previous">
+              ‹
+            </button>
+            <button className="ba-nav-btn" onClick={() => scroll("right")} aria-label="Next">
+              ›
+            </button>
+          </div>
         </div>
 
-        <div className="ba-grid">
+        <div className="ba-carousel-track" ref={scrollRef}>
           {REPAIR_SHOWCASE.map((item) => (
-            <BeforeAfterCard key={item.id} item={item} />
+            <div key={item.id} className="ba-carousel-item">
+              <BeforeAfterCard item={item} />
+            </div>
           ))}
         </div>
       </div>
