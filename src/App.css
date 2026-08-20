@@ -4101,3 +4101,107 @@ select:hover {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* =========================================================
+   🚨 MASTER MOBILE RESCUE & VIEWPORT FIX
+   Paste at the VERY BOTTOM of App.css
+   ========================================================= */
+
+/* 1. Prevent the root document from ever blowing out horizontally */
+html, body {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  position: relative !important;
+}
+
+#root, .app {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Fix layout containers on mobile screens */
+@media (max-width: 768px) {
+  .app {
+    padding: 16px 12px 60px !important; /* Proper edge margins */
+  }
+
+  .shell,
+  .timeline-section,
+  .map-section,
+  .info-grid,
+  .compare-section,
+  .repair-timeline,
+  .guarantee-strip,
+  .footer,
+  .ba-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  /* Fix the hero & form cards */
+  .header, 
+  .card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 3. Strict Carousel containment */
+  .ba-section {
+    padding: 0 !important;
+    margin: 32px 0 !important;
+  }
+
+  .ba-section-inner {
+    padding: 24px 12px !important;
+    border-radius: 20px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .ba-carousel-track {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 4px 4px 16px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Fits single screen comfortably */
+  .ba-carousel-item {
+    flex: 0 0 85vw !important;
+    max-width: 300px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .ba-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .ba-image-container {
+    width: 100% !important;
+    aspect-ratio: 3 / 4 !important;
+  }
+
+  /* 4. Fix table & grid overflow risks on mobile */
+  .compare-table {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
