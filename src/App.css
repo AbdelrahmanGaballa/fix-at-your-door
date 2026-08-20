@@ -3851,113 +3851,117 @@ select:hover {
 }
 
 /* =========================================
-   BEFORE & AFTER CAROUSEL STYLES
+   BEFORE & AFTER CAROUSEL (MOBILE SAFE)
 ========================================= */
 .ba-section {
+  width: 100%;
   max-width: 1200px;
-  margin: 64px auto;
-  padding: 0 24px;
+  margin: 48px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevents blowing out mobile viewport width */
 }
 
 .ba-section-inner {
   background: radial-gradient(circle at top left, #0f172a, #020617 75%);
   border: 1px solid rgba(51, 65, 85, 0.8);
-  border-radius: 28px;
-  padding: 40px 32px;
+  border-radius: 24px;
+  padding: 28px 16px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
 }
 
 .ba-header-row {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 28px;
-  gap: 20px;
+  margin-bottom: 20px;
+  gap: 12px;
 }
 
 .ba-header-row h2 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #fff;
-  margin: 10px 0 6px;
+  margin: 8px 0 4px;
   font-weight: 700;
 }
 
 .ba-header-row p {
   color: #9ca3af;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   margin: 0;
 }
 
 .ba-carousel-controls {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .ba-nav-btn {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: rgba(15, 23, 42, 0.8);
   border: 1px solid rgba(56, 189, 248, 0.3);
   color: #38bdf8;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
   line-height: 1;
 }
 
-.ba-nav-btn:hover {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: #38bdf8;
-  transform: translateY(-2px);
-}
-
+/* Scroll track setup */
 .ba-carousel-track {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 10px 4px 20px 4px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.3) transparent;
+  padding: 8px 2px 16px 2px;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 }
 
-.ba-carousel-track::-webkit-scrollbar {
-  height: 6px;
-}
-
-.ba-carousel-track::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.3);
-  border-radius: 999px;
-}
-
+/* Prevent items from overflowing mobile screens */
 .ba-carousel-item {
-  flex: 0 0 320px;
-  scroll-snap-align: start;
+  flex: 0 0 82vw;
+  max-width: 320px;
+  min-width: 0;
+  scroll-snap-align: center;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
+  .ba-section {
+    padding: 0 24px;
+  }
+  .ba-section-inner {
+    padding: 40px 32px;
+  }
+  .ba-header-row h2 {
+    font-size: 2rem;
+  }
   .ba-carousel-item {
-    flex: 0 0 340px;
+    flex: 0 0 320px;
+    scroll-snap-align: start;
   }
 }
 
 .ba-card {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease, border-color 0.2s ease;
-}
-
-.ba-card:hover {
-  border-color: rgba(56, 189, 248, 0.4);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ba-image-container {
@@ -3968,7 +3972,7 @@ select:hover {
   cursor: ew-resize;
   user-select: none;
   background: #020617;
-  touch-action: pan-y;
+  touch-action: none; /* Prevents page jump while dragging slider on mobile */
 }
 
 .ba-img {
@@ -3990,7 +3994,7 @@ select:hover {
   z-index: 2;
 }
 
-.ba-before-wrapper .ba-img-before {
+.ba-image-container .ba-before-wrapper .ba-img-before {
   position: absolute;
   top: 0;
   left: 0;
@@ -4004,9 +4008,9 @@ select:hover {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 2px;
   background: #22d3ee;
-  box-shadow: 0 0 12px #22d3ee;
+  box-shadow: 0 0 10px #22d3ee;
   z-index: 3;
   transform: translateX(-50%);
   pointer-events: none;
@@ -4017,15 +4021,15 @@ select:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   background: #020617;
   border: 2px solid #22d3ee;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 14px rgba(34, 211, 238, 0.7);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.7);
 }
 
 .ba-arrows {
@@ -4036,9 +4040,9 @@ select:hover {
 
 .ba-tag {
   position: absolute;
-  top: 12px;
-  padding: 4px 8px;
-  border-radius: 6px;
+  top: 10px;
+  padding: 3px 8px;
+  border-radius: 5px;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -4047,21 +4051,21 @@ select:hover {
 }
 
 .ba-tag-before {
-  left: 12px;
+  left: 10px;
   background: rgba(239, 68, 68, 0.35);
   color: #fca5a5;
   border: 1px solid rgba(239, 68, 68, 0.5);
 }
 
 .ba-tag-after {
-  right: 12px;
+  right: 10px;
   background: rgba(34, 197, 94, 0.35);
   color: #86efac;
   border: 1px solid rgba(34, 197, 94, 0.5);
 }
 
 .ba-meta {
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -4079,7 +4083,7 @@ select:hover {
   color: #38bdf8;
   background: rgba(56, 189, 248, 0.1);
   border: 1px solid rgba(56, 189, 248, 0.25);
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 999px;
 }
 
@@ -4090,7 +4094,7 @@ select:hover {
 
 .ba-title {
   color: #f1f5f9;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   margin: 0;
   white-space: nowrap;
